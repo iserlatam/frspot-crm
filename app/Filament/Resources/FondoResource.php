@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\FondoResource\Pages;
 use App\Filament\Resources\FondoResource\RelationManagers;
 use App\Models\Fondo;
+use App\Models\Movimiento;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -17,9 +18,13 @@ class FondoResource extends Resource
 {
     protected static ?string $model = Fondo::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
     protected static ?string $navigationGroup = 'Movimientos';
+
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-down-on-square';
+
+    protected static ?string $activeNavigationIcon = 'heroicon-s-arrow-down-on-square';
+
+    protected static ?string $navigationLabel = 'Depositos';
 
     public static function form(Form $form): Form
     {
@@ -130,5 +135,12 @@ class FondoResource extends Resource
             'create' => Pages\CreateFondo::route('/create'),
             'edit' => Pages\EditFondo::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        $totalMovimientos = Movimiento::count();
+
+        return $totalMovimientos;
     }
 }
