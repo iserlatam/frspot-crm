@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AsignacionResource\Pages;
-use App\Filament\Resources\AsignacionResource\RelationManagers;
-use App\Models\Asignacion;
+use App\Filament\Resources\ClienteFondoResource\Pages;
+use App\Filament\Resources\ClienteFondoResource\RelationManagers;
+use App\Models\ClienteFondo;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AsignacionResource extends Resource
+class ClienteFondoResource extends Resource
 {
-    protected static ?string $model = Asignacion::class;
+    protected static ?string $model = ClienteFondo::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -23,12 +23,18 @@ class AsignacionResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('monto_total')
+                    ->numeric()
+                    ->default(null),
+                Forms\Components\TextInput::make('total_depositos')
+                    ->numeric()
+                    ->default(null),
+                Forms\Components\TextInput::make('total_retiros')
+                    ->numeric()
+                    ->default(null),
                 Forms\Components\Select::make('cliente_id')
                     ->relationship('cliente', 'id')
-                    ->default(null),
-                Forms\Components\Select::make('asesor_id')
-                    ->relationship('asesor', 'id')
-                    ->default(null),
+                    ->required(),
             ]);
     }
 
@@ -36,10 +42,16 @@ class AsignacionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('cliente.id')
+                Tables\Columns\TextColumn::make('monto_total')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('asesor.id')
+                Tables\Columns\TextColumn::make('total_depositos')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('total_retiros')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('cliente.id')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -74,9 +86,9 @@ class AsignacionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListAsignacions::route('/'),
-            'create' => Pages\CreateAsignacion::route('/create'),
-            'edit' => Pages\EditAsignacion::route('/{record}/edit'),
+            'index' => Pages\ListClienteFondos::route('/'),
+            'create' => Pages\CreateClienteFondo::route('/create'),
+            'edit' => Pages\EditClienteFondo::route('/{record}/edit'),
         ];
     }
 }

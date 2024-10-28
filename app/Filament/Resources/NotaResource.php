@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AsignacionResource\Pages;
-use App\Filament\Resources\AsignacionResource\RelationManagers;
-use App\Models\Asignacion;
+use App\Filament\Resources\NotaResource\Pages;
+use App\Filament\Resources\NotaResource\RelationManagers;
+use App\Models\Nota;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AsignacionResource extends Resource
+class NotaResource extends Resource
 {
-    protected static ?string $model = Asignacion::class;
+    protected static ?string $model = Nota::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -23,6 +23,14 @@ class AsignacionResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Textarea::make('nota')
+                    ->columnSpanFull(),
+                Forms\Components\TextInput::make('estado_nota')
+                    ->maxLength(20)
+                    ->default(null),
+                Forms\Components\TextInput::make('fase')
+                    ->maxLength(50)
+                    ->default(null),
                 Forms\Components\Select::make('cliente_id')
                     ->relationship('cliente', 'id')
                     ->default(null),
@@ -36,6 +44,10 @@ class AsignacionResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('estado_nota')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('fase')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.id')
                     ->numeric()
                     ->sortable(),
@@ -74,9 +86,9 @@ class AsignacionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListAsignacions::route('/'),
-            'create' => Pages\CreateAsignacion::route('/create'),
-            'edit' => Pages\EditAsignacion::route('/{record}/edit'),
+            'index' => Pages\ListNotas::route('/'),
+            'create' => Pages\CreateNota::route('/create'),
+            'edit' => Pages\EditNota::route('/{record}/edit'),
         ];
     }
 }
