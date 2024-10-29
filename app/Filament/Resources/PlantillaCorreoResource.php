@@ -17,7 +17,8 @@ class PlantillaCorreoResource extends Resource
 {
     protected static ?string $model = PlantillaCorreo::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    public static ?string $navigationGroup = 'Seguimientos';
 
     public static function form(Form $form): Form
     {

@@ -7,18 +7,33 @@ use App\Filament\Resources\AsesorResource\RelationManagers;
 use App\Models\Asesor;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Pages\SubNavigationPosition;
+use Filament\Resources\Components\Tab;
+
+
 
 class AsesorResource extends Resource
 {
     protected static ?string $model = Asesor::class;
+    protected static ?string $ModelLabel = 'Asesor';
+    protected static ?string $navigationLabel = 'Asesores';
+    protected static ?string $pluralModelLabel = 'Asesores';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationParentItem = 'clientes';
+    protected static ?string $navigationGroup = 'Gestión de Perfiles'; 
 
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
+
+
+
+    
     public static function form(Form $form): Form
     {
         return $form
@@ -37,7 +52,9 @@ class AsesorResource extends Resource
                     ->default(null),
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
-                    ->required(),
+                    ->disabled()
+                    ->default(null)
+                    ->hiddenOn('create'),
             ]);
     }
 
@@ -92,5 +109,13 @@ class AsesorResource extends Resource
             'create' => Pages\CreateAsesor::route('/create'),
             'edit' => Pages\EditAsesor::route('/{record}/edit'),
         ];
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page ->generateNavigationItems([
+            Pages\EditAsesor::class,
+            Pages\ListAsesors::class,
+        ]);
     }
 }

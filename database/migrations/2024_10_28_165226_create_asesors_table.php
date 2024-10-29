@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('tipo_asesor', 20)->nullable();
             $table->string('secreto_asesor', 32)->nullable();
             $table->string('qr_estado', 16)->nullable();
-            $table->foreignId('user_id');
+            $table->foreignId('user_id')->nullable();
             $table->timestamps();
         });
     }

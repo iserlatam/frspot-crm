@@ -48,4 +48,6 @@ class Asesor extends Model
     {
         return $this->hasMany(Nota::class);
     }
+
+   
 }

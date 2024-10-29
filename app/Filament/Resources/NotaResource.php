@@ -17,7 +17,8 @@ class NotaResource extends Resource
 {
     protected static ?string $model = Nota::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
+    public static ?string $navigationGroup = 'Seguimientos';
 
     public static function form(Form $form): Form
     {
