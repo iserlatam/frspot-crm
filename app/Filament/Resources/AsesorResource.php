@@ -26,14 +26,14 @@ class AsesorResource extends Resource
     protected static ?string $pluralModelLabel = 'Asesores';
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
-    protected static ?string $navigationParentItem = 'clientes';
-    protected static ?string $navigationGroup = 'Gestión de Perfiles'; 
+    protected static ?string $navigationParentItem = 'Asignaciones';
+    protected static ?string $navigationGroup = 'Gestión de Perfiles';
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
 
 
-    
+
     public static function form(Form $form): Form
     {
         return $form

@@ -18,7 +18,8 @@ class ClienteFondoResource extends Resource
     protected static ?string $model = ClienteFondo::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Control de Usuarios'; 
+    protected static ?string $navigationGroup = 'Control de Usuarios';
+    protected static bool $isDiscovered = false;
 
     public static function form(Form $form): Form
     {

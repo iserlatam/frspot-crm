@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Models\;
+use App\Models\Asesor;
 use App\Models\Asignacion;
 use App\Models\Cliente;
 
@@ -24,7 +24,7 @@ class AsignacionFactory extends Factory
     {
         return [
             'cliente_id' => Cliente::factory(),
-            'asesor_id' => ::factory(),
+            'asesor_id' => Asesor::factory(),
         ];
     }
 }

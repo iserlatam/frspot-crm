@@ -18,7 +18,7 @@ class ClienteResource extends Resource
     protected static ?string $model = Cliente::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationGroup = 'Gestión de Perfiles'; 
+    protected static ?string $navigationGroup = 'Gestión de Perfiles';
 
     public static function form(Form $form): Form
     {
@@ -121,35 +121,35 @@ class ClienteResource extends Resource
                 Tables\Columns\TextColumn::make('fecha_nacido')
                     ->date()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('fecha_sistema')
-                    ->dateTime()
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('fecha_sistema')
+                //     ->dateTime()
+                //     ->sortable(),
                 Tables\Columns\TextColumn::make('estado')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('promocion')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('codigo_unico')
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('promocion')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('codigo_unico')
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('ciudad')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('infoeeuu')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('caso')
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('infoeeuu')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('caso')
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('tipo_doc_subm')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('activo_subm')
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('activo_subm')
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('metodoPago')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cod_postal')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('pais')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('monto_pag')
-                    ->numeric()
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('monto_pag')
+                //     ->numeric()
+                //     ->sortable(),
                 Tables\Columns\TextColumn::make('doc_soporte')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('archivo_soporte')
@@ -159,6 +159,7 @@ class ClienteResource extends Resource
                 Tables\Columns\TextColumn::make('estado_cliente')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('fase_cliente')
+                    ->label('Fase')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('origenes')
                     ->searchable(),
