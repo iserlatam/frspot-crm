@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ClienteResource\Pages;
 use App\Filament\Resources\ClienteResource\RelationManagers;
+use App\Filament\Resources\ClienteResource\Widgets\ClienteFondoTable;
 use App\Models\Cliente;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -182,6 +183,7 @@ class ClienteResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -201,8 +203,16 @@ class ClienteResource extends Resource
     {
         return [
             'index' => Pages\ListClientes::route('/'),
+            'view' => Pages\ViewCliente::route('/{record}'),
             'create' => Pages\CreateCliente::route('/create'),
             'edit' => Pages\EditCliente::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getHeaderWidgets(): array
+    {
+        return [
+            ClienteFondoTable::class,
         ];
     }
 }
