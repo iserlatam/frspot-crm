@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ClienteResource\Pages;
 
 use App\Filament\Resources\ClienteResource;
+use App\Filament\Resources\ClienteResource\Widgets\ClienteCountStat;
 use Filament\Actions;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
@@ -12,14 +13,23 @@ class ViewCliente extends ViewRecord
 {
     protected static string $resource = ClienteResource::class;
 
-    public static function infolist(Infolist $infolist): Infolist
+    public string $description = 'La informacion sensible del cliente';
+
+    public function infolist(Infolist $infolist): Infolist
     {
         return $infolist
             ->schema([
-                Infolists\Components\TextEntry::make('name'),
-                Infolists\Components\TextEntry::make('email'),
-                Infolists\Components\TextEntry::make('notes')
-                    ->columnSpanFull(),
+                Infolists\Components\Section::make('Informacion personal')
+                    ->columns(3)
+                    ->collapsible()
+                    ->description($this->description)
+                    ->icon('heroicon-s-user')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('identificacion'),
+                        Infolists\Components\TextEntry::make('nombre'),
+                        Infolists\Components\TextEntry::make('direccion')
+                            ->label('Dirección'),
+                    ])
             ]);
     }
 }

@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ClienteResource\Pages;
 use App\Filament\Resources\ClienteResource\RelationManagers;
-use App\Filament\Resources\ClienteResource\Widgets\ClienteFondoTable;
+use App\Filament\Resources\ClienteResource\Widgets\ClienteCountStat;
 use App\Models\Cliente;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -206,13 +206,6 @@ class ClienteResource extends Resource
             'view' => Pages\ViewCliente::route('/{record}'),
             'create' => Pages\CreateCliente::route('/create'),
             'edit' => Pages\EditCliente::route('/{record}/edit'),
-        ];
-    }
-
-    public static function getHeaderWidgets(): array
-    {
-        return [
-            ClienteFondoTable::class,
         ];
     }
 }
