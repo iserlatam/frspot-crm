@@ -17,7 +17,12 @@ class AsesorResource extends Resource
 {
     protected static ?string $model = Asesor::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $ModelLabel = 'Asesor';
+    protected static ?string $navigationLabel = 'Asesores';
+    protected static ?string $pluralModelLabel = 'Asesores';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    protected static ?string $navigationGroup = 'Gestión de Perfiles'; 
 
     public static function form(Form $form): Form
     {
