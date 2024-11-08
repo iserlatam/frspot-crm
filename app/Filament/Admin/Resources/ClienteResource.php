@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\ClienteResource\Pages;
 use App\Filament\Admin\Resources\ClienteResource\RelationManagers;
 use App\Models\Cliente;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -17,80 +18,132 @@ class ClienteResource extends Resource
 {
     protected static ?string $model = Cliente::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationGroup = 'Gestión de Perfiles';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nombre_completo')
-                    ->maxLength(150)
-                    ->default(null),
-                Forms\Components\TextInput::make('identificacion')
-                    ->maxLength(50)
-                    ->default(null),
-                Forms\Components\DatePicker::make('fecha_nacimiento'),
-                Forms\Components\TextInput::make('genero'),
-                Forms\Components\TextInput::make('pais')
-                    ->maxLength(50)
-                    ->default(null),
-                Forms\Components\TextInput::make('ciudad')
-                    ->maxLength(50)
-                    ->default(null),
-                Forms\Components\TextInput::make('direccion')
-                    ->maxLength(250)
-                    ->default(null),
-                Forms\Components\TextInput::make('cod_postal')
-                    ->maxLength(50)
-                    ->default(null),
-                Forms\Components\TextInput::make('celular')
-                    ->maxLength(25)
-                    ->default(null),
-                Forms\Components\TextInput::make('telefono')
-                    ->tel()
-                    ->maxLength(25)
-                    ->default(null),
-                Forms\Components\Toggle::make('estado'),
-                Forms\Components\TextInput::make('promocion')
-                    ->maxLength(1)
-                    ->default(null),
-                Forms\Components\TextInput::make('estado_cliente')
-                    ->maxLength(50)
-                    ->default(null),
-                Forms\Components\TextInput::make('fase_cliente')
-                    ->maxLength(50)
-                    ->default(null),
-                Forms\Components\TextInput::make('origenes')
-                    ->maxLength(60)
-                    ->default(null),
-                Forms\Components\TextInput::make('infoeeuu')
-                    ->maxLength(255)
-                    ->default(null),
-                Forms\Components\TextInput::make('caso')
-                    ->maxLength(20)
-                    ->default(null),
-                Forms\Components\TextInput::make('tipo_doc_subm')
-                    ->maxLength(50)
-                    ->default(null),
-                Forms\Components\TextInput::make('activo_subm')
-                    ->maxLength(250)
-                    ->default(null),
-                Forms\Components\TextInput::make('metodo_pago')
-                    ->maxLength(25)
-                    ->default(null),
-                Forms\Components\TextInput::make('doc_soporte')
-                    ->maxLength(50)
-                    ->default(null),
-                Forms\Components\Textarea::make('archivo_soporte')
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('comprobante_pag')
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('billetera')
-                    ->columnSpanFull(),
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required(),
+                Section::make('Informacion Personal')
+                    ->description('Añade al informacion personal de nuevo usuario')
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\TextInput::make('nombre_completo')
+                            ->maxLength(150)
+                            ->default(null),
+                        Forms\Components\TextInput::make('identificacion')
+                            ->maxLength(50)
+                            ->default(null),
+                        Forms\Components\DatePicker::make('fecha_nacimiento'),
+                        Forms\Components\TextInput::make('genero'),
+                        Forms\Components\TextInput::make('pais')
+                            ->maxLength(50)
+                            ->default(null),
+                        Forms\Components\TextInput::make('ciudad')
+                            ->maxLength(50)
+                            ->default(null),
+                        Forms\Components\TextInput::make('direccion')
+                            ->maxLength(250)
+                            ->default(null),
+                        Forms\Components\TextInput::make('cod_postal')
+                            ->maxLength(50)
+                            ->default(null),
+                        Forms\Components\TextInput::make('celular')
+                            ->maxLength(25)
+                            ->default(null),
+                        Forms\Components\TextInput::make('telefono')
+                            ->tel()
+                            ->maxLength(25)
+                            ->default(null),
+                        
+                    ]),
+
+                Section::make('Informacion de Marketing')
+                    ->description('Añada la informaicon de control del cliente')
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\Section::make('informacion de seguimientos')
+                        ->columns(3)
+                        ->schema([
+                            Forms\Components\Select::make('estado')
+                            ->options([
+                                'New' => 'New',
+                                'No answer' => 'No answer',
+                                'Answer' => 'Answer',
+                                'Call again' => 'Call Again',
+                                'Potential' => 'Potential',
+                                'Low potential' => 'Low Potential',
+                                'Declined' => 'Declined',
+                                'Under age' => 'Under Age',
+                                'Active' => 'Active',
+                                'No interested' => 'No interested',
+                                'Invalid number' => 'Invalid number',
+                                'Stateless  '  => 'Stateless',
+                            ]),
+                            Forms\Components\Select::make('estado_cliente')
+                                ->options([
+                                    'New' => 'New',
+                                    'No answer' => 'No answer',
+                                    'Answer' => 'Answer',
+                                    'Call again' => 'Call Again',
+                                    'Potential' => 'Potential',
+                                    'Low potential' => 'Low Potential',
+                                    'Declined' => 'Declined',
+                                    'Under age' => 'Under Age',
+                                    'Active' => 'Active',
+                                    'No interested' => 'No interested',
+                                    'Invalid number' => 'Invalid number',
+                                    'Stateless  '  => 'Stateless',
+                                ]),
+                                
+                            Forms\Components\TextInput::make('fase_cliente')
+                                ->maxLength(50)
+                                ->default(null),                            
+                        ]),
+                        Forms\Components\Grid::make('3')
+                        ->schema([
+                            Forms\Components\TextInput::make('promocion')
+                                ->maxLength(1)
+                                ->default(null),
+                            Forms\Components\TextInput::make('origenes')
+                                ->maxLength(60)
+                                ->default(null),
+                            Forms\Components\TextInput::make('infoeeuu')
+                                ->maxLength(255)
+                                ->default(null),
+                        ]),
+                        Forms\Components\Grid::make('3')
+                        ->schema([
+                            Forms\Components\TextInput::make('caso')
+                                ->maxLength(20)
+                                ->default(null),
+                            Forms\Components\TextInput::make('tipo_doc_subm')
+                                ->maxLength(50)
+                                ->default(null),
+                            Forms\Components\TextInput::make('activo_subm')
+                                ->maxLength(250)
+                                ->default(null),
+                        ])
+                    ]),
+                Section::make('Informaicon de Pago')
+                    ->description('Añada la informacion mercantil del nuevo usuaio')
+                    ->schema([
+                        Forms\Components\TextInput::make('metodo_pago')
+                            ->maxLength(25)
+                            ->default(null),
+                        Forms\Components\TextInput::make('doc_soporte')
+                            ->maxLength(50)
+                            ->default(null),
+                        Forms\Components\Textarea::make('archivo_soporte')
+                            ->columnSpanFull(),
+                        Forms\Components\Textarea::make('comprobante_pag')
+                            ->columnSpanFull(),
+                        Forms\Components\Textarea::make('billetera')
+                            ->columnSpanFull(),
+                    ])
+                // Forms\Components\Select::make('user_id')
+                //     ->relationship('user', 'name')
+                //     ->required(),
             ]);
     }
 
