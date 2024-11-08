@@ -18,31 +18,29 @@ class Cliente extends Model
      * @var array
      */
     protected $fillable = [
+        'nombre_completo',
         'identificacion',
-        'nombre',
-        'direccion',
+        'fecha_nacimiento',
         'genero',
+        'pais',
+        'ciudad',
+        'direccion',
+        'cod_postal',
         'celular',
-        'fecha_nacido',
-        'fecha_sistema',
+        'telefono',
         'estado',
         'promocion',
-        'codigo_unico',
-        'ciudad',
+        'estado_cliente',
+        'fase_cliente',
+        'origenes',
         'infoeeuu',
         'caso',
         'tipo_doc_subm',
         'activo_subm',
-        'metodoPago',
-        'cod_postal',
-        'pais',
-        'monto_pag',
+        'metodo_pago',
         'doc_soporte',
         'archivo_soporte',
         'comprobante_pag',
-        'estado_cliente',
-        'fase_cliente',
-        'origenes',
         'billetera',
         'user_id',
     ];
@@ -54,9 +52,8 @@ class Cliente extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'fecha_nacido' => 'date',
-        'fecha_sistema' => 'datetime',
-        'monto_pag' => 'decimal:2',
+        'fecha_nacimiento' => 'date',
+        'estado' => 'boolean',
         'user_id' => 'integer',
     ];
 
@@ -65,9 +62,9 @@ class Cliente extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function notas(): HasMany
+    public function seguimientos(): HasMany
     {
-        return $this->hasMany(Nota::class);
+        return $this->hasMany(Seguimiento::class);
     }
 
     public function movimientos(): HasMany
@@ -75,13 +72,13 @@ class Cliente extends Model
         return $this->hasMany(Movimiento::class);
     }
 
-    public function clienteFondos(): HasMany
-    {
-        return $this->hasMany(ClienteFondo::class);
-    }
-
     public function asignacion(): HasOne
     {
         return $this->hasOne(Asignacion::class);
+    }
+
+    public function cuentaCliente(): HasOne
+    {
+        return $this->hasOne(CuentaCliente::class);
     }
 }

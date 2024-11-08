@@ -22,10 +22,7 @@ class AsesorFactory extends Factory
     public function definition(): array
     {
         return [
-            'nombre_asesor' => $this->faker->regexify('[A-Za-z0-9]{50}'),
             'tipo_asesor' => $this->faker->regexify('[A-Za-z0-9]{20}'),
-            'secreto_asesor' => $this->faker->regexify('[A-Za-z0-9]{32}'),
-            'qr_estado' => $this->faker->regexify('[A-Za-z0-9]{16}'),
             'user_id' => User::factory(),
         ];
     }

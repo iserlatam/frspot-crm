@@ -5,17 +5,17 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use App\Models\;
-use App\Models\Asignacion;
 use App\Models\Cliente;
+use App\Models\Seguimiento;
 
-class AsignacionFactory extends Factory
+class SeguimientoFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Asignacion::class;
+    protected $model = Seguimiento::class;
 
     /**
      * Define the model's default state.
@@ -23,6 +23,9 @@ class AsignacionFactory extends Factory
     public function definition(): array
     {
         return [
+            'descripción' => $this->faker->text(),
+            'estado' => $this->faker->regexify('[A-Za-z0-9]{20}'),
+            'fase' => $this->faker->regexify('[A-Za-z0-9]{50}'),
             'cliente_id' => Cliente::factory(),
             'asesor_id' => ::factory(),
         ];

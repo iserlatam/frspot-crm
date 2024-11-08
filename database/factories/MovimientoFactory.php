@@ -23,13 +23,13 @@ class MovimientoFactory extends Factory
     {
         return [
             'radicado' => $this->faker->regexify('[A-Za-z0-9]{50}'),
-            'tipo_solicitud' => $this->faker->regexify('[A-Za-z0-9]{25}'),
+            'tipo_solicitud' => $this->faker->randomElement(["deposito","retiro"]),
+            'estado_solicitud' => $this->faker->randomElement(["aprobado","pendiente","rechazado"]),
             'monto_ingreso' => $this->faker->randomFloat(2, 0, 9999999999.99),
-            'estado_solicitud' => $this->faker->regexify('[A-Za-z0-9]{20}'),
-            'billetera' => $this->faker->regexify('[A-Za-z0-9]{250}'),
-            'divisa' => $this->faker->regexify('[A-Za-z0-9]{10}'),
-            'sistema_pago' => $this->faker->regexify('[A-Za-z0-9]{25}'),
-            'comprobante_file' => $this->faker->regexify('[A-Za-z0-9]{250}'),
+            'sistema_pago' => $this->faker->regexify('[A-Za-z0-9]{50}'),
+            'billetera' => $this->faker->text(),
+            'divisa' => $this->faker->regexify('[A-Za-z0-9]{15}'),
+            'comprobante_file' => $this->faker->text(),
             'motivo_rechazo' => $this->faker->regexify('[A-Za-z0-9]{250}'),
             'cliente_id' => Cliente::factory(),
         ];

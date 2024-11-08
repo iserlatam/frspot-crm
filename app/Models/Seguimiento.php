@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Movimiento extends Model
+class Seguimiento extends Model
 {
     use HasFactory;
 
@@ -16,16 +16,11 @@ class Movimiento extends Model
      * @var array
      */
     protected $fillable = [
-        'radicado',
-        'tipo_solicitud',
-        'estado_solicitud',
-        'monto_ingreso',
-        'sistema_pago',
-        'billetera',
-        'divisa',
-        'comprobante_file',
-        'motivo_rechazo',
+        'descripción',
+        'estado',
+        'fase',
         'cliente_id',
+        'asesor_id',
     ];
 
     /**
@@ -35,12 +30,17 @@ class Movimiento extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'monto_ingreso' => 'decimal:2',
         'cliente_id' => 'integer',
+        'asesor_id' => 'integer',
     ];
 
     public function cliente(): BelongsTo
     {
         return $this->belongsTo(Cliente::class);
+    }
+
+    public function asesor(): BelongsTo
+    {
+        return $this->belongsTo(Asesor::class);
     }
 }

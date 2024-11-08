@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Movimiento extends Model
+class CuentaCliente extends Model
 {
     use HasFactory;
 
@@ -16,15 +16,14 @@ class Movimiento extends Model
      * @var array
      */
     protected $fillable = [
-        'radicado',
-        'tipo_solicitud',
-        'estado_solicitud',
-        'monto_ingreso',
-        'sistema_pago',
         'billetera',
         'divisa',
-        'comprobante_file',
-        'motivo_rechazo',
+        'monto_total',
+        'ultimo_movimiento',
+        'suma_total_depositos',
+        'no_depositos',
+        'suma_total_retiros',
+        'no_retiros',
         'cliente_id',
     ];
 
@@ -35,7 +34,10 @@ class Movimiento extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'monto_ingreso' => 'decimal:2',
+        'monto_total' => 'decimal:2',
+        'ultimo_movimiento' => 'datetime',
+        'suma_total_depositos' => 'decimal:2',
+        'suma_total_retiros' => 'decimal:2',
         'cliente_id' => 'integer',
     ];
 

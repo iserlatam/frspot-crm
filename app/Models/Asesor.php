@@ -17,10 +17,7 @@ class Asesor extends Model
      * @var array
      */
     protected $fillable = [
-        'nombre_asesor',
         'tipo_asesor',
-        'secreto_asesor',
-        'qr_estado',
         'user_id',
     ];
 
@@ -44,10 +41,8 @@ class Asesor extends Model
         return $this->hasMany(Asignacion::class);
     }
 
-    public function notas(): HasMany
+    public function seguimientos(): HasMany
     {
-        return $this->hasMany(Nota::class);
+        return $this->hasMany(Seguimiento::class);
     }
-
-   
 }
