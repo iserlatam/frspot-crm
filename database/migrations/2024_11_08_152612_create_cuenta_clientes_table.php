@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('cuenta_clientes', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id');
             $table->text('billetera')->nullable();
             $table->string('divisa', 15)->nullable();
             $table->decimal('monto_total', 15, 2)->default(0)->nullable();

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CuentaCliente extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     /**
      * The attributes that are mass assignable.
@@ -33,7 +34,7 @@ class CuentaCliente extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
+        'id' => 'string',
         'monto_total' => 'decimal:2',
         'ultimo_movimiento' => 'datetime',
         'suma_total_depositos' => 'decimal:2',

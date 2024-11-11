@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Filament\Admin\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -22,30 +23,15 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationGroup = 'Control de Usuarios';  
+
+    protected static ?string $navigationGroup = 'Control de usuarios';
 
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('roles')
-                    ->relationship('roles', 'name')
-                    ->multiple()
-                    ->preload()
-                    ->searchable()
-            ]);
+            ->schema(User::getForm());
     }
+
 
     public static function table(Table $table): Table
     {
@@ -71,23 +57,45 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->slideOver(),
             ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+                    /**
+                     *  ACCIONES DE ELIMINACION DE USUARIOS
+                     */
                     Tables\Actions\DeleteBulkAction::make()
                         ->requiresConfirmation(),
+                    /**
+                     *  ACCIONES DE ASIGNACION DE ROLES
+                     */
+                    Tables\Actions\BulkActionGroup::make([
+                        /**
+                     *  ASIGNAR ROL CLIENTE
+                     */
+                    ]),
                     BulkAction::make('Asignar rol')
-                        ->action(fn(Collection $records) =>
-                            $records->each->syncRoles('cliente'))
-                        ->deselectRecordsAfterCompletion()
-                        ->successNotification(Notification::make()
-                            ->title('Roles actualizados con éxito')
-                            ->success()
-                            ->send())
+                        ->color('primary')
                         ->icon('heroicon-o-identification')
-                ]),
-            ]);
+                        ->form([
+                            Select::make('role')
+                                ->options([
+                                    'master' => 'Master',
+                                    'asesor' => 'Asesor',
+                                    'cliente' => 'Cliente',
+                                ])
+                        ])
+                        ->action(function (array $data, Collection $records) {
+                            // OBTENER EL VALOR DE ROLE DESDE EL MODAL
+                            $records->each->syncRoles($data['role']);
+                        })->after(function () {
+                            // NOTIFICAR QUE LA ASIGNACION FUE EXITOSA
+                            Notification::make()
+                                ->title('Roles actualizado con éxito')
+                                ->success()
+                                ->send();
+                        })->deselectRecordsAfterCompletion()
+                ]);
     }
 
     public static function getRelations(): array
@@ -102,7 +110,7 @@ class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            // 'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
 }

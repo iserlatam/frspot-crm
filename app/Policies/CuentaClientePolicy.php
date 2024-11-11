@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Asignacion;
+use App\Models\CuentaCliente;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class AsignacionPolicy
+class CuentaClientePolicy
 {
     use HandlesAuthorization;
 
@@ -15,15 +15,15 @@ class AsignacionPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_asignacion');
+        return $user->can('view_any_cuenta::cliente');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Asignacion $asignacion): bool
+    public function view(User $user, CuentaCliente $cuentaCliente): bool
     {
-        return $user->can('view_asignacion');
+        return $user->can('view_cuenta::cliente');
     }
 
     /**
@@ -31,23 +31,23 @@ class AsignacionPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_asignacion');
+        return $user->can('create_cuenta::cliente');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Asignacion $asignacion): bool
+    public function update(User $user, CuentaCliente $cuentaCliente): bool
     {
-        return $user->can('update_asignacion');
+        return $user->can('update_cuenta::cliente');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Asignacion $asignacion): bool
+    public function delete(User $user, CuentaCliente $cuentaCliente): bool
     {
-        return $user->can('delete_asignacion');
+        return $user->can('delete_cuenta::cliente');
     }
 
     /**
@@ -55,15 +55,15 @@ class AsignacionPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_asignacion');
+        return $user->can('delete_any_cuenta::cliente');
     }
 
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, Asignacion $asignacion): bool
+    public function forceDelete(User $user, CuentaCliente $cuentaCliente): bool
     {
-        return $user->can('force_delete_asignacion');
+        return $user->can('force_delete_cuenta::cliente');
     }
 
     /**
@@ -71,15 +71,15 @@ class AsignacionPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_asignacion');
+        return $user->can('force_delete_any_cuenta::cliente');
     }
 
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, Asignacion $asignacion): bool
+    public function restore(User $user, CuentaCliente $cuentaCliente): bool
     {
-        return $user->can('restore_asignacion');
+        return $user->can('restore_cuenta::cliente');
     }
 
     /**
@@ -87,15 +87,15 @@ class AsignacionPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_asignacion');
+        return $user->can('restore_any_cuenta::cliente');
     }
 
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, Asignacion $asignacion): bool
+    public function replicate(User $user, CuentaCliente $cuentaCliente): bool
     {
-        return $user->can('replicate_asignacion');
+        return $user->can('replicate_cuenta::cliente');
     }
 
     /**
@@ -103,6 +103,6 @@ class AsignacionPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_asignacion');
+        return $user->can('reorder_cuenta::cliente');
     }
 }
