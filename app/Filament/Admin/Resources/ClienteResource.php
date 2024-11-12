@@ -32,6 +32,8 @@ class ClienteResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('nombre_completo')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('identificacion')

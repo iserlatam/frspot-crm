@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('divisa', 15)->nullable();
             $table->text('comprobante_file')->nullable();
             $table->string('motivo_rechazo', 250)->nullable()->default('ninguno');
-            $table->foreignId('cliente_id');
+            $table->foreignId('cliente_id')->constrained();
             $table->timestamps();
         });
     }

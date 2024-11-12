@@ -37,7 +37,10 @@ return new class extends Migration
             $table->text('archivo_soporte')->nullable();
             $table->text('comprobante_pag')->nullable();
             $table->text('billetera')->nullable();
-            $table->foreignId('user_id');
+            $table->string('divisa', 15)->nullable();
+            $table->foreignId('user_id')
+                ->constrained()
+                ->cascadeOnDelete();
             $table->timestamps();
         });
     }

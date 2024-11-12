@@ -16,8 +16,8 @@ return new class extends Migration
             $table->text('descripción')->nullable();
             $table->string('estado', 20)->nullable();
             $table->string('fase', 50)->nullable();
-            $table->foreignId('cliente_id')->nullable();
-            $table->foreignId('asesor_id')->nullable();
+            $table->foreignId('cliente_id')->nullable()->constrained();
+            $table->foreignId('asesor_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

@@ -42,6 +42,15 @@ class CuentaCliente extends Model
         'cliente_id' => 'integer',
     ];
 
+    public static function saveRecordFromUserId($data): void
+    {
+        CuentaCliente::create([
+            'billetera' => $data['billetera'],
+            'divisa' => $data['divisa'],
+            'cliente_id' => $data['id'],
+        ]);
+    }
+
     public function cliente(): BelongsTo
     {
         return $this->belongsTo(Cliente::class);

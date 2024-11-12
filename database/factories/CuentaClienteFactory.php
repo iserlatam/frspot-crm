@@ -22,9 +22,8 @@ class CuentaClienteFactory extends Factory
     public function definition(): array
     {
         return [
+            'billetera' => '4cc308a4165909452740c0cf23df1ae-e33c7c9535057ab4e03c88e189f980bf',
             'divisa' => $this->faker->randomElement(['USDT', 'BITCOIN']),
-            'suma_total_depositos' => 0,
-            'suma_total_retiros' => 0,
             'cliente_id' => Cliente::factory(),
         ];
     }

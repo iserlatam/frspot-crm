@@ -24,7 +24,11 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
+    protected static ?string $activeNavigationIcon = 'heroicon-s-users';
+
     protected static ?string $navigationGroup = 'Control de usuarios';
+
+    protected static ?string $modelLabel = 'Usuarios';
 
     public static function form(Form $form): Form
     {
@@ -47,18 +51,14 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->label('Fecha de creación')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('roles')
+                    ->relationship('roles', 'name')
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->slideOver(),
+                Tables\Actions\EditAction::make(),
             ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
                     /**
@@ -74,9 +74,9 @@ class UserResource extends Resource
                      *  ASIGNAR ROL CLIENTE
                      */
                     ]),
-                    BulkAction::make('Asignar rol')
-                        ->color('primary')
-                        ->icon('heroicon-o-identification')
+                    BulkAction::make('Asignar nuevo rol')
+                        ->color('info')
+                        ->icon('heroicon-s-identification')
                         ->form([
                             Select::make('role')
                                 ->options([
@@ -110,7 +110,7 @@ class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
-            // 'edit' => Pages\EditUser::route('/{record}/edit'),
+            'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
 }

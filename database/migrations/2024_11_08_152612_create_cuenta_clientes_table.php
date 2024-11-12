@@ -17,11 +17,13 @@ return new class extends Migration
             $table->string('divisa', 15)->nullable();
             $table->decimal('monto_total', 15, 2)->default(0)->nullable();
             $table->dateTime('ultimo_movimiento')->nullable();
-            $table->decimal('suma_total_depositos', 15, 2)->nullable();
+            $table->decimal('suma_total_depositos', 15, 2)->default(0)->nullable();
             $table->string('no_depositos')->default('0')->nullable();
-            $table->decimal('suma_total_retiros', 15, 2)->nullable();
+            $table->decimal('suma_total_retiros', 15, 2)->default(0)->nullable();
             $table->string('no_retiros')->default('0')->nullable();
-            $table->foreignId('cliente_id');
+            $table->foreignId('cliente_id')
+                ->constrained()
+                ->cascadeOnDelete();
             $table->timestamps();
         });
     }

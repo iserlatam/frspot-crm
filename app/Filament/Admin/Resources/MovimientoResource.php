@@ -53,7 +53,7 @@ class MovimientoResource extends Resource
                     ->maxLength(250)
                     ->default('ninguno'),
                 Forms\Components\Select::make('cliente_id')
-                    ->relationship('cliente', 'nombre_completo')
+                    ->relationship('cliente', 'id')
                     ->required(),
             ]);
     }

@@ -55,40 +55,36 @@ class User extends Authenticatable
                 ->schema([
                     Forms\Components\Tabs\Tab::make('Usuario')
                         ->schema([
-                            Forms\Components\Section::make('Información de inicio de sesión')
+                            /**
+                             *
+                             *  INFORMACION DE INICIO DE SESIÓN
+                             *
+                             */
+                            Forms\Components\Select::make('roles')
+                                ->label('Asignar rol')
+                                ->relationship('roles', 'name')
+                                ->multiple()
+                                ->preload()
+                                ->searchable(),
+                            Forms\Components\Grid::make()
+                                ->columns(3)
                                 ->schema([
-
-                                    /**
-                                     *
-                                     *  INFORMACION DE INICIO DE SESIÓN
-                                     *
-                                     */
-                                    Forms\Components\Select::make('roles')
-                                        ->label('Asignar rol')
-                                        ->relationship('roles', 'name')
-                                        ->multiple()
-                                        ->preload()
-                                        ->searchable(),
-                                    Forms\Components\Grid::make()
-                                        ->columns(3)
-                                        ->schema([
-                                            Forms\Components\TextInput::make('name')
-                                                ->label('Usuario')
-                                                ->required(),
-                                            Forms\Components\TextInput::make('email')
-                                                ->label('Correo electrónico')
-                                                ->email()
-                                                ->required()
-                                                ->prefix('@'),
-                                            Forms\Components\TextInput::make('password')
-                                                ->label('Contraseña')
-                                                ->default('Aa123456')
-                                                ->helperText('La contraseña debe tener más de 6 caracteres.')
-                                                ->password()
-                                                ->required()
-                                                ->revealable()
-                                                ->minLength(6),
-                                        ]),
+                                    Forms\Components\TextInput::make('name')
+                                        ->label('Usuario')
+                                        ->required(),
+                                    Forms\Components\TextInput::make('email')
+                                        ->label('Correo electrónico')
+                                        ->email()
+                                        ->required()
+                                        ->prefix('@'),
+                                    Forms\Components\TextInput::make('password')
+                                        ->label('Contraseña')
+                                        ->default('Aa123456')
+                                        ->helperText('La contraseña debe tener más de 6 caracteres.')
+                                        ->password()
+                                        ->required()
+                                        ->revealable()
+                                        ->minLength(6),
                                 ]),
                         ]),
                     Forms\Components\Tabs\Tab::make('Perfil')

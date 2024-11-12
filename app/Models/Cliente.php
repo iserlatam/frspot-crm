@@ -10,10 +10,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Cliente extends Model
+class Cliente extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -45,6 +47,7 @@ class Cliente extends Model
         'archivo_soporte',
         'comprobante_pag',
         'billetera',
+        'divisa',
         'user_id',
     ];
 
@@ -64,6 +67,7 @@ class Cliente extends Model
     {
         return [
             Forms\Components\Section::make('Informacion Personal')
+                ->collapsible()
                 ->description('Añade al informacion personal de nuevo usuario')
                 ->columns(2)
                 ->schema([
@@ -102,7 +106,8 @@ class Cliente extends Model
                 ]),
 
             Forms\Components\Section::make('Informacion de Marketing')
-                ->description('Añada la informaicon de control del cliente')
+                ->collapsed()
+                ->description('Añada la información de control del cliente')
                 ->columns(2)
                 ->schema([
                     Forms\Components\Section::make('informacion de seguimientos')
@@ -170,6 +175,7 @@ class Cliente extends Model
                 ]),
 
             Forms\Components\Section::make('Información de Pago')
+                ->collapsed()
                 ->description(function ($record): string {
                     if (url()->current() == route('filament.admin.resources.users.create')) {
                         return 'Añada la información mercantil del nuevo usuario';
@@ -177,18 +183,33 @@ class Cliente extends Model
                     return 'Edite la información mercantil del usuario';
                 })
                 ->schema([
-                    Forms\Components\TextInput::make('metodo_pago')
-                        ->maxLength(25)
-                        ->default(null),
-                    Forms\Components\TextInput::make('doc_soporte')
-                        ->maxLength(50)
-                        ->default(null),
-                    Forms\Components\Textarea::make('archivo_soporte')
-                        ->columnSpanFull(),
-                    Forms\Components\Textarea::make('comprobante_pag')
-                        ->columnSpanFull(),
-                    Forms\Components\Textarea::make('billetera')
-                        ->columnSpanFull(),
+                    Forms\Components\Grid::make()
+                        ->columns(3)
+                        ->schema([
+                            Forms\Components\Textarea::make('billetera')
+                                ->columnSpanFull(),
+                            Forms\Components\Select::make('metodo_pago')
+                                ->options([
+                                    'cripto' => 'CRIPTO',
+                                    'credito' => 'CREDITO',
+                                    'thether' => 'THETHER',
+                                ])
+                                ->default(null),
+                            Forms\Components\TextInput::make('doc_soporte')
+                                ->maxLength(50)
+                                ->default(null),
+                            Forms\Components\TextInput::make('divisa')
+                                ->maxLength(15)
+                                ->default(null),
+                        ]),
+                    Forms\Components\Grid::make()
+                        ->columns(2)
+                        ->schema([
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('archivo_soporte')
+                                ->collection('clientes_payment_files'),
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('comprobante_pag')
+                                ->collection('clientes_payment_files'),
+                        ]),
                 ]),
         ];
     }
