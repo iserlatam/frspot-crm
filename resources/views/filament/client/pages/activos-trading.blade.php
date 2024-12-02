@@ -24,8 +24,8 @@
         Acciones, índices, criptomonedas, divisas y materias primas únase a
         millones que operan con CFDs con tan solo tocar un botón. Establezca un
         objetivo, elija el mercado que más le convenga o diversifique su
-        portafolio de inversiones. Compre, venda o mantenga activos con{" "}
-        <span class="font-bold">MIURAFX</span>, ¡una plataforma de trading
+        portafolio de inversiones. Compre, venda o mantenga activos con
+        <span class="font-bold">FRSPOT</span>, ¡una plataforma de trading
         online que va más allá de lo habitual!
       </p>
     </div>
@@ -171,11 +171,11 @@
     />
 
     <h2 class="mt-10 text-center text-4xl uppercase my-2 font-bold">
-      Realiza trading con MIURA FX
+      Realiza trading con FRSPOT
     </h2>
     <p class="text-lg font-medium my-5 text-justify">
       Si ya tienes los conocimientos necesarios para empezar a realizar trading,
-      la plataforma de MiuraFx ofrece distintos instrumentos para que puedas
+      la plataforma de FRspot ofrece distintos instrumentos para que puedas
       lanzarte a invertir en los mercados.
     </p>
     <p class="text-lg font-medium my-5 text-justify">
@@ -185,7 +185,7 @@
       ficticio y consolidar tu forma de hacer trading.
     </p>
     <p class="text-lg font-medium my-5 text-justify">
-      MiuraFx fue diseñada para principiantes. Es por eso que es sencilla y
+      FRspot fue diseñada para principiantes. Es por eso que es sencilla y
       funcional; incluso para una persona que nunca ha operado en línea en
       mercados importantes. Así que solo te queda animarte, poner a prueba tus
       habilidades y experimentar los diferentes tipos de trading para elegir
@@ -193,11 +193,11 @@
     </p>
 
     <h3 class="text-2xl font-semibold text-center uppercase mt-16 mb-6">
-      ¿Por qué elegir MiuraFX para operar?
+      ¿Por qué elegir FRspot para operar?
     </h3>
     <ul>
       <p class="text-lg font-medium">
-        Dentro de las muchas alternativas MiuraFx te ofrece:
+        Dentro de las muchas alternativas FRspot te ofrece:
       </p>
       <li class="text-lg font-medium my-5 md:ml-5 text-justify">
         ➤ Acceso a una cuenta demo de forma gratuita donde podrás practicar.
