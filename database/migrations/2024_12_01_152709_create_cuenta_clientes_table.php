@@ -12,18 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('cuenta_clientes', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->ulid('id');
+            $table->string('sistema_pago')->nullable();
             $table->text('billetera')->nullable();
             $table->string('divisa', 15)->nullable();
-            $table->decimal('monto_total', 15, 2)->default(0)->nullable();
-            $table->dateTime('ultimo_movimiento')->nullable();
-            $table->decimal('suma_total_depositos', 15, 2)->default(0)->nullable();
-            $table->string('no_depositos')->default('0')->nullable();
-            $table->decimal('suma_total_retiros', 15, 2)->default(0)->nullable();
+            $table->boolean('estado_cuenta')->default(true);
+            $table->foreignId('ultimo_movimiento_id')->nullable();
+            $table->decimal('monto_total', 15, 3)->default(0)->nullable();
+            $table->decimal('sum_dep', 15, 3)->default(0)->nullable();
+            $table->string('no_dep')->default('0')->default('0')->nullable();
+            $table->decimal('sum_retiros', 15, 3)->default(0)->nullable();
             $table->string('no_retiros')->default('0')->nullable();
-            $table->foreignId('cliente_id')
-                ->constrained()
-                ->cascadeOnDelete();
+            $table->foreignId('user_id')->onDelete('cascade');
             $table->timestamps();
         });
     }

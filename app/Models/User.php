@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Filament\Forms;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -63,7 +64,6 @@ class User extends Authenticatable
                             Forms\Components\Select::make('roles')
                                 ->label('Asignar rol')
                                 ->relationship('roles', 'name')
-                                ->multiple()
                                 ->preload()
                                 ->searchable(),
                             Forms\Components\Grid::make()
@@ -91,14 +91,28 @@ class User extends Authenticatable
                         ->schema([
                             /**
                              *
-                             *  INFORMACION DEL CLIENTE RELACIONADA DIRECTAMENTE A ESTE USUARIO
+                             *  INFORMACION DEL CLIENTE RELACIONADA
+                             *  DIRECTAMENTE A ESTE USUARIO
                              *
                              */
                             Forms\Components\Fieldset::make('cliente')
                                 ->relationship('cliente')
                                 ->label('Datos personales y de pago')
                                 ->schema(Cliente::getForm()),
-                        ])
+                        ]),
+                    Forms\Components\Tabs\Tab::make('Cuenta del cliente')
+                        ->schema([
+                            /**
+                             *
+                             *  INFORMACION DE LA CUENTA DEL CLIENTE
+                             *  RELACIONADA DIRECTAMENTE A ESTE USUARIO
+                             *
+                             */
+                            Forms\Components\Fieldset::make('cuentaCliente')
+                                ->relationship('cuentaCliente')
+                                ->label('La cuenta, el lugar donde se almacena el deposito y los movimientos')
+                                ->schema(CuentaCliente::getForm()),
+                        ]),
                 ])
         ];
     }
@@ -106,5 +120,35 @@ class User extends Authenticatable
     public function cliente(): HasOne
     {
         return $this->hasOne(Cliente::class);
+    }
+
+    public function asignacion(): HasOne
+    {
+        return $this->hasOne(Asignacion::class);
+    }
+
+    public function asesor(): HasOne
+    {
+        return $this->hasOne(Asesor::class);
+    }
+
+    public function cuentaCliente(): HasOne
+    {
+        return $this->hasOne(CuentaCliente::class);
+    }
+
+    public function seguimientos(): HasMany
+    {
+        return $this->hasMany(Seguimiento::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($user) {
+            $user->cliente()->delete();
+            $user->cuentaCliente()->delete();
+        });
     }
 }

@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\CuentaClienteResource\Pages;
 use App\Filament\Admin\Resources\CuentaClienteResource\RelationManagers;
+use App\Filament\Admin\Resources\CuentaClienteResource\RelationManagers\MovimientosRelationManager;
 use App\Models\CuentaCliente;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -24,32 +25,7 @@ class CuentaClienteResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\Textarea::make('billetera')
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('divisa')
-                    ->maxLength(15)
-                    ->default(null),
-                Forms\Components\TextInput::make('monto_total')
-                    ->numeric()
-                    ->default(0.00),
-                Forms\Components\DateTimePicker::make('ultimo_movimiento'),
-                Forms\Components\TextInput::make('suma_total_depositos')
-                    ->numeric()
-                    ->default(null),
-                Forms\Components\TextInput::make('no_depositos')
-                    ->maxLength(255)
-                    ->default(0),
-                Forms\Components\TextInput::make('suma_total_retiros')
-                    ->numeric()
-                    ->default(null),
-                Forms\Components\TextInput::make('no_retiros')
-                    ->maxLength(255)
-                    ->default(0),
-                Forms\Components\Select::make('cliente_id')
-                    ->relationship('cliente', 'id')
-                    ->required(),
-            ]);
+            ->schema(CuentaCliente::getForm());
     }
 
     public static function table(Table $table): Table
@@ -57,27 +33,31 @@ class CuentaClienteResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('ID Único')
+                    ->label('ID')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('sistema_pago')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('divisa')
                     ->searchable(),
+                Tables\Columns\IconColumn::make('estado_cuenta')
+                    ->boolean(),
+                Tables\Columns\TextColumn::make('movimiento.id')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('monto_total')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('ultimo_movimiento')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('suma_total_depositos')
+                Tables\Columns\TextColumn::make('sum_dep')
                     ->numeric()
                     ->sortable(),
-                // Tables\Columns\TextColumn::make('no_depositos')
-                //     ->searchable(),
-                Tables\Columns\TextColumn::make('suma_total_retiros')
+                Tables\Columns\TextColumn::make('no_dep')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('sum_retiros')
                     ->numeric()
                     ->sortable(),
-                // Tables\Columns\TextColumn::make('no_retiros')
-                //     ->searchable(),
-                Tables\Columns\TextColumn::make('cliente.nombre_completo')
+                Tables\Columns\TextColumn::make('no_retiros')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -93,7 +73,7 @@ class CuentaClienteResource extends Resource
                 //
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -105,7 +85,7 @@ class CuentaClienteResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            MovimientosRelationManager::class,
         ];
     }
 
@@ -113,8 +93,8 @@ class CuentaClienteResource extends Resource
     {
         return [
             'index' => Pages\ListCuentaClientes::route('/'),
-            // 'create' => Pages\CreateCuentaCliente::route('/create'),
-            // 'edit' => Pages\EditCuentaCliente::route('/{record}/edit'),
+            'create' => Pages\CreateCuentaCliente::route('/create'),
+            'edit' => Pages\EditCuentaCliente::route('/{record}/edit'),
         ];
     }
 }

@@ -5,7 +5,6 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use App\Models\Cliente;
-use App\Models\CuentaCliente;
 use App\Models\User;
 
 class ClienteFactory extends Factory
@@ -23,36 +22,30 @@ class ClienteFactory extends Factory
     public function definition(): array
     {
         return [
-            'nombre_completo' => $this->faker->name(),
-            'identificacion' => $this->faker->regexify('[0-9]{10}'),
+            'nombre_completo' => $this->faker->regexify('[A-Za-z0-9]{150}'),
+            'identificacion' => $this->faker->regexify('[A-Za-z0-9]{50}'),
             'fecha_nacimiento' => $this->faker->date(),
-            'genero' => $this->faker->randomElement(["f","m"]),
-            'pais' => $this->faker->country(),
-            'ciudad' => $this->faker->city(),
-            'direccion' => $this->faker->address(),
-            'cod_postal' => $this->faker->regexify('[0-9]{6}'),
-            'celular' => $this->faker->phoneNumber(),
-            'telefono' => $this->faker->phoneNumber(),
-            'estado' => $this->faker->boolean(),
-            'estado_cliente' => 'Nuevo',
-            'fase_cliente' => 'Nuevo',
-            'origenes' => 'META',
+            'genero' => $this->faker->regexify('[A-Za-z0-9]{15}'),
+            'pais' => $this->faker->regexify('[A-Za-z0-9]{70}'),
+            'ciudad' => $this->faker->regexify('[A-Za-z0-9]{50}'),
+            'direccion' => $this->faker->regexify('[A-Za-z0-9]{250}'),
+            'cod_postal' => $this->faker->regexify('[A-Za-z0-9]{50}'),
+            'celular' => $this->faker->regexify('[A-Za-z0-9]{25}'),
+            'telefono' => $this->faker->regexify('[A-Za-z0-9]{25}'),
+            'is_activo' => $this->faker->boolean(),
+            'promocion' => $this->faker->regexify('[A-Za-z0-9]{50}'),
+            'estado_cliente' => $this->faker->regexify('[A-Za-z0-9]{50}'),
+            'fase_cliente' => $this->faker->regexify('[A-Za-z0-9]{50}'),
+            'origenes' => $this->faker->regexify('[A-Za-z0-9]{60}'),
             'infoeeuu' => $this->faker->word(),
+            'caso' => $this->faker->regexify('[A-Za-z0-9]{50}'),
+            'tipo_doc_subm' => $this->faker->regexify('[A-Za-z0-9]{50}'),
+            'activo_subm' => $this->faker->regexify('[A-Za-z0-9]{250}'),
+            'metodo_pago' => $this->faker->regexify('[A-Za-z0-9]{25}'),
+            'doc_soporte' => $this->faker->regexify('[A-Za-z0-9]{50}'),
             'archivo_soporte' => $this->faker->text(),
             'comprobante_pag' => $this->faker->text(),
-            'billetera' => $this->faker->regexify('[a-zA-Z0-9]{15}'),
             'user_id' => User::factory(),
         ];
     }
-
-    public function withUser(): self
-    {
-        return $this->has(User::factory(), 'user');
-    }
-
-    public function withCuentaCliente(): self
-    {
-        return $this->has(CuentaCliente::factory(), 'cuentaCliente');
-    }
-
 }

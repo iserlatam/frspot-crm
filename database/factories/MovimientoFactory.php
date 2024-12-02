@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Models\Cliente;
 use App\Models\Movimiento;
 
 class MovimientoFactory extends Factory
@@ -22,16 +21,13 @@ class MovimientoFactory extends Factory
     public function definition(): array
     {
         return [
-            'radicado' => $this->faker->regexify('[A-Za-z0-9]{50}'),
-            'tipo_solicitud' => $this->faker->randomElement(["deposito","retiro"]),
-            'estado_solicitud' => $this->faker->randomElement(["aprobado","pendiente","rechazado"]),
-            'monto_ingreso' => $this->faker->randomFloat(2, 0, 9999999999.99),
-            'sistema_pago' => $this->faker->regexify('[A-Za-z0-9]{50}'),
-            'billetera' => $this->faker->text(),
-            'divisa' => $this->faker->regexify('[A-Za-z0-9]{15}'),
+            'no_radicado' => $this->faker->word(),
+            'tipo_st' => $this->faker->randomElement(["d","r"]),
+            'est_st' => $this->faker->randomElement(["a","b","c"]),
+            'ingreso' => $this->faker->randomFloat(3, 0, 999999999.999),
             'comprobante_file' => $this->faker->text(),
-            'motivo_rechazo' => $this->faker->regexify('[A-Za-z0-9]{250}'),
-            'cliente_id' => Cliente::factory(),
+            'razon_rechazo' => $this->faker->regexify('[A-Za-z0-9]{250}'),
+            'cuenta_cliente_id' => $this->faker->word(),
         ];
     }
 }

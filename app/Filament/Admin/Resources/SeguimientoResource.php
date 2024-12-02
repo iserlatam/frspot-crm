@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\SeguimientoResource\Pages;
 use App\Filament\Admin\Resources\SeguimientoResource\RelationManagers;
+use App\Models\Asesor;
 use App\Models\Seguimiento;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -33,11 +34,11 @@ class SeguimientoResource extends Resource
                 Forms\Components\TextInput::make('fase')
                     ->maxLength(50)
                     ->default(null),
-                Forms\Components\Select::make('cliente_id')
-                    ->relationship('cliente', 'id')
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
                     ->default(null),
                 Forms\Components\Select::make('asesor_id')
-                    ->relationship('asesor', 'id')
+                    ->relationship('asesor.user', 'name')
                     ->default(null),
             ]);
     }
@@ -46,15 +47,17 @@ class SeguimientoResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('descripción')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('estado')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('fase')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('cliente.id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Cliente')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('asesor.id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('asesor.user_id')
+                    ->label('Asesor')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

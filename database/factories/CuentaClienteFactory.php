@@ -4,8 +4,9 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Models\Cliente;
+use App\Models\;
 use App\Models\CuentaCliente;
+use App\Models\User;
 
 class CuentaClienteFactory extends Factory
 {
@@ -22,9 +23,17 @@ class CuentaClienteFactory extends Factory
     public function definition(): array
     {
         return [
-            'billetera' => '4cc308a4165909452740c0cf23df1ae-e33c7c9535057ab4e03c88e189f980bf',
-            'divisa' => $this->faker->randomElement(['USDT', 'BITCOIN']),
-            'cliente_id' => Cliente::factory(),
+            'sistema_pago' => $this->faker->word(),
+            'billetera' => $this->faker->text(),
+            'divisa' => $this->faker->regexify('[A-Za-z0-9]{15}'),
+            'estado_cuenta' => $this->faker->boolean(),
+            'movimiento_id' => ::factory(),
+            'monto_total' => $this->faker->randomFloat(3, 0, 999999999999.999),
+            'sum_dep' => $this->faker->randomFloat(3, 0, 999999999999.999),
+            'no_dep' => $this->faker->word(),
+            'sum_retiros' => $this->faker->randomFloat(3, 0, 999999999999.999),
+            'no_retiros' => $this->faker->word(),
+            'user_id' => User::factory(),
         ];
     }
 }

@@ -19,7 +19,7 @@ class Seguimiento extends Model
         'descripción',
         'estado',
         'fase',
-        'cliente_id',
+        'user_id',
         'asesor_id',
     ];
 
@@ -30,13 +30,13 @@ class Seguimiento extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'cliente_id' => 'integer',
+        'user_id' => 'integer',
         'asesor_id' => 'integer',
     ];
 
-    public function cliente(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Cliente::class);
+        return $this->belongsTo(User::class);
     }
 
     public function asesor(): BelongsTo

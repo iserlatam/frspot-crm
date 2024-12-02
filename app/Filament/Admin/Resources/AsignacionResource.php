@@ -2,10 +2,9 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\AsesorResource\Pages;
-use App\Filament\Admin\Resources\AsesorResource\RelationManagers;
-use App\Filament\Admin\Resources\AsesorResource\RelationManagers\AsignacionsRelationManager;
-use App\Models\Asesor;
+use App\Filament\Admin\Resources\AsignacionResource\Pages;
+use App\Filament\Admin\Resources\AsignacionResource\RelationManagers;
+use App\Models\Asignacion;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,27 +13,30 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AsesorResource extends Resource
+class AsignacionResource extends Resource
 {
-    protected static ?string $model = Asesor::class;
+    protected static ?string $model = Asignacion::class;
 
-    protected static ?string $ModelLabel = 'Asesor';
-    protected static ?string $navigationLabel = 'Asesores';
-    protected static ?string $pluralModelLabel = 'Asesores';
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
-
-    protected static ?string $navigationGroup = 'Gestión de perfiles';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('tipo_asesor')
-                    ->maxLength(20)
-                    ->default(null),
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
+                    ->label('cliente')
                     ->required(),
+                Forms\Components\Select::make('asesor_id')
+                    ->relationship('asesor.user', 'name')
+                    ->required(),
+                Forms\Components\Toggle::make('estado_asignacion')
+                    ->helperText('Estado actual de la asignacion')
+                    ->label(function ($state) {
+                        return $state ? 'Activo' : 'Inactivo';
+                    })
+                    ->live()
+                    ->default(1),
             ]);
     }
 
@@ -42,11 +44,14 @@ class AsesorResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('tipo_asesor')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('asesor.user.name')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\IconColumn::make('estado_asignacion')
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -72,16 +77,16 @@ class AsesorResource extends Resource
     public static function getRelations(): array
     {
         return [
-            AsignacionsRelationManager::class,
+            //
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListAsesors::route('/'),
-            'create' => Pages\CreateAsesor::route('/create'),
-            'edit' => Pages\EditAsesor::route('/{record}/edit'),
+            'index' => Pages\ListAsignacions::route('/'),
+            'create' => Pages\CreateAsignacion::route('/create'),
+            'edit' => Pages\EditAsignacion::route('/{record}/edit'),
         ];
     }
 }

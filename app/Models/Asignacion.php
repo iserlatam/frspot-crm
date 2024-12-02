@@ -16,8 +16,9 @@ class Asignacion extends Model
      * @var array
      */
     protected $fillable = [
-        'cliente_id',
+        'user_id',
         'asesor_id',
+        'estado_asignacion',
     ];
 
     /**
@@ -27,13 +28,14 @@ class Asignacion extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'cliente_id' => 'integer',
+        'user_id' => 'integer',
         'asesor_id' => 'integer',
+        'estado_asignacion' => 'boolean',
     ];
 
-    public function cliente(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Cliente::class);
+        return $this->belongsTo(User::class);
     }
 
     public function asesor(): BelongsTo

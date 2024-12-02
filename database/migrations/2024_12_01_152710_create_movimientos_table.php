@@ -13,16 +13,13 @@ return new class extends Migration
     {
         Schema::create('movimientos', function (Blueprint $table) {
             $table->id();
-            $table->string('radicado', 50);
-            $table->enum('tipo_solicitud', ["deposito","retiro"]);
-            $table->enum('estado_solicitud', ["aprobado","pendiente","rechazado"])->default('pendiente');
-            $table->decimal('monto_ingreso', 12, 2);
-            $table->string('sistema_pago', 50)->nullable();
-            $table->text('billetera')->nullable();
-            $table->string('divisa', 15)->nullable();
+            $table->string('no_radicado');
+            $table->enum('tipo_st', ["d","r"]);
+            $table->enum('est_st', ["a","b","c"])->default('b');
+            $table->decimal('ingreso', 12, 3);
             $table->text('comprobante_file')->nullable();
-            $table->string('motivo_rechazo', 250)->nullable()->default('ninguno');
-            $table->foreignId('cliente_id')->constrained();
+            $table->string('razon_rechazo', 250)->nullable()->default(null);
+            $table->foreignUlid('cuenta_cliente_id');
             $table->timestamps();
         });
     }

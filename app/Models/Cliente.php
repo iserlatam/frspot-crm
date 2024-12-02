@@ -6,10 +6,6 @@ use Filament\Forms;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\URL;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -33,7 +29,7 @@ class Cliente extends Model implements HasMedia
         'cod_postal',
         'celular',
         'telefono',
-        'estado',
+        'is_activo',
         'promocion',
         'estado_cliente',
         'fase_cliente',
@@ -46,8 +42,6 @@ class Cliente extends Model implements HasMedia
         'doc_soporte',
         'archivo_soporte',
         'comprobante_pag',
-        'billetera',
-        'divisa',
         'user_id',
     ];
 
@@ -59,7 +53,7 @@ class Cliente extends Model implements HasMedia
     protected $casts = [
         'id' => 'integer',
         'fecha_nacimiento' => 'date',
-        'estado' => 'boolean',
+        'is_activo' => 'boolean',
         'user_id' => 'integer',
     ];
 
@@ -217,25 +211,5 @@ class Cliente extends Model implements HasMedia
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function seguimientos(): HasMany
-    {
-        return $this->hasMany(Seguimiento::class);
-    }
-
-    public function movimientos(): HasMany
-    {
-        return $this->hasMany(Movimiento::class);
-    }
-
-    public function asignacion(): HasOne
-    {
-        return $this->hasOne(Asignacion::class);
-    }
-
-    public function cuentaCliente(): HasOne
-    {
-        return $this->hasOne(CuentaCliente::class);
     }
 }

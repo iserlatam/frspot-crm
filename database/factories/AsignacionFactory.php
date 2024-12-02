@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use App\Models\;
 use App\Models\Asignacion;
-use App\Models\Cliente;
+use App\Models\User;
 
 class AsignacionFactory extends Factory
 {
@@ -23,8 +23,9 @@ class AsignacionFactory extends Factory
     public function definition(): array
     {
         return [
-            'cliente_id' => Cliente::factory(),
+            'user_id' => User::factory(),
             'asesor_id' => ::factory(),
+            'estado_asignacion' => $this->faker->boolean(),
         ];
     }
 }

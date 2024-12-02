@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Filament\Admin\Resources\UserResource\RelationManagers;
+use App\Filament\Admin\Resources\UserResource\RelationManagers\SeguimientosRelationManager;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -61,47 +62,56 @@ class UserResource extends Resource
                 Tables\Actions\EditAction::make(),
             ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
+                /**
+                 *  ACCIONES DE ELIMINACION DE USUARIOS
+                 */
+                Tables\Actions\BulkAction::make('borrar')
+                    ->requiresConfirmation()
+                    ->action(function(User $record){
+                        // // BUSCAR Y ELIMINAR EL CLIENTE RELACIONADO A ESTE USUARIO
+                        // $record->cliente()->delete();
+                        // // BUSCAR Y ELIMINAR LA CUENTA RELACIONADA A ESTE USUARIO
+                        // $record->cuentaCliente()->delete();
+                        // ELIMINAR EL USUARIO
+                        $record->delete();
+                    }),
+                Tables\Actions\DeleteBulkAction::make('delete'),
+                /**
+                 *  ACCIONES DE ASIGNACION DE ROLES
+                 */
+                Tables\Actions\BulkActionGroup::make([
                     /**
-                     *  ACCIONES DE ELIMINACION DE USUARIOS
-                     */
-                    Tables\Actions\DeleteBulkAction::make()
-                        ->requiresConfirmation(),
-                    /**
-                     *  ACCIONES DE ASIGNACION DE ROLES
-                     */
-                    Tables\Actions\BulkActionGroup::make([
-                        /**
-                     *  ASIGNAR ROL CLIENTE
-                     */
-                    ]),
-                    BulkAction::make('Asignar nuevo rol')
-                        ->color('info')
-                        ->icon('heroicon-s-identification')
-                        ->form([
-                            Select::make('role')
-                                ->options([
-                                    'master' => 'Master',
-                                    'asesor' => 'Asesor',
-                                    'cliente' => 'Cliente',
-                                ])
-                        ])
-                        ->action(function (array $data, Collection $records) {
-                            // OBTENER EL VALOR DE ROLE DESDE EL MODAL
-                            $records->each->syncRoles($data['role']);
-                        })->after(function () {
-                            // NOTIFICAR QUE LA ASIGNACION FUE EXITOSA
-                            Notification::make()
-                                ->title('Roles actualizado con éxito')
-                                ->success()
-                                ->send();
-                        })->deselectRecordsAfterCompletion()
-                ]);
+                 *  ASIGNAR ROL CLIENTE
+                 */
+                ]),
+                BulkAction::make('Asignar nuevo rol')
+                    ->color('info')
+                    ->icon('heroicon-s-identification')
+                    ->form([
+                        Select::make('role')
+                            ->options([
+                                'master' => 'Master',
+                                'asesor' => 'Asesor',
+                                'cliente' => 'Cliente',
+                            ])
+                    ])
+                    ->action(function (array $data, Collection $records) {
+                        // OBTENER EL VALOR DE ROLE DESDE EL MODAL
+                        $records->each->syncRoles($data['role']);
+                    })->after(function () {
+                        // NOTIFICAR QUE LA ASIGNACION FUE EXITOSA
+                        Notification::make()
+                            ->title('Roles actualizado con éxito')
+                            ->success()
+                            ->send();
+                    })->deselectRecordsAfterCompletion()
+            ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            //
+            SeguimientosRelationManager::class,
         ];
     }
 

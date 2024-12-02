@@ -5,10 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Movimiento extends Model
+class Movimiento extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -16,16 +20,13 @@ class Movimiento extends Model
      * @var array
      */
     protected $fillable = [
-        'radicado',
-        'tipo_solicitud',
-        'estado_solicitud',
-        'monto_ingreso',
-        'sistema_pago',
-        'billetera',
-        'divisa',
+        'no_radicado',
+        'tipo_st',
+        'est_st',
+        'ingreso',
         'comprobante_file',
-        'motivo_rechazo',
-        'cliente_id',
+        'razon_rechazo',
+        'cuenta_cliente_id',
     ];
 
     /**
@@ -35,12 +36,17 @@ class Movimiento extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'monto_ingreso' => 'decimal:2',
-        'cliente_id' => 'integer',
+        'ingreso' => 'decimal:3',
     ];
 
-    public function cliente(): BelongsTo
+    public static function generateRadicado()
     {
-        return $this->belongsTo(Cliente::class);
+        $numbers = random_int(0, 999999);
+        return "ra{$numbers}";
+    }
+
+    public function cuentaCliente(): BelongsTo
+    {
+        return $this->belongsTo(CuentaCliente::class);
     }
 }
