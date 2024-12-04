@@ -36,5 +36,8 @@ class DatabaseSeeder extends Seeder
         //     'divisa' => 'USDT',
         //     'cliente_id' => $newCliente['id'],
         // ]);
+        $this->call(RoleHasPermissionsTableSeeder::class);
+        $this->call(ModelHasRolesTableSeeder::class);
+        $this->call(RolesTableSeeder::class);
     }
 }
