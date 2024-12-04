@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -27,44 +28,59 @@ class MovimientoResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('no_radicado')
-                    ->required()
-                    ->default(str(Movimiento::generateRadicado())->upper())
-                    ->readOnly()
-                    ->maxLength(50),
-                Forms\Components\Select::make('tipo_st')
-                    ->options([
-                        'd' => 'Deposito',
-                        'r' => 'Retiro',
-                    ])
-                    ->label('Tipo de solicitud')
-                    ->required(),
-                Forms\Components\TextInput::make('ingreso')
-                    ->required()
-                    ->prefix('$')
-                    ->numeric(),
+                Forms\Components\Grid::make()
+                    ->columns(8)
+                    ->schema([
+                        Forms\Components\TextInput::make('no_radicado')
+                            ->columnSpan(1)
+                            ->required()
+                            ->default(str(Movimiento::generateRadicado())->upper())
+                            ->readOnly()
+                            ->maxLength(50),
+                        Forms\Components\Select::make('tipo_st')
+                            ->columnSpan(2)
+                            ->options([
+                                'd' => 'Deposito',
+                                'r' => 'Retiro',
+                            ])
+                            ->label('Tipo de solicitud')
+                            ->required(),
+                        Forms\Components\TextInput::make('ingreso')
+                            ->columnSpan(2)
+                            ->required()
+                            ->prefix('$')
+                            ->numeric(),
+                        Forms\Components\Select::make('cuenta_cliente_id')
+                            ->columnSpan(3)
+                            ->relationship('cuentaCliente', 'id')
+                            ->label('Número de cuenta del cliente')
+                            ->searchable()
+                            ->preload()
+                            ->native()
+                            ->required(),
+                    ]),
                 Forms\Components\SpatieMediaLibraryFileUpload::make('comprobante_file')
                     ->columnSpanFull()
                     ->label('Comprobante')
                     ->collection('payment_cliente_validation'),
-                Forms\Components\TextInput::make('razon_rechazo')
-                    ->maxLength(250)
-                    ->default('ninguno'),
-                Forms\Components\Select::make('cuenta_cliente_id')
-                    ->relationship('cuentaCliente', 'id')
-                    ->label('# de cuenta del cliente')
-                    ->required(),
+                // Forms\Components\RichEditor::make('razon_rechazo')
+                //     ->default('ninguno')
+                //     ->columnSpanFull(),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('id', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('no_radicado')
                     ->searchable()
                     ->description(function ($record) {
-                        return "Asociado a # de cuenta " . $record->cuentaCliente->id;
+                        if (isset($record->cuentaCliente)) {
+                            return "Asociado a # de cuenta " . $record->cuentaCliente->id;
+                        }
+                        return 'Cuenta dada de baja';
                     }),
                 Tables\Columns\TextColumn::make('tipo_st')
                     ->formatStateUsing(function ($state) {
@@ -97,49 +113,81 @@ class MovimientoResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('cuentaCliente.user.cliente.nombre_completo')
                     ->label('Cliente solicitante')
+                    ->formatStateUsing(function ($record) {
+                        if (isset($record->cuentaCliente)) {
+                            return $record->cuentaCliente->user->cliente->nombre_completo;
+                        }
+                        return 'No Aplica';
+                    })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cuentaCliente.sistema_pago')
                     ->label('Sistema de pago asociado')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('razon_rechazo')
+                    ->formatStateUsing(function ($record) {
+                        if (isset($record->cuentaCliente)) {
+                            return $record->cuentaCliente->sistema_pago;
+                        }
+                        return 'No Aplica';
+                    })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('aprobar')
-                    ->color('success')
-                    ->action(function ($record) {
-                        $record->est_st = 'a';
-                        $record->save();
-                    })->after(function () {
-                        return Notification::make('aprobado')
-                            ->success()
-                            ->title('Este movimiento fue aprobado. Saldo cargado correctamente')
-                            ->send();
-                    }),
-                Tables\Actions\Action::make('rechazar')
-                    ->color('danger')
-                    ->action(function ($record) {
-                        $record->est_st = 'c';
-                        $record->save();
-                    })->after(function () {
-                        return Notification::make('rechazado')
-                            ->danger()
-                            ->title('Este movimiento fue rechazado.')
-                            ->send();
-                    }),
-            ])
+                Tables\Actions\ActionGroup::make([
+                    // Tables\Actions\EditAction::make(),
+                    /**
+                     * APROBAR MOVIMIENTO
+                     * +- INGRESO A LA CUENTA
+                     */
+                    Tables\Actions\Action::make('aprobar')
+                        ->color('success')
+                        ->icon('heroicon-o-check-badge')
+                        ->visible(function ($record){
+                            if ($record->est_st === 'b' && auth()->user()->hasRole('super_admin')) {
+                                return true;
+                            } else if ($record->est_st === 'c') {
+                                return false;
+                            }
+                        })
+                        ->action(function ($record) {
+                            $record->est_st = 'a';
+                            $record->save();
+                        })->after(function () {
+                            return Notification::make('aprobado')
+                                ->success()
+                                ->title('Este movimiento fue aprobado. Saldo cargado correctamente')
+                                ->send();
+                        }),
+                    /**
+                     * RECHAZAR MOVIMIENTO
+                     * MANTIENE LA CUENTA IGUAL
+                     */
+                    Tables\Actions\Action::make('rechazar')
+                        ->color('danger')
+                        ->icon('heroicon-o-x-circle')
+                        ->visible(function ($record){
+                            if ($record->est_st === 'b' && auth()->user()->hasRole('super_admin')) {
+                                return true;
+                            } else if ($record->est_st === 'a') {
+                                return false;   
+                            }
+                        })
+                        ->action(function ($record) {
+                            $record->est_st = 'c';
+                            $record->save();
+                        })->after(function () {
+                            return Notification::make('rechazado')
+                                ->danger()
+                                ->title('Este movimiento fue rechazado.')
+                                ->send();
+                        }),
+                ])
+            ], ActionsPosition::BeforeColumns)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
