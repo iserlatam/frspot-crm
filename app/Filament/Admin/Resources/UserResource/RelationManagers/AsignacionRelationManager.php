@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\UserResource\RelationManagers;
 
+use App\Filament\Admin\Resources\AsignacionResource;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -16,12 +17,7 @@ class AsignacionRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('id')
-                    ->required()
-                    ->maxLength(255),
-            ]);
+        return AsignacionResource::form($form);
     }
 
     public function table(Table $table): Table
@@ -30,7 +26,11 @@ class AsignacionRelationManager extends RelationManager
             ->recordTitleAttribute('id')
             ->columns([
                 Tables\Columns\TextColumn::make('id'),
-                Tables\Columns\TextColumn::make('asesor.user.id'),
+                Tables\Columns\TextColumn::make('asesor.user.cliente.nombre_completo')
+                    ->label('Nombre del asesor'),
+                Tables\Columns\IconColumn::make('estado_asignacion')
+                    ->label('Estado actual de la asignacion')
+                    ->boolean(),
             ])
             ->filters([
                 //

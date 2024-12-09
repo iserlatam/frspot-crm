@@ -83,8 +83,8 @@ class User extends Authenticatable
                                         ->default('Aa123456')
                                         ->helperText('La contraseña debe tener más de 6 caracteres.')
                                         ->password()
-                                        ->required()
-                                        ->revealable()
+                                        ->dehydrated(fn($state) => filled($state))
+                                        ->required(fn(string $context): bool => $context === 'create')
                                         ->minLength(6),
                                 ]),
                         ]),

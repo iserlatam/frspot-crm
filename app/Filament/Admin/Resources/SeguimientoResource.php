@@ -40,8 +40,8 @@ class SeguimientoResource extends Resource
                     ->relationship('user', 'name')
                     ->default(null),
                 Forms\Components\Select::make('asesor_id')
-                ->relationship('asesor', 'id') // Define la relación y la clave foránea
-                ->getOptionLabelFromRecordUsing(fn (Model $record) => $record->user->name)
+                    ->relationship('asesor', 'id') // Define la relación y la clave foránea
+                    ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
                     ->default(null),
             ]);
     }

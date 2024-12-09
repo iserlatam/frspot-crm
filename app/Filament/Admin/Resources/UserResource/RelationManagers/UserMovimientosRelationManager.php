@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Resources\UserResource\RelationManagers;
 
-use App\Models\CuentaCliente;
+use App\Filament\Admin\Resources\MovimientoResource;
 use App\Models\Movimiento;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -18,14 +18,13 @@ class UserMovimientosRelationManager extends RelationManager
 {
     protected static string $relationship = 'cuentaMovimientos';
 
+    protected static ?string $modelLabel = 'Movimientos';
+
+    protected static ?string $title = 'Movimientos asociados a esta cuenta';
+
     public function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('no_radicado')
-                    ->required()
-                    ->maxLength(255),
-            ]);
+        return MovimientoResource::form($form);
     }
 
     public function table(Table $table): Table
@@ -128,16 +127,18 @@ class UserMovimientosRelationManager extends RelationManager
                             $body = [
                                 // aprobar
                                 'case' => 'a',
-                                'total' => $record->ingreso,
-                                'cuenta_cliente_id' => $record->cuenta_cliente_id,
+                                'record' => $record,
                             ];
 
                             // Aprueba el movimiento
                             $record->est_st = 'a';
                             $record->save();
 
+                            // Carga el monto correspondiente en base a la operacion
                             $movimiento->chargeAccount($body);
-                        })->after(function () {
+                        })
+                        ->dispatch('updatedMovimiento', ["state" => true])
+                        ->after(function () {
                             return Notification::make('aprobado')
                                 ->success()
                                 ->title('Este movimiento fue aprobado. Saldo cargado correctamente')

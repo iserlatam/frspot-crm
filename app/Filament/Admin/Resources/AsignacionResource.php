@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AsignacionResource extends Resource
@@ -36,10 +37,15 @@ class AsignacionResource extends Resource
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
                     ->label('cliente')
+                    ->searchable()
+                    ->preload()
                     ->required(),
                 Forms\Components\Select::make('asesor_id')
-                    ->relationship('asesor', 'id')
-                    ->required(),
+                    ->relationship('asesor', 'id') // Define la relación y la clave foránea
+                    ->searchable()
+                    ->preload()
+                    ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
+                    ->default(null),
                 Forms\Components\Toggle::make('estado_asignacion')
                     ->helperText('Estado actual de la asignacion')
                     ->label(function ($state) {

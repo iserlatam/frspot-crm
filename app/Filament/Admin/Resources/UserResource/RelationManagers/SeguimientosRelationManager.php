@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\UserResource\RelationManagers;
 
+use App\Filament\Admin\Resources\SeguimientoResource;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -16,12 +17,7 @@ class SeguimientosRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('estado')
-                    ->required()
-                    ->maxLength(255),
-            ]);
+        return SeguimientoResource::form($form);
     }
 
     public function table(Table $table): Table

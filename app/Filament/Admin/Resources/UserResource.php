@@ -67,27 +67,8 @@ class UserResource extends Resource
             ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
                 /**
-                 *  ACCIONES DE ELIMINACION DE USUARIOS
-                 */
-                Tables\Actions\BulkAction::make('borrar')
-                    ->requiresConfirmation()
-                    ->action(function (User $record) {
-                        // // BUSCAR Y ELIMINAR EL CLIENTE RELACIONADO A ESTE USUARIO
-                        // $record->cliente()->delete();
-                        // // BUSCAR Y ELIMINAR LA CUENTA RELACIONADA A ESTE USUARIO
-                        // $record->cuentaCliente()->delete();
-                        // ELIMINAR EL USUARIO
-                        $record->delete();
-                    }),
-                Tables\Actions\DeleteBulkAction::make('delete'),
-                /**
-                 *  ACCIONES DE ASIGNACION DE ROLES
-                 */
-                Tables\Actions\BulkActionGroup::make([
-                    /**
                  *  ASIGNAR ROL CLIENTE
                  */
-                ]),
                 BulkAction::make('Asignar nuevo rol')
                     ->color('info')
                     ->icon('heroicon-s-identification')
@@ -108,7 +89,11 @@ class UserResource extends Resource
                             ->title('Roles actualizado con éxito')
                             ->success()
                             ->send();
-                    })->deselectRecordsAfterCompletion()
+                    })->deselectRecordsAfterCompletion(),
+                /**
+                 *  ACCIONES DE ELIMINACION DE USUARIOS
+                 */
+                Tables\Actions\DeleteBulkAction::make('delete'),
             ]);
     }
 
@@ -119,12 +104,12 @@ class UserResource extends Resource
             RelationGroup::make('Cuentas y movimientos', [
                 UserMovimientosRelationManager::class,
                 CuentaClienteRelationManager::class,
-            ]),
+            ])->icon('heroicon-m-arrows-up-down'),
             // Asignaciones
             RelationGroup::make('Asignaciones', [
                 AsignacionRelationManager::class,
                 SeguimientosRelationManager::class,
-            ])
+            ])->icon('heroicon-m-arrows-right-left')
         ];
     }
 

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -47,16 +48,20 @@ class Movimiento extends Model implements HasMedia
 
     public function chargeAccount(array $body) {
         $currentCuenta = CuentaCliente::findOrFail($body['cuenta_cliente_id']);
+        [$case, $record] = $body;
 
-        if ($body['case'] === 'a'){
-            $currentCuenta->monto_total += $body['total'];
+        // Movimiento aprobado
+        if ($case === 'a'){
+            $currentCuenta->monto_total += $record->ingreso;
             $currentCuenta->no_dep += 1;
-            // $currentCuenta->sum_dep +=
+            $currentCuenta->sum_dep += $currentCuenta->sum_dep;
             // $currentCuenta->
             // $currentCuenta->
             $currentCuenta->update();
-        } else if ($body['case'] === 'c') {
-            $currentCuenta->monto_total -= $body['total'];
+        }
+        // Movimiento rechazado
+        else if ($case === 'c') {
+            $currentCuenta->monto_total -= $record->ingreso;
             $currentCuenta->update();
         }
     }
