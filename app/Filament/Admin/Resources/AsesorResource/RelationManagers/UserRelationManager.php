@@ -10,15 +10,15 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AsignacionsRelationManager extends RelationManager
+class UserRelationManager extends RelationManager
 {
-    protected static string $relationship = 'asignacion';
+    protected static string $relationship = 'user';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
+                Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -27,15 +27,9 @@ class AsignacionsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('user_id')
+            ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')
-                    ->label('cliente'),
-                Tables\Columns\IconColumn::make('estado_asignacion')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->label('Asignado el'),
+                Tables\Columns\TextColumn::make('id'),
             ])
             ->filters([
                 //

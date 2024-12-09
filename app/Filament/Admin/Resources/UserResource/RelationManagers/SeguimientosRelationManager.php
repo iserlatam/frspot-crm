@@ -31,6 +31,9 @@ class SeguimientosRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('descripción'),
                 Tables\Columns\TextColumn::make('estado'),
+                Tables\Columns\TextColumn::make('fase'),
+                Tables\Columns\TextColumn::make('asesor.user.name')
+                    ->label('Asesor'),
             ])
             ->filters([
                 //

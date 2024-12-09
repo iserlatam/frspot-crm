@@ -18,7 +18,11 @@ class ClienteResource extends Resource
 {
     protected static ?string $model = Cliente::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static bool $isDiscovered = false;
+
+    protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
+
+    protected static ?string $activeNavigationIcon = 'heroicon-s-arrows-right-left';
 
     protected static ?string $navigationGroup = 'Gestión de perfiles';
 

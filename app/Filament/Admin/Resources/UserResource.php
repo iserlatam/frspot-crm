@@ -4,12 +4,16 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Filament\Admin\Resources\UserResource\RelationManagers;
+use App\Filament\Admin\Resources\UserResource\RelationManagers\AsignacionRelationManager;
+use App\Filament\Admin\Resources\UserResource\RelationManagers\CuentaClienteRelationManager;
 use App\Filament\Admin\Resources\UserResource\RelationManagers\SeguimientosRelationManager;
+use App\Filament\Admin\Resources\UserResource\RelationManagers\UserMovimientosRelationManager;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\BulkAction;
@@ -67,7 +71,7 @@ class UserResource extends Resource
                  */
                 Tables\Actions\BulkAction::make('borrar')
                     ->requiresConfirmation()
-                    ->action(function(User $record){
+                    ->action(function (User $record) {
                         // // BUSCAR Y ELIMINAR EL CLIENTE RELACIONADO A ESTE USUARIO
                         // $record->cliente()->delete();
                         // // BUSCAR Y ELIMINAR LA CUENTA RELACIONADA A ESTE USUARIO
@@ -111,7 +115,16 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            SeguimientosRelationManager::class,
+            // Cuentas y movimientos
+            RelationGroup::make('Cuentas y movimientos', [
+                UserMovimientosRelationManager::class,
+                CuentaClienteRelationManager::class,
+            ]),
+            // Asignaciones
+            RelationGroup::make('Asignaciones', [
+                AsignacionRelationManager::class,
+                SeguimientosRelationManager::class,
+            ])
         ];
     }
 

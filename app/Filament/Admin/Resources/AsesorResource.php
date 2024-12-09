@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\AsesorResource\Pages;
 use App\Filament\Admin\Resources\AsesorResource\RelationManagers;
 use App\Filament\Admin\Resources\AsesorResource\RelationManagers\AsignacionsRelationManager;
+use App\Filament\Admin\Resources\AsesorResource\RelationManagers\UserRelationManager;
 use App\Models\Asesor;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -73,6 +74,7 @@ class AsesorResource extends Resource
     {
         return [
             AsignacionsRelationManager::class,
+            UserRelationManager::class,
         ];
     }
 

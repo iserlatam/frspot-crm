@@ -17,7 +17,17 @@ class AsignacionResource extends Resource
 {
     protected static ?string $model = Asignacion::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
+
+    protected static ?string $navigationLabel = 'Asignaciones';
+
+    protected static ?string $breadcrumb = 'Asignaciones';
+
+    protected static ?string $modelLabel = 'Asignaciones';
+
+    protected static ?string $activeNavigationIcon = 'heroicon-s-arrows-right-left';
+
+    protected static ?string $navigationGroup = 'Gestión de perfiles';
 
     public static function form(Form $form): Form
     {
@@ -28,7 +38,7 @@ class AsignacionResource extends Resource
                     ->label('cliente')
                     ->required(),
                 Forms\Components\Select::make('asesor_id')
-                    ->relationship('asesor.user', 'name')
+                    ->relationship('asesor', 'id')
                     ->required(),
                 Forms\Components\Toggle::make('estado_asignacion')
                     ->helperText('Estado actual de la asignacion')
@@ -45,10 +55,10 @@ class AsignacionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()
+                    ->label('Cliente')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('asesor.user.name')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('asesor.id')
+                    ->label('Asesor')
                     ->sortable(),
                 Tables\Columns\IconColumn::make('estado_asignacion')
                     ->boolean(),

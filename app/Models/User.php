@@ -7,6 +7,7 @@ namespace App\Models;
 use Filament\Forms;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -132,9 +133,26 @@ class User extends Authenticatable
         return $this->hasOne(Asesor::class);
     }
 
+    public function asesorUser(): HasOne
+    {
+        return $this->hasOne(Asesor::class);
+    }
+
     public function cuentaCliente(): HasOne
     {
         return $this->hasOne(CuentaCliente::class);
+    }
+
+    public function cuentaMovimientos(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Movimiento::class,
+            CuentaCliente::class,
+            'user_id', // cuenta_clientes.user_id
+            'cuenta_cliente_id', // movimientos.cuenta_cliente
+            'id', // user.id
+            'id' // cuenta_cliente.id
+        );
     }
 
     public function seguimientos(): HasMany

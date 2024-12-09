@@ -61,13 +61,13 @@ class CuentaCliente extends Model
                     Forms\Components\TextInput::make('divisa')
                         ->maxLength(15)
                         ->default(null),
-                    Forms\Components\Toggle::make('estado_cuenta')
-                        ->default(1)
-                        ->live()
-                        ->label(function ($record) {
-                            return $record ? 'Activa' : 'Inactiva';
+                        Forms\Components\Toggle::make('estado_cuenta')
+                        ->helperText('Estado actual de la cuenta')
+                        ->label(function ($state) {
+                            return $state ? 'Activa' : 'Inactiva';
                         })
-                        ->required(),
+                        ->live()
+                        ->default(1),
                 ]),
             // Forms\Components\Select::make('user_id')
             //     ->relationship('user', 'name')

@@ -45,6 +45,22 @@ class Movimiento extends Model implements HasMedia
         return "ra{$numbers}";
     }
 
+    public function chargeAccount(array $body) {
+        $currentCuenta = CuentaCliente::findOrFail($body['cuenta_cliente_id']);
+
+        if ($body['case'] === 'a'){
+            $currentCuenta->monto_total += $body['total'];
+            $currentCuenta->no_dep += 1;
+            // $currentCuenta->sum_dep +=
+            // $currentCuenta->
+            // $currentCuenta->
+            $currentCuenta->update();
+        } else if ($body['case'] === 'c') {
+            $currentCuenta->monto_total -= $body['total'];
+            $currentCuenta->update();
+        }
+    }
+
     public function cuentaCliente(): BelongsTo
     {
         return $this->belongsTo(CuentaCliente::class);

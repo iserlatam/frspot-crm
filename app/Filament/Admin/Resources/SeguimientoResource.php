@@ -6,12 +6,14 @@ use App\Filament\Admin\Resources\SeguimientoResource\Pages;
 use App\Filament\Admin\Resources\SeguimientoResource\RelationManagers;
 use App\Models\Asesor;
 use App\Models\Seguimiento;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SeguimientoResource extends Resource
@@ -38,7 +40,8 @@ class SeguimientoResource extends Resource
                     ->relationship('user', 'name')
                     ->default(null),
                 Forms\Components\Select::make('asesor_id')
-                    ->relationship('asesor.user', 'name')
+                ->relationship('asesor', 'id') // Define la relación y la clave foránea
+                ->getOptionLabelFromRecordUsing(fn (Model $record) => $record->user->name)
                     ->default(null),
             ]);
     }
@@ -55,18 +58,13 @@ class SeguimientoResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Cliente')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('asesor.user_id')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('asesor.user.name')
                     ->label('Asesor')
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
             ->filters([
                 //

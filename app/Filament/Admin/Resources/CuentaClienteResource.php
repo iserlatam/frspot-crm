@@ -22,6 +22,12 @@ class CuentaClienteResource extends Resource
 
     protected static ?string $navigationGroup = 'Cuentas y movimientos';
 
+    protected static ?string $navigationLabel = 'Cuentas registradas';
+
+    protected static ?string $breadcrumb = 'Cuentas registradas';
+
+    protected static ?string $modelLabel = 'Cuentas registradas';
+
     public static function form(Form $form): Form
     {
         return $form

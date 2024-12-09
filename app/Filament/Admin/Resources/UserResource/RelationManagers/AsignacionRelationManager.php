@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Admin\Resources\AsesorResource\RelationManagers;
+namespace App\Filament\Admin\Resources\UserResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -10,7 +10,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AsignacionsRelationManager extends RelationManager
+class AsignacionRelationManager extends RelationManager
 {
     protected static string $relationship = 'asignacion';
 
@@ -18,7 +18,7 @@ class AsignacionsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
+                Forms\Components\TextInput::make('id')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -27,15 +27,10 @@ class AsignacionsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('user_id')
+            ->recordTitleAttribute('id')
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')
-                    ->label('cliente'),
-                Tables\Columns\IconColumn::make('estado_asignacion')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->label('Asignado el'),
+                Tables\Columns\TextColumn::make('id'),
+                Tables\Columns\TextColumn::make('asesor.user.id'),
             ])
             ->filters([
                 //

@@ -9,11 +9,4 @@ use Filament\Resources\Pages\ListRecords;
 class ListCuentaClientes extends ListRecords
 {
     protected static string $resource = CuentaClienteResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\CreateAction::make(),
-        ];
-    }
 }

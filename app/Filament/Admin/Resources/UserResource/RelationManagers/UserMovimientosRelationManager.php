@@ -1,79 +1,37 @@
 <?php
 
-namespace App\Filament\Admin\Resources;
+namespace App\Filament\Admin\Resources\UserResource\RelationManagers;
 
-use App\Filament\Admin\Resources\MovimientoResource\Pages;
-use App\Filament\Admin\Resources\MovimientoResource\RelationManagers;
 use App\Models\CuentaCliente;
 use App\Models\Movimiento;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class MovimientoResource extends Resource
+class UserMovimientosRelationManager extends RelationManager
 {
-    protected static ?string $model = Movimiento::class;
+    protected static string $relationship = 'cuentaMovimientos';
 
-    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-
-    protected static ?string $navigationGroup = 'Cuentas y movimientos';
-
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Grid::make()
-                    ->columns(8)
-                    ->schema([
-                        Forms\Components\TextInput::make('no_radicado')
-                            ->columnSpan(1)
-                            ->required()
-                            ->default(str(Movimiento::generateRadicado())->upper())
-                            ->readOnly()
-                            ->maxLength(50)
-                            ->helperText('El número de radicado es generado automáticamente'),
-                        Forms\Components\Select::make('tipo_st')
-                            ->columnSpan(2)
-                            ->options([
-                                'd' => 'Deposito',
-                                'r' => 'Retiro',
-                            ])
-                            ->label('Tipo de solicitud')
-                            ->required(),
-                        Forms\Components\TextInput::make('ingreso')
-                            ->columnSpan(2)
-                            ->required()
-                            ->prefix('$')
-                            ->numeric(),
-                        Forms\Components\Select::make('cuenta_cliente_id')
-                            ->columnSpan(3)
-                            ->relationship('cuentaCliente', 'id')
-                            ->label('Número de cuenta del cliente')
-                            ->searchable()
-                            ->preload()
-                            ->native()
-                            ->required(),
-                    ]),
-                Forms\Components\SpatieMediaLibraryFileUpload::make('comprobante_file')
-                    ->columnSpanFull()
-                    ->label('Comprobante')
-                    ->collection('payment_cliente_validation'),
-                // Forms\Components\RichEditor::make('razon_rechazo')
-                //     ->default('ninguno')
-                //     ->columnSpanFull(),
+                Forms\Components\TextInput::make('no_radicado')
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
-            ->defaultSort('id', 'desc')
+            ->recordTitleAttribute('no_radicado')
             ->columns([
                 Tables\Columns\TextColumn::make('no_radicado')
                     ->searchable()
@@ -138,6 +96,9 @@ class MovimientoResource extends Resource
             ->filters([
                 //
             ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make(),
+            ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     // Tables\Actions\EditAction::make(),
@@ -162,8 +123,20 @@ class MovimientoResource extends Resource
                         })
                         ->requiresConfirmation()
                         ->action(function ($record) {
+                            $movimiento = new Movimiento();
+
+                            $body = [
+                                // aprobar
+                                'case' => 'a',
+                                'total' => $record->ingreso,
+                                'cuenta_cliente_id' => $record->cuenta_cliente_id,
+                            ];
+
+                            // Aprueba el movimiento
                             $record->est_st = 'a';
                             $record->save();
+
+                            $movimiento->chargeAccount($body);
                         })->after(function () {
                             return Notification::make('aprobado')
                                 ->success()
@@ -179,7 +152,7 @@ class MovimientoResource extends Resource
                         ->icon('heroicon-o-x-circle')
                         ->visible(function ($record) {
                             $currentUser = auth()->user()->hasRole('super_admin');
-                           // Caso negativo para usuarios no administradores
+                            // Caso negativo para usuarios no administradores
                             if (!$currentUser || $record->est_st === 'c') {
                                 return false;
                             }
@@ -191,6 +164,7 @@ class MovimientoResource extends Resource
                         })
                         ->requiresConfirmation()
                         ->action(function ($record) {
+                            // Rechaza el movimiento
                             $record->est_st = 'c';
                             $record->save();
                         })->after(function () {
@@ -200,27 +174,11 @@ class MovimientoResource extends Resource
                                 ->send();
                         }),
                 ])
-            ], ActionsPosition::BeforeColumns)
+            ], ActionsPosition::BeforeCells)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListMovimientos::route('/'),
-            'create' => Pages\CreateMovimiento::route('/create'),
-            'edit' => Pages\EditMovimiento::route('/{record}/edit'),
-        ];
     }
 }

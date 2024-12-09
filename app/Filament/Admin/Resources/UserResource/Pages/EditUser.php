@@ -16,4 +16,19 @@ class EditUser extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    public function getContentTabIcon(): ?string
+    {
+        return 'heroicon-m-pencil-square';
+    }
+
+    public function getContentTabLabel(): ?string
+    {
+        return 'Editar usuario';
+    }
+
+    public function hasCombinedRelationManagerTabsWithContent(): bool
+    {
+        return true;
+    }
 }
