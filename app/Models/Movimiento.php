@@ -47,8 +47,8 @@ class Movimiento extends Model implements HasMedia
     }
 
     public function chargeAccount(array $body) {
-        $currentCuenta = CuentaCliente::findOrFail($body['cuenta_cliente_id']);
         [$case, $record] = $body;
+        $currentCuenta = CuentaCliente::findOrFail($record->cuenta_cliente_id);
 
         // Movimiento aprobado
         if ($case === 'a'){
