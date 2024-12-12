@@ -81,6 +81,23 @@ class Movimiento extends Model implements HasMedia
             // Retiro
             else if ($movimiento->tipo_st === 'r') {
                 // Escribir logica de retiro aqui
+                try {
+                    DB::beginTransaction();
+
+                    $currentCuenta->monto_total -= $movimiento->inigreso;
+                    $currentCuenta->no_retiros += 1;
+                    $currentCuenta->sum_dep += $movimiento->ingreso;
+                    $currentCuenta->ultimo_movimiento_id = $movimiento->id;
+                    $currentCuenta->update();
+
+                    DB::commit();
+                } catch (\Throwable $e){
+                    DB::rollback();
+                    throw new \Exception('Error al procesar el movimiento: ' . $e->getMessage(),0,$e);
+                } finally{
+                    $this->est_st = 'a';
+                    $this->update();
+                }
             }
         }
         // Movimiento rechazado
