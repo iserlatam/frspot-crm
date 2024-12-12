@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -46,22 +47,45 @@ class Movimiento extends Model implements HasMedia
         return "ra{$numbers}";
     }
 
-    public function chargeAccount(array $body) {
-        [$case, $record] = $body;
-        $currentCuenta = CuentaCliente::findOrFail($record->cuenta_cliente_id);
+    public function chargeAccount(array $body)
+    {
+        $case = $body['case'];
+        $movimiento = $body['movimiento'];
+
+        $currentCuenta = CuentaCliente::findOrFail($movimiento->cuenta_cliente_id);
 
         // Movimiento aprobado
-        if ($case === 'a'){
-            $currentCuenta->monto_total += $record->ingreso;
-            $currentCuenta->no_dep += 1;
-            $currentCuenta->sum_dep += $currentCuenta->sum_dep;
-            // $currentCuenta->
-            // $currentCuenta->
-            $currentCuenta->update();
+        if ($case === 'a') {
+
+            // Deposito
+            if ($movimiento->tipo_st === 'd') {
+                try {
+                    DB::beginTransaction();
+
+                    // Transacciones correspondientes al deposito
+                    $currentCuenta->monto_total += $movimiento->ingreso;
+                    $currentCuenta->no_dep += 1;
+                    $currentCuenta->sum_dep += $movimiento->ingreso;
+                    $currentCuenta->ultimo_movimiento_id = $movimiento->id;
+                    $currentCuenta->update();
+
+                    DB::commit();
+                } catch (\Throwable $e) {
+                    DB::rollBack();
+                    throw new \Exception('Error al procesar el movimiento: ' . $e->getMessage(), 0, $e);
+                } finally {
+                    $this->est_st = 'a';
+                    $this->update();
+                }
+            }
+            // Retiro
+            else if ($movimiento->tipo_st === 'r') {
+                // Escribir logica de retiro aqui
+            }
         }
         // Movimiento rechazado
         else if ($case === 'c') {
-            $currentCuenta->monto_total -= $record->ingreso;
+            $currentCuenta->monto_total -= $movimiento->ingreso;
             $currentCuenta->update();
         }
     }

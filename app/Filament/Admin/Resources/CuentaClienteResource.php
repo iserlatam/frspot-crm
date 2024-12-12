@@ -47,22 +47,20 @@ class CuentaClienteResource extends Resource
                     ->searchable(),
                 Tables\Columns\IconColumn::make('estado_cuenta')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('movimiento.id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('monto_total')
                     ->numeric()
+                    ->money()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('sum_dep')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('no_dep')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('sum_retiros')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('no_retiros')
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('sum_dep')
+                //     ->numeric()
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('no_dep')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('sum_retiros')
+                //     ->numeric()
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('no_retiros')
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->sortable(),

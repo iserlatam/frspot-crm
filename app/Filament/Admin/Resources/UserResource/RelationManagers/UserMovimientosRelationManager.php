@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserMovimientosRelationManager extends RelationManager
 {
+    public Movimiento $movimiento;
+
     protected static string $relationship = 'cuentaMovimientos';
 
     protected static ?string $modelLabel = 'Movimientos';
@@ -122,20 +124,12 @@ class UserMovimientosRelationManager extends RelationManager
                         })
                         ->requiresConfirmation()
                         ->action(function ($record) {
-                            $movimiento = new Movimiento();
-
                             $body = [
                                 // aprobar
                                 'case' => 'a',
-                                'record' => $record,
+                                'movimiento' => $record,
                             ];
-
-                            // Aprueba el movimiento
-                            $record->est_st = 'a';
-                            $record->save();
-
-                            // Carga el monto correspondiente en base a la operacion
-                            $movimiento->chargeAccount($body);
+                            $this->movimiento->chargeAccount($body);
                         })
                         ->dispatch('updatedMovimiento', ["state" => true])
                         ->after(function () {

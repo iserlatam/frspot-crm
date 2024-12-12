@@ -162,8 +162,12 @@ class MovimientoResource extends Resource
                         })
                         ->requiresConfirmation()
                         ->action(function ($record) {
-                            $record->est_st = 'a';
-                            $record->save();
+                            $body = [
+                                // aprobar
+                                'case' => 'a',
+                                'movimiento' => $record,
+                            ];
+                            $record->chargeAccount($body);
                         })->after(function () {
                             return Notification::make('aprobado')
                                 ->success()
@@ -179,7 +183,7 @@ class MovimientoResource extends Resource
                         ->icon('heroicon-o-x-circle')
                         ->visible(function ($record) {
                             $currentUser = auth()->user()->hasRole('super_admin');
-                           // Caso negativo para usuarios no administradores
+                            // Caso negativo para usuarios no administradores
                             if (!$currentUser || $record->est_st === 'c') {
                                 return false;
                             }
