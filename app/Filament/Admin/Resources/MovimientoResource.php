@@ -12,6 +12,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Enums\ActionsPosition;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -73,7 +74,7 @@ class MovimientoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('id', 'desc')
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('no_radicado')
                     ->searchable()
@@ -88,6 +89,7 @@ class MovimientoResource extends Resource
                         return match ($state) {
                             'd' => 'Deposito',
                             'r' => 'Retiro',
+                            'bn' => 'Bono',
                         };
                     })
                     ->label('Tipo de solicitud'),
@@ -136,7 +138,20 @@ class MovimientoResource extends Resource
                     ->sortable()
             ])
             ->filters([
-                //
+                SelectFilter::make('est_st')
+                    ->label('Estado de la solicitud')
+                    ->options([
+                        'a' => 'Aprobado',
+                        'b' => 'Pendiente',
+                        'c' => 'Rechazado',
+                    ]),
+                SelectFilter::make('tipo_st')
+                    ->label('Tipo de la solicitud')
+                    ->options([
+                        'd' => 'Deposito',
+                        'r' => 'Retiro',
+                        'bn' => 'Bono',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

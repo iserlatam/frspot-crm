@@ -11,6 +11,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -30,11 +31,20 @@ class AsesorResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('tipo_asesor')
-                    ->maxLength(20)
-                    ->default(null),
+                Forms\Components\Select::make('tipo_asesor')
+                    ->options([
+                        "crm" => "CRM",
+                        "calidad" => "CALIDAD",
+                        "ftd" => "FTD",
+                        "retencion" => "RETENCION",
+                        "monitor" => "MONITOR",
+                    ]),
                 Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
+                    ->relationship('userWithRoleAsesor', "name")
+                    ->label('Usuario a asignar')
+                    ->helperText('Solo se mostraran los usuarios con un rol asignado como ASESOR')
+                    ->searchable()
+                    ->preload()
                     ->required(),
             ]);
     }
@@ -43,22 +53,30 @@ class AsesorResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('tipo_asesor')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Usuario asignado')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('tipo_asesor')
+                    ->formatStateUsing(function ($state) {
+                        return str($state)->upper();
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('tipo_asesor')
+                    ->options([
+                        "crm" => "CRM",
+                        "calidad" => "CALIDAD",
+                        "ftd" => "FTD",
+                        "retencion" => "RETENCION",
+                        "monitor" => "MONITOR",
+                    ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -82,7 +100,7 @@ class AsesorResource extends Resource
     {
         return [
             'index' => Pages\ListAsesors::route('/'),
-            'create' => Pages\CreateAsesor::route('/create'),
+            // 'create' => Pages\CreateAsesor::route('/create'),
             'edit' => Pages\EditAsesor::route('/{record}/edit'),
         ];
     }

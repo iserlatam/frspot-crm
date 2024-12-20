@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\AsesorResource\RelationManagers;
 
+use App\Filament\Admin\Resources\AsignacionResource;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -16,12 +17,7 @@ class AsignacionsRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('user_id')
-                    ->required()
-                    ->maxLength(255),
-            ]);
+        return AsignacionResource::form($form);
     }
 
     public function table(Table $table): Table
@@ -29,13 +25,25 @@ class AsignacionsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('user_id')
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID'),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('cliente'),
-                Tables\Columns\IconColumn::make('estado_asignacion')
-                    ->boolean(),
+                    ->label('Cliente asignado'),
+                Tables\Columns\TextColumn::make('estado_asignacion')
+                    ->label('Estado de la asignacion')
+                    ->badge()
+                    ->color(function ($state) {
+                        return match ($state) {
+                            true => 'success',
+                            false => 'danger',
+                        };
+                    })
+                    ->formatStateUsing(function ($state) {
+                        return $state ? 'Activa' : 'Inactiva';
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->label('Asignado el'),
+                    ->label('Asignado el')
+                    ->dateTime(),
             ])
             ->filters([
                 //

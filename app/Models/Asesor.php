@@ -37,6 +37,14 @@ class Asesor extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function userWithRoleAsesor(): BelongsTo
+    {
+        return $this->belongsTo(User::class,'user_id', 'id')
+            ->whereHas('roles', function ($query) {
+                $query->where('name', 'asesor');
+            });
+    }
+
     public function asignacion(): HasOne
     {
         return $this->hasOne(Asignacion::class);

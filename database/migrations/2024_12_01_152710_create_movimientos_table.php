@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('movimientos', function (Blueprint $table) {
             $table->id();
             $table->string('no_radicado');
-            $table->enum('tipo_st', ["d","r"]);
+            $table->enum('tipo_st', ["d","r","bn"]);
             $table->enum('est_st', ["a","b","c"])->default('b');
             $table->decimal('ingreso', 12, 3);
             $table->text('comprobante_file')->nullable();

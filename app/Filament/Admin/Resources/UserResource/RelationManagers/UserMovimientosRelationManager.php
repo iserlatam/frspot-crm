@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserMovimientosRelationManager extends RelationManager
@@ -26,7 +27,44 @@ class UserMovimientosRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        return MovimientoResource::form($form);
+        return $form
+            ->schema([
+                Forms\Components\Grid::make()
+                    ->columns(8)
+                    ->schema([
+                        Forms\Components\TextInput::make('no_radicado')
+                            ->columnSpan(1)
+                            ->required()
+                            ->default(str(Movimiento::generateRadicado())->upper())
+                            ->readOnly()
+                            ->maxLength(50)
+                            ->helperText('El número de radicado es generado automáticamente'),
+                        Forms\Components\Select::make('tipo_st')
+                            ->columnSpan(2)
+                            ->options([
+                                'd' => 'Deposito',
+                                'r' => 'Retiro',
+                            ])
+                            ->label('Tipo de solicitud')
+                            ->required(),
+                        Forms\Components\TextInput::make('ingreso')
+                            ->columnSpan(2)
+                            ->required()
+                            ->prefix('$')
+                            ->numeric(),
+                        Forms\Components\TextInput::make('cuenta_cliente_id')
+                            ->label('Número de cuenta del cliente')
+                            ->readOnly()
+                            ->columnSpan(3)
+                            ->default(function () {
+                                return $this->getOwnerRecord()->cuentaCliente->id;
+                            }),
+                    ]),
+                Forms\Components\SpatieMediaLibraryFileUpload::make('comprobante_file')
+                    ->columnSpanFull()
+                    ->label('Comprobante')
+                    ->collection('payment_cliente_validation'),
+            ]);
     }
 
     public function table(Table $table): Table
@@ -129,9 +167,9 @@ class UserMovimientosRelationManager extends RelationManager
                                 'case' => 'a',
                                 'movimiento' => $record,
                             ];
-                            $this->movimiento->chargeAccount($body);
+                            $record->chargeAccount($body);
+                            $this->dispatch('refresh-account-table');
                         })
-                        ->dispatch('updatedMovimiento', ["state" => true])
                         ->after(function () {
                             return Notification::make('aprobado')
                                 ->success()

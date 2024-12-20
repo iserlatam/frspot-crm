@@ -20,6 +20,14 @@ class CuentaClienteRelationManager extends RelationManager
 
     protected static ?string $icon = 'heroicon-m-credit-card';
 
+    protected $listeners = ['refresh-account-table' => 'refreshTable'];
+
+    public function refreshTable()
+    {
+        // Refresca la tabla
+        $this->resetTable();
+    }
+
     public function isReadOnly(): bool
     {
         return true;

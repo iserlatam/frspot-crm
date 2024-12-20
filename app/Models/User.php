@@ -152,7 +152,7 @@ class User extends Authenticatable
             'cuenta_cliente_id', // movimientos.cuenta_cliente
             'id', // user.id
             'id' // cuenta_cliente.id
-        );
+        )->latest();
     }
 
     public function seguimientos(): HasMany

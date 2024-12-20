@@ -52,20 +52,31 @@ class UserResource extends Resource
                     ->copyable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')
+                    ->label('Rol asignado')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
-                    ->label('Fecha de creación')
+                    ->label('Creado el')
                     ->sortable()
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('roles')
+                    ->label('Rol asignado')
                     ->relationship('roles', 'name')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
+                /**
+                 *  ASIGNACION MASIVA
+                 */
+                BulkAction::make('Asignar asesor')
+                    ->color('primary')
+                    ->icon('heroicon-s-arrows-right-left')
+                    ->form([
+
+                    ]),
                 /**
                  *  ASIGNAR ROL CLIENTE
                  */

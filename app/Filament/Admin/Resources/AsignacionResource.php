@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -35,8 +36,8 @@ class AsignacionResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->label('cliente')
+                    ->relationship('userWithRoleCliente', 'name')
+                    ->label('cliente a asignar')
                     ->searchable()
                     ->preload()
                     ->required(),
@@ -60,25 +61,38 @@ class AsignacionResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('Cliente')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('asesor.id')
-                    ->label('Asesor')
-                    ->sortable(),
-                Tables\Columns\IconColumn::make('estado_asignacion')
-                    ->boolean(),
+                    ->label('Cliente asignado'),
+                Tables\Columns\TextColumn::make('asesor.user.name')
+                    ->label('Asesor asignado')
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('estado_asignacion')
+                    ->label('Estado de la asignacion')
+                    ->badge()
+                    ->color(function ($state) {
+                        return match ($state) {
+                            true => 'success',
+                            false => 'danger',
+                        };
+                    })
+                    ->formatStateUsing(function ($state) {
+                        return $state ? 'Activa' : 'Inactiva';
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creada el')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('estado_asignacion')
+                    ->options([
+                        true => 'Activa',
+                        false => 'Inactiva'
+                    ])
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -101,8 +115,8 @@ class AsignacionResource extends Resource
     {
         return [
             'index' => Pages\ListAsignacions::route('/'),
-            'create' => Pages\CreateAsignacion::route('/create'),
-            'edit' => Pages\EditAsignacion::route('/{record}/edit'),
+            // 'create' => Pages\CreateAsignacion::route('/create'),
+            // 'edit' => Pages\EditAsignacion::route('/{record}/edit'),
         ];
     }
 }

@@ -33,6 +33,14 @@ class Asignacion extends Model
         'estado_asignacion' => 'boolean',
     ];
 
+    public function userWithRoleCliente(): BelongsTo
+    {
+        return $this->belongsTo(User::class,'user_id', 'id')
+            ->whereHas('roles', function ($query) {
+                $query->where('name', 'cliente');
+            });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
