@@ -3,9 +3,13 @@
 namespace App\Filament\Admin\Resources\UserResource\RelationManagers;
 
 use App\Filament\Admin\Resources\MovimientoResource;
+use App\Helpers\Helpers;
+use App\Models\CuentaCliente;
 use App\Models\Movimiento;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -14,6 +18,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Actions\CreateAction;
+use Illuminate\Validation\ValidationException;
 
 class UserMovimientosRelationManager extends RelationManager
 {
@@ -44,6 +50,7 @@ class UserMovimientosRelationManager extends RelationManager
                             ->options([
                                 'd' => 'Deposito',
                                 'r' => 'Retiro',
+                                'b' => 'Bono',
                             ])
                             ->label('Tipo de solicitud')
                             ->required(),
@@ -51,7 +58,17 @@ class UserMovimientosRelationManager extends RelationManager
                             ->columnSpan(2)
                             ->required()
                             ->prefix('$')
-                            ->numeric(),
+                            ->numeric()
+                            ->live()
+                            ->helperText(function (Get $get) {
+                                $ingreso = $get('ingreso');
+                                $tipo = $get('tipo_st');
+                                if ($tipo === 'r' && $ingreso > $this->getOwnerRecord()->cuentaCliente->monto_total) {
+                                    return 'Saldo insuficiente';
+                                } else {
+                                    return 'Saldo disponible: ' . $this->getOwnerRecord()->cuentaCliente->monto_total;
+                                }
+                            }),
                         Forms\Components\TextInput::make('cuenta_cliente_id')
                             ->label('Número de cuenta del cliente')
                             ->readOnly()
@@ -85,6 +102,7 @@ class UserMovimientosRelationManager extends RelationManager
                         return match ($state) {
                             'd' => 'Deposito',
                             'r' => 'Retiro',
+                            'b' => 'Bono',
                         };
                     })
                     ->label('Tipo de solicitud'),
@@ -109,11 +127,11 @@ class UserMovimientosRelationManager extends RelationManager
                     ->numeric()
                     ->money('USDT')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('cuentaCliente.user.cliente.nombre_completo')
+                Tables\Columns\TextColumn::make('cuentaCliente.user.name')
                     ->label('Cliente solicitante')
                     ->formatStateUsing(function ($record) {
                         if (isset($record->cuentaCliente)) {
-                            return $record->cuentaCliente->user->cliente->nombre_completo;
+                            return $record->cuentaCliente->user->name;
                         }
                         return 'No Aplica';
                     })
@@ -137,6 +155,21 @@ class UserMovimientosRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
+                    // ->using(function (array $data, string $model) {
+                    //     $cuenta = CuentaCliente::findOrFail($data['cuenta_cliente_id']);
+
+                    //     // Validar saldo antes de crear el registro
+                    //     if ($data['tipo_st'] == 'r' && $data['ingreso'] > $cuenta->monto_total) {
+                    //         // Lanza una excepción de validación con un mensaje personalizado
+                    //         Helpers::sendErrorNotification('No se puede realizar la solicitud, saldo insuficiente');
+                    //         throw ValidationException::withMessages([
+                    //             'ingreso' => 'Saldo insuficiente. No puedes realizar esta operación.',
+                    //         ]);
+                    //     }
+                    //     // Crear el modelo si la validación pasa
+                    //     return $model::create($data);
+                    // }),
+                Helpers::renderReloadTableAction(),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -149,7 +182,7 @@ class UserMovimientosRelationManager extends RelationManager
                         ->color('success')
                         ->icon('heroicon-o-check-badge')
                         ->visible(function ($record) {
-                            $currentUser = auth()->user()->hasRole('super_admin');
+                            $currentUser = Helpers::isSuperAdmin();
                             // Caso negativo para usuarios no administradores
                             if (!$currentUser || $record->est_st === 'a') {
                                 return false;
@@ -169,12 +202,6 @@ class UserMovimientosRelationManager extends RelationManager
                             ];
                             $record->chargeAccount($body);
                             $this->dispatch('refresh-account-table');
-                        })
-                        ->after(function () {
-                            return Notification::make('aprobado')
-                                ->success()
-                                ->title('Este movimiento fue aprobado. Saldo cargado correctamente')
-                                ->send();
                         }),
                     /**
                      * RECHAZAR MOVIMIENTO
@@ -184,7 +211,7 @@ class UserMovimientosRelationManager extends RelationManager
                         ->color('danger')
                         ->icon('heroicon-o-x-circle')
                         ->visible(function ($record) {
-                            $currentUser = auth()->user()->hasRole('super_admin');
+                            $currentUser = Helpers::isSuperAdmin();
                             // Caso negativo para usuarios no administradores
                             if (!$currentUser || $record->est_st === 'c') {
                                 return false;
@@ -198,13 +225,13 @@ class UserMovimientosRelationManager extends RelationManager
                         ->requiresConfirmation()
                         ->action(function ($record) {
                             // Rechaza el movimiento
-                            $record->est_st = 'c';
-                            $record->save();
-                        })->after(function () {
-                            return Notification::make('rechazado')
-                                ->danger()
-                                ->title('Este movimiento fue rechazado.')
-                                ->send();
+                            $body = [
+                                // aprobar
+                                'case' => 'c',
+                                'movimiento' => $record,
+                            ];
+                            $record->chargeAccount($body);
+                            $this->dispatch('refresh-account-table');
                         }),
                 ])
             ], ActionsPosition::BeforeCells)

@@ -14,14 +14,11 @@ class UserRelationManager extends RelationManager
 {
     protected static string $relationship = 'user';
 
-    public function form(Form $form): Form
+    protected static ?string $title = 'Informacion personal';
+
+    public function isReadOnly(): bool
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-            ]);
+        return true;
     }
 
     public function table(Table $table): Table
@@ -30,6 +27,22 @@ class UserRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('id'),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->copyable()
+                    ->tooltip('Haga click para copiar')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->label('Rol asignado')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('asignacion.asesor.user.name')
+                    ->label('Asesor asignado')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->label('Creado el')
+                    ->sortable()
             ])
             ->filters([
                 //
@@ -38,8 +51,11 @@ class UserRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\Action::make('view')
+                    ->label('Ver más')
+                    ->color('secondary')
+                    ->url(fn ($record) => route('filament.admin.resources.users.edit', $record->id))
+                    ->icon('heroicon-s-eye'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

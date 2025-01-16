@@ -2,9 +2,11 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Client\Resources\UserResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -27,6 +29,7 @@ class ClientPanelProvider extends PanelProvider
             ->path('client')
             ->colors([
                 'primary' => Color::Blue,
+                'secondary' => Color::Gray,
             ])
             ->login()
             ->spa()
@@ -36,10 +39,7 @@ class ClientPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Client/Widgets'), for: 'App\\Filament\\Client\\Widgets')
-            ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
-            ])
+            ->widgets([])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -53,6 +53,15 @@ class ClientPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->navigationItems([
+                NavigationItem::make('Mi Cuenta')
+                    ->icon('heroicon-s-user')
+                    ->url(fn() => UserResource::getUrl('edit', ['record' => auth()->user()]))
+                    ->group('Sobre Mi')
+                    ->isActiveWhen(
+                        fn(): bool => request()->is("client/users/*")
+                    ),
             ])
             ->viteTheme('resources/css/filament/client/theme.css');
     }

@@ -10,6 +10,8 @@ class EditAsignacion extends EditRecord
 {
     protected static string $resource = AsignacionResource::class;
 
+    protected static ?string $title = 'Editar asignacion';
+
     protected function getHeaderActions(): array
     {
         return [

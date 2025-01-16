@@ -21,6 +21,7 @@ use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserResource extends Resource
@@ -45,14 +46,23 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            // ->query(
+            //     User::whereHas('roles', function ($query) {
+            //         $query->where('name', 'cliente');
+            //     })
+            // )
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->copyable()
+                    ->tooltip('Haga click para copiar')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->label('Rol asignado')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('asignacion.asesor.user.name')
+                    ->label('Asesor asignado')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -75,8 +85,24 @@ class UserResource extends Resource
                     ->color('primary')
                     ->icon('heroicon-s-arrows-right-left')
                     ->form([
-
-                    ]),
+                        Select::make('asesor_id')
+                            ->relationship('asesor', 'id') // Define la relación y la clave foránea
+                            ->searchable()
+                            ->preload()
+                            ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
+                            ->default(null),
+                    ])
+                    ->action(function (array $data, Collection $records) {
+                        $records->each->assignNewAsesor($data['asesor_id']);
+                    })
+                    ->after(function () {
+                        // NOTIFICAR QUE LA ASIGNACION FUE EXITOSA
+                        Notification::make()
+                            ->title('Asesor asignado con éxito')
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
                 /**
                  *  ASIGNAR ROL CLIENTE
                  */
@@ -94,13 +120,15 @@ class UserResource extends Resource
                     ->action(function (array $data, Collection $records) {
                         // OBTENER EL VALOR DE ROLE DESDE EL MODAL
                         $records->each->syncRoles($data['role']);
-                    })->after(function () {
+                    })
+                    ->after(function () {
                         // NOTIFICAR QUE LA ASIGNACION FUE EXITOSA
                         Notification::make()
                             ->title('Roles actualizado con éxito')
                             ->success()
                             ->send();
-                    })->deselectRecordsAfterCompletion(),
+                    })
+                    ->deselectRecordsAfterCompletion(),
                 /**
                  *  ACCIONES DE ELIMINACION DE USUARIOS
                  */

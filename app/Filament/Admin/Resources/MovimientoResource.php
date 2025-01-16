@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\MovimientoResource\Pages;
 use App\Filament\Admin\Resources\MovimientoResource\RelationManagers;
+use App\Helpers\Helpers;
 use App\Models\CuentaCliente;
 use App\Models\Movimiento;
 use Filament\Forms;
@@ -22,6 +23,8 @@ class MovimientoResource extends Resource
     protected static ?string $model = Movimiento::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+
+    protected static ?string $activeNavigationIcon = 'heroicon-s-banknotes';
 
     protected static ?string $navigationGroup = 'Cuentas y movimientos';
 
@@ -44,6 +47,7 @@ class MovimientoResource extends Resource
                             ->options([
                                 'd' => 'Deposito',
                                 'r' => 'Retiro',
+                                'b' => 'Bono',
                             ])
                             ->label('Tipo de solicitud')
                             ->required(),
@@ -89,7 +93,7 @@ class MovimientoResource extends Resource
                         return match ($state) {
                             'd' => 'Deposito',
                             'r' => 'Retiro',
-                            'bn' => 'Bono',
+                            'b' => 'Bono',
                         };
                     })
                     ->label('Tipo de solicitud'),
@@ -114,11 +118,11 @@ class MovimientoResource extends Resource
                     ->numeric()
                     ->money('USDT')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('cuentaCliente.user.cliente.nombre_completo')
+                Tables\Columns\TextColumn::make('cuentaCliente.user.name')
                     ->label('Cliente solicitante')
                     ->formatStateUsing(function ($record) {
                         if (isset($record->cuentaCliente)) {
-                            return $record->cuentaCliente->user->cliente->nombre_completo;
+                            return $record->cuentaCliente->user->name;
                         }
                         return 'No Aplica';
                     })
@@ -153,6 +157,9 @@ class MovimientoResource extends Resource
                         'bn' => 'Bono',
                     ]),
             ])
+            ->headerActions([
+                Helpers::renderReloadTableAction(),
+            ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     // Tables\Actions\EditAction::make(),
@@ -164,7 +171,7 @@ class MovimientoResource extends Resource
                         ->color('success')
                         ->icon('heroicon-o-check-badge')
                         ->visible(function ($record) {
-                            $currentUser = auth()->user()->hasRole('super_admin');
+                            $currentUser = Helpers::isSuperAdmin();
                             // Caso negativo para usuarios no administradores
                             if (!$currentUser || $record->est_st === 'a') {
                                 return false;
@@ -197,7 +204,7 @@ class MovimientoResource extends Resource
                         ->color('danger')
                         ->icon('heroicon-o-x-circle')
                         ->visible(function ($record) {
-                            $currentUser = auth()->user()->hasRole('super_admin');
+                            $currentUser = Helpers::isSuperAdmin();
                             // Caso negativo para usuarios no administradores
                             if (!$currentUser || $record->est_st === 'c') {
                                 return false;
@@ -210,14 +217,13 @@ class MovimientoResource extends Resource
                         })
                         ->requiresConfirmation()
                         ->action(function ($record) {
-                            $record->est_st = 'c';
-                            $record->save();
-                        })->after(function () {
-                            return Notification::make('rechazado')
-                                ->danger()
-                                ->title('Este movimiento fue rechazado.')
-                                ->send();
-                        }),
+                            $body = [
+                                // aprobar
+                                'case' => 'c',
+                                'movimiento' => $record,
+                            ];
+                            $record->chargeAccount($body);
+                        })
                 ])
             ], ActionsPosition::BeforeColumns)
             ->bulkActions([

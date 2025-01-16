@@ -8,4 +8,9 @@ class StatusConverter
     {
         return $status ? 'Activa' : 'Inactiva';
     }
+
+    public static function colorAccountStatus($status)
+    {
+        return $status ? 'success' : 'warning';
+    }
 }

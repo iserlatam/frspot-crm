@@ -20,10 +20,15 @@ class AsesorResource extends Resource
 {
     protected static ?string $model = Asesor::class;
 
-    protected static ?string $ModelLabel = 'Asesor';
+    protected static ?string $modelLabel = 'Asesor';
+
     protected static ?string $navigationLabel = 'Asesores';
+
     protected static ?string $pluralModelLabel = 'Asesores';
+
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    protected static ?string $activeNavigationIcon = 'heroicon-s-user-group';
 
     protected static ?string $navigationGroup = 'Gestión de perfiles';
 

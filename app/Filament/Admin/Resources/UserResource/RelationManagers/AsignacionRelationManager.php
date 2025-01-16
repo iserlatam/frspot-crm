@@ -26,11 +26,20 @@ class AsignacionRelationManager extends RelationManager
             ->recordTitleAttribute('id')
             ->columns([
                 Tables\Columns\TextColumn::make('id'),
-                Tables\Columns\TextColumn::make('asesor.user.cliente.nombre_completo')
-                    ->label('Nombre del asesor'),
-                Tables\Columns\IconColumn::make('estado_asignacion')
-                    ->label('Estado actual de la asignacion')
-                    ->boolean(),
+                Tables\Columns\TextColumn::make('asesor.user.name')
+                    ->label('Asesor asignado'),
+                Tables\Columns\TextColumn::make('estado_asignacion')
+                    ->label('Estado de la asignacion')
+                    ->badge()
+                    ->color(function ($state) {
+                        return match ($state) {
+                            true => 'success',
+                            false => 'danger',
+                        };
+                    })
+                    ->formatStateUsing(function ($state) {
+                        return $state ? 'Activa' : 'Inactiva';
+                    }),
             ])
             ->filters([
                 //

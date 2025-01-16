@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\AsesorResource\RelationManagers;
 
 use App\Filament\Admin\Resources\AsignacionResource;
+use App\Helpers\Helpers;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -14,6 +15,13 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class AsignacionsRelationManager extends RelationManager
 {
     protected static string $relationship = 'asignacion';
+
+    protected static ?string $title = 'Asignaciones';
+
+    public function isReadOnly(): bool
+    {
+        return Helpers::isOwner() ? false : true;
+    }
 
     public function form(Form $form): Form
     {

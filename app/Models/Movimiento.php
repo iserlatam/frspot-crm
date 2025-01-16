@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Helpers\Helpers;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -56,54 +58,132 @@ class Movimiento extends Model implements HasMedia
 
         // Movimiento aprobado
         if ($case === 'a') {
+            switch ($movimiento->tipo_st) {
+                    // Deposito
+                case 'd':
+                    try {
+                        DB::beginTransaction();
 
-            // Deposito
-            if ($movimiento->tipo_st === 'd') {
-                try {
-                    DB::beginTransaction();
+                        // Transacciones correspondientes al deposito
+                        $currentCuenta->monto_total += $movimiento->ingreso;
+                        $currentCuenta->no_dep += 1;
+                        $currentCuenta->sum_dep += $movimiento->ingreso;
+                        $currentCuenta->ultimo_movimiento_id = $movimiento->id;
+                        $currentCuenta->update();
 
-                    // Transacciones correspondientes al deposito
-                    $currentCuenta->monto_total += $movimiento->ingreso;
-                    $currentCuenta->no_dep += 1;
-                    $currentCuenta->sum_dep += $movimiento->ingreso;
-                    $currentCuenta->ultimo_movimiento_id = $movimiento->id;
-                    $currentCuenta->update();
+                        $this->est_st = 'a';
+                        $this->update();
 
-                    DB::commit();
-                } catch (\Throwable $e) {
-                    DB::rollBack();
-                    throw new \Exception('Error al procesar el movimiento: ' . $e->getMessage(), 0, $e);
-                } finally {
-                    $this->est_st = 'a';
-                    $this->update();
-                }
-            }
-            // Retiro
-            else if ($movimiento->tipo_st === 'r') {
-                // Escribir logica de retiro aqui
-                try {
-                    DB::beginTransaction();
+                        DB::commit();
 
-                    $currentCuenta->monto_total -= $movimiento->ingreso;
-                    $currentCuenta->no_retiros += 1;
-                    $currentCuenta->sum_retiros += $movimiento->ingreso;
-                    $currentCuenta->ultimo_movimiento_id = $movimiento->id;
-                    $currentCuenta->update();
+                        return Helpers::sendSuccessNotification('Este movimiento fue aprobado. Saldo actualizado correctamente');
+                    } catch (\Throwable $e) {
+                        DB::rollBack();
+                        return Helpers::sendErrorNotification($e->getMessage());
+                    }
+                    // Bono
+                case 'b':
+                    try {
+                        DB::beginTransaction();
 
-                    DB::commit();
-                } catch (\Throwable $e) {
-                    DB::rollback();
-                    throw new \Exception('Error al procesar el movimiento: ' . $e->getMessage(), 0, $e);
-                } finally {
-                    $this->est_st = 'a';
-                    $this->update();
-                }
+                        // Transacciones correspondientes al deposito
+                        $currentCuenta->monto_total += $movimiento->ingreso;
+                        $currentCuenta->ultimo_movimiento_id = $movimiento->id;
+                        $currentCuenta->update();
+
+                        $this->est_st = 'a';
+                        $this->update();
+
+                        DB::commit();
+
+                        return Helpers::sendSuccessNotification('Este movimiento fue aprobado. Saldo actualizado correctamente');
+                    } catch (\Throwable $e) {
+                        DB::rollBack();
+                        return Helpers::sendErrorNotification($e->getMessage());
+                    }
+                    // Retiro
+                case 'r':
+                    try {
+                        DB::beginTransaction();
+
+                        if ($currentCuenta->monto_total < $movimiento->ingreso) {
+                            return Helpers::sendErrorNotification('No se puede realizar el retiro, saldo insuficiente');
+                        }
+
+                        $currentCuenta->monto_total -= $movimiento->ingreso;
+                        $currentCuenta->no_retiros += 1;
+                        $currentCuenta->sum_retiros += $movimiento->ingreso;
+                        $currentCuenta->ultimo_movimiento_id = $movimiento->id;
+                        $currentCuenta->update();
+
+                        $this->est_st = 'a';
+                        $this->update();
+
+                        DB::commit();
+
+                        return Helpers::sendSuccessNotification('Este movimiento fue aprobado. Saldo actualizado correctamente');
+                    } catch (\Throwable $e) {
+                        DB::rollback();
+                        return Helpers::sendErrorNotification($e->getMessage());
+                    }
             }
         }
         // Movimiento rechazado
         else if ($case === 'c') {
-            $this->est_st = 'a';
+            // Obtener ambas fechas de creacion y actualizacion
+            $creationDate = Carbon::parse($this->created_at);
+            $updatedDate = Carbon::parse($this->updated_at);
+
+            // Comparar si la fecha de actualizacion es mayor a la fecha de creacion
+            if ($updatedDate->greaterThan($creationDate)) {
+                // Validar el estado y de acuerdo a eso, restar o aumentar
+                if ($this->est_st = 'a') {
+                    DB::beginTransaction();
+                    switch ($movimiento->tipo_st) {
+                        case 'd':
+                            // ACCIONES SI EL TIPO DE LA SOLICITUD ES DEPOSITO
+                            $currentCuenta->sum_dep -= $movimiento->ingreso;
+                            $currentCuenta->monto_total -= $movimiento->ingreso;
+                            $currentCuenta->no_dep -= 1;
+                            break;
+                        case 'b':
+                            $currentCuenta->monto_total -= $movimiento->ingreso;
+                            break;
+                        case 'r':
+                            // ACCIONES SI EL TIPO DE LA SOLICITUD ES RETIRO
+                            if ($currentCuenta->monto_total < $movimiento->ingreso) {
+                                DB::rollBack();
+                                return Helpers::sendErrorNotification('No se puede revertir el movimiento porque la cuenta no cuenta con fondos suficientes.');
+                            }
+                            $currentCuenta->sum_retiros -= $movimiento->ingreso;
+                            $currentCuenta->monto_total += $movimiento->ingreso;
+                            $currentCuenta->no_retiros -= 1;
+                            break;
+                    }
+
+                    $currentCuenta->update();
+
+                    DB::commit();
+
+                    $this->est_st = 'c';
+                    $this->update();
+
+                    return Helpers::sendWarningNotification(
+                        'La cuenta se restauro a su estado anterior',
+                        'Este movimiento fue revertido exitosamente'
+                    );
+                }
+                // ACCIONES FUTURAS PARA NOTIFICAR POR EMAIL LA RAZON DEL RECHAZO
+                // $this->razon_rechazo = 'El movimiento fue rechazado por el administrador';
+            }
+
+            $this->est_st = 'c';
             $this->update();
+
+            return Helpers::sendErrorNotification(
+                'Por favor, contacte al administrador para mas informacion',
+                'Este movimiento fue rechazado'
+            );
         }
     }
 

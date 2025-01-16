@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\UserResource\RelationManagers;
 
 use App\Filament\Admin\Resources\SeguimientoResource;
+use App\Helpers\Helpers;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -25,17 +26,32 @@ class SeguimientosRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('estado')
             ->columns([
-                Tables\Columns\TextColumn::make('descripción'),
-                Tables\Columns\TextColumn::make('estado'),
-                Tables\Columns\TextColumn::make('fase'),
+                Tables\Columns\TextColumn::make('descripcion')
+                    ->html(),
+                Tables\Columns\TextColumn::make('estado')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('fase')
+                    ->label('Origen')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('etiqueta')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Cliente')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('asesor.user.name')
-                    ->label('Asesor'),
+                    ->label('Asesor')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->label('Creado el')
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
+                Helpers::renderReloadTableAction(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

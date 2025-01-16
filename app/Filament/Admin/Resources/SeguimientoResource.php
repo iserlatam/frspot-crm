@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\SeguimientoResource\Pages;
 use App\Filament\Admin\Resources\SeguimientoResource\RelationManagers;
+use App\Helpers\Helpers;
 use App\Models\Asesor;
 use App\Models\Seguimiento;
 use App\Models\User;
@@ -22,39 +23,28 @@ class SeguimientoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
 
+    protected static ?string $activeNavigationIcon = 'heroicon-s-clipboard-document-list';
+
     protected static ?string $navigationGroup = 'Cuentas y movimientos';
 
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\Textarea::make('descripción')
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('estado')
-                    ->maxLength(20)
-                    ->default(null),
-                Forms\Components\TextInput::make('fase')
-                    ->maxLength(50)
-                    ->default(null),
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->default(null),
-                Forms\Components\Select::make('asesor_id')
-                    ->relationship('asesor', 'id') // Define la relación y la clave foránea
-                    ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
-                    ->default(null),
-            ]);
+            ->schema(Seguimiento::getForm());
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('descripción')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('descripcion')
+                    ->html(),
                 Tables\Columns\TextColumn::make('estado')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('fase')
+                    ->label('Origen')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('etiqueta')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Cliente')
@@ -64,10 +54,14 @@ class SeguimientoResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
+                    ->label('Creado el')
                     ->sortable(),
             ])
             ->filters([
                 //
+            ])
+            ->headerActions([
+                Helpers::renderReloadTableAction(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -90,8 +84,8 @@ class SeguimientoResource extends Resource
     {
         return [
             'index' => Pages\ListSeguimientos::route('/'),
-            'create' => Pages\CreateSeguimiento::route('/create'),
-            'edit' => Pages\EditSeguimiento::route('/{record}/edit'),
+            // 'create' => Pages\CreateSeguimiento::route('/create'),
+            // 'edit' => Pages\EditSeguimiento::route('/{record}/edit'),
         ];
     }
 }

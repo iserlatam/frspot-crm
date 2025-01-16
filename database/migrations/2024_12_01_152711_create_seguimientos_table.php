@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('seguimientos', function (Blueprint $table) {
             $table->id();
-            $table->text('descripción')->nullable();
+            $table->text('descripcion')->nullable();
             $table->string('estado', 20)->nullable();
             $table->string('fase', 50)->nullable();
+            $table->string('etiqueta', 50)->nullable();
             $table->foreignId('user_id')->nullable();
             $table->foreignId('asesor_id')->nullable();
             $table->timestamps();

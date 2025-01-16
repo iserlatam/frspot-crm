@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\CuentaClienteResource\Pages;
 
 use App\Filament\Admin\Resources\CuentaClienteResource;
+use App\Filament\Admin\Resources\CuentaClienteResource\Widgets\AccountInfoWidget;
 use App\Models\CuentaCliente;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -18,5 +19,12 @@ class EditCuentaCliente extends EditRecord
     public function getTitle(): string | Htmlable
     {
         return 'Editando cuenta - ID: ' . $this->data['id'];
+    }
+
+    public function getHeaderWidgets(): array
+    {
+        return [
+            AccountInfoWidget::class,
+        ];
     }
 }

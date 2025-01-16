@@ -5,6 +5,8 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\CuentaClienteResource\Pages;
 use App\Filament\Admin\Resources\CuentaClienteResource\RelationManagers;
 use App\Filament\Admin\Resources\CuentaClienteResource\RelationManagers\MovimientosRelationManager;
+use App\Filament\Admin\Resources\CuentaClienteResource\Widgets\AccountInfoWidget;
+use App\Helpers\Helpers;
 use App\Models\CuentaCliente;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -18,7 +20,9 @@ class CuentaClienteResource extends Resource
 {
     protected static ?string $model = CuentaCliente::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-wallet';
+    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+
+    protected static ?string $activeNavigationIcon = 'heroicon-s-currency-dollar';
 
     protected static ?string $navigationGroup = 'Cuentas y movimientos';
 
@@ -39,42 +43,36 @@ class CuentaClienteResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
+                    ->label('Número de cuenta'),
+                Tables\Columns\TextColumn::make('estado_cuenta')
+                    ->badge()
+                    ->color('success')
+                    ->formatStateUsing(function (): string {
+                        return 'Activa';
+                    }),
+                Tables\Columns\TextColumn::make('sistema_pago'),
+                Tables\Columns\TextColumn::make('divisa'),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Cliente')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('sistema_pago')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('divisa')
-                    ->searchable(),
-                Tables\Columns\IconColumn::make('estado_cuenta')
-                    ->boolean(),
+                Tables\Columns\TextColumn::make('user.id')
+                    ->label('ID del cliente'),
                 Tables\Columns\TextColumn::make('monto_total')
                     ->numeric()
-                    ->money()
+                    ->money('USDT')
                     ->sortable(),
-                // Tables\Columns\TextColumn::make('sum_dep')
-                //     ->numeric()
-                //     ->sortable(),
-                // Tables\Columns\TextColumn::make('no_dep')
-                //     ->searchable(),
-                // Tables\Columns\TextColumn::make('sum_retiros')
-                //     ->numeric()
-                //     ->sortable(),
-                // Tables\Columns\TextColumn::make('no_retiros')
-                //     ->searchable(),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                // Add a select filter to filter by account state.
+                Tables\Filters\SelectFilter::make('estado_cuenta')
+                    ->label('Estado de la cuenta')
+                    ->options([
+                        true => 'Activa',
+                        false => 'Inactiva',
+                    ]),
+            ])
+            ->headerActions([
+                Helpers::renderReloadTableAction(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -99,6 +97,13 @@ class CuentaClienteResource extends Resource
             'index' => Pages\ListCuentaClientes::route('/'),
             'create' => Pages\CreateCuentaCliente::route('/create'),
             'edit' => Pages\EditCuentaCliente::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            AccountInfoWidget::class,
         ];
     }
 }

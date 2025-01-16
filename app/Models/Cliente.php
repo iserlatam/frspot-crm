@@ -71,7 +71,8 @@ class Cliente extends Model implements HasMedia
                     Forms\Components\TextInput::make('identificacion')
                         ->maxLength(50)
                         ->default(null),
-                    Forms\Components\DatePicker::make('fecha_nacimiento'),
+                    Forms\Components\DatePicker::make('fecha_nacimiento')
+                        ->native(),
                     Forms\Components\Select::make('genero')
                         ->options([
                             'm' => 'Masculino',

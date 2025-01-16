@@ -5,18 +5,34 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Filament\Forms;
+use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    public function canAccessPanel(\Filament\Panel $panel): bool
+    {
+        if ($panel->getId() === 'admin') {
+            return $this->hasRole('super_admin') || $this->hasRole('asesor');
+        }
+
+        return true;
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -126,6 +142,26 @@ class User extends Authenticatable
     public function asignacion(): HasOne
     {
         return $this->hasOne(Asignacion::class);
+    }
+
+    public function assignNewAsesor($asesor_id): void
+    {
+        # I need to check if the Asignacion is already registered. Otherwise, I will create a new one.
+        $asignacion = Asignacion::where('user_id', $this->id)->first();
+
+        if ($asignacion) {
+            $asignacion->update([
+                'asesor_id' => $asesor_id,
+                'estado_asignacion' => true,
+            ]);
+            return;
+        }
+
+        Asignacion::create([
+            'user_id' => $this->id,
+            'asesor_id' => $asesor_id,
+            'estado_asignacion' => true,
+        ]);
     }
 
     public function asesor(): HasOne

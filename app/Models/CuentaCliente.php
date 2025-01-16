@@ -82,6 +82,7 @@ class CuentaCliente extends Model
 
     public function movimientos(): HasMany
     {
-        return $this->hasMany(Movimiento::class);
+        return $this->hasMany(Movimiento::class)
+            ->latest();
     }
 }

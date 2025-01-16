@@ -21,13 +21,15 @@ class AsignacionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
 
+    protected static ?string $activeNavigationIcon = 'heroicon-s-arrows-right-left';
+
     protected static ?string $navigationLabel = 'Asignaciones';
 
     protected static ?string $breadcrumb = 'Asignaciones';
 
-    protected static ?string $modelLabel = 'Asignaciones';
+    protected static ?string $modelLabel = 'Asignacion';
 
-    protected static ?string $activeNavigationIcon = 'heroicon-s-arrows-right-left';
+    protected static ?string $pluralModelLabel = 'Asignaciones';
 
     protected static ?string $navigationGroup = 'Gestión de perfiles';
 
@@ -37,7 +39,7 @@ class AsignacionResource extends Resource
             ->schema([
                 Forms\Components\Select::make('user_id')
                     ->relationship('userWithRoleCliente', 'name')
-                    ->label('cliente a asignar')
+                    ->label('Cliente a ser asignado')
                     ->searchable()
                     ->preload()
                     ->required(),
@@ -70,7 +72,7 @@ class AsignacionResource extends Resource
                 Tables\Columns\TextColumn::make('asesor.user.name')
                     ->label('Asesor asignado')
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('estado_asignacion')
+                Tables\Columns\TextColumn::make('estado_asignacion')
                     ->label('Estado de la asignacion')
                     ->badge()
                     ->color(function ($state) {
