@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('cuenta_clientes', function (Blueprint $table) {
             $table->ulid('id');
+            $table->string('metodo_pago')->nullable();
             $table->string('sistema_pago')->nullable();
             $table->text('billetera')->nullable();
             $table->string('divisa', 15)->nullable();

@@ -24,17 +24,26 @@ return new class extends Migration
             $table->string('celular', 25)->nullable();
             $table->string('telefono', 25)->nullable();
             $table->boolean('is_activo')->default(true);
-            $table->string('promocion', 50)->nullable();
+
             $table->string('estado_cliente', 50)->nullable();
             $table->string('fase_cliente', 50)->nullable();
+
+            // Amazon, Oro, Como entro
             $table->string('origenes', 60)->nullable();
+
+            // Cuestionario de estados unidos
             $table->string('infoeeuu')->nullable();
             $table->string('caso', 50)->nullable();
-            $table->string('tipo_doc_subm', 50)->nullable();
-            $table->string('activo_subm', 250)->nullable();
-            $table->string('metodo_pago', 25)->nullable();
-            $table->string('doc_soporte', 50)->nullable();
-            $table->text('archivo_soporte')->nullable();
+
+            $table->string('tipo_doc_id', 50)->nullable();
+            $table->text('file_id')->nullable();
+
+            $table->boolean('est_docs')->nullable()->default(false);
+
+            $table->string('tipo_doc_soporte', 50)->nullable();
+            $table->text('file_soporte')->nullable();
+
+            // Primer deposito
             $table->text('comprobante_pag')->nullable();
             $table->foreignId('user_id');
             $table->timestamps();

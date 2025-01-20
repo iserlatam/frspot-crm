@@ -9,6 +9,7 @@ use Filament\Pages\Auth\Register;
 use Illuminate\Support\HtmlString;
 use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
 use App\Enums\RegisterCuestionaryOptions as CuestionaryOption;
+use App\Helpers\Helpers;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use Filament\Events\Auth\Registered;
 use Filament\Facades\Filament;
@@ -53,6 +54,36 @@ class Registration extends Register
             return $user;
         });
 
+        // dd($this->data);
+
+        // Registrar informacion del cliente
+        $user->cliente()->create([
+            'nombre_completo' => $this->data['nombre_completo'],
+            'identificacion' => $this->data['tipo_documento_identidad'],
+            'fecha_nacimiento' => $this->data['fecha_nacimiento'],
+            'pais' => $this->data['pais'],
+            'ciudad' => $this->data['ciudad'],
+            'direccion' => $this->data['direccion'],
+            'cod_postal' => $this->data['codigo_postal'],
+            'celular' => $this->data['telefono'],
+            'is_activo' => true,
+            'promocion' => 'N/A',
+            'estado_cliente' => 'nuevo',
+            'fase_cliente' => 'nuevo',
+            'origenes' => 'N/A',
+            'infoeeuu' => 'N/A',
+            'caso' => $this->data['caso'],
+            'tipo_doc_subm' => $this->data['tipo_documento_soporte'],
+            'activo_subm' => 'N/A',
+            'metodo_pago' => $this->data['entidad'],
+            'doc_soporte' => $this->data['documento_soporte'],
+            'archivo_soporte' => $this->data['documento_soporte'],
+            'comprobante_pag' => 'N/A',
+        ]);
+
+        // Abrir nueva cuenta
+
+
         event(new Registered($user));
 
         $this->sendEmailVerificationNotification($user);
@@ -70,18 +101,19 @@ class Registration extends Register
             ->schema([
                 Wizard::make([
                     Wizard\Step::make(label: 'Cuenta')
-                        ->afterValidation(function (Get $get){
+                        ->afterValidation(function (Get $get) {
                             $code = $get('verification_code');
 
-                            if ($code === env('VERIFICATION_CODE')) {
-                                return false;
+                            if ($code != env('VERIFICATION_CODE')) {
+                                Helpers::sendErrorNotification('El codigo de verificacion es incorrecto');
+                                throw new Halt('El codigo de verificacion es incorrecto');
                             }
 
-                            return new Halt('El codigo de verificacion es incorrecto');
+                            return true;
                         })
                         ->schema([
                             // Nombre completo
-                            Forms\Components\TextInput::make('name')
+                            Forms\Components\TextInput::make('nombre_completo')
                                 ->label('Nombre completo:')
                                 ->required()
                                 ->autofocus(),
@@ -131,9 +163,19 @@ class Registration extends Register
                                 ->required(),
                         ]),
                     Wizard\Step::make('Cuestionario')
+                        ->afterValidation(function (Get $get) {
+                            $code = $get('est_tributario_usa');
+
+                            if ($code != false) {
+                                Helpers::sendErrorNotification('No es posible realizar el registro');
+                                throw new Halt();
+                            }
+
+                            return true;
+                        })
                         ->schema([
                             // Terminos y condiciones
-                            Forms\Components\Radio::make('esta_tributario_usa')
+                            Forms\Components\Radio::make('est_tributario_usa')
                                 ->label('¿Soy una persona de la que hay que informar en Estados Unidos?')
                                 ->boolean()
                                 ->inline()
@@ -221,7 +263,7 @@ class Registration extends Register
                                     </span>
                                     ')),
                         ]),
-                    ]),
+                ]),
                 // ->skippable()
             ]);
     }
