@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Client\Pages\Auth\Login;
+use App\Filament\Client\Pages\Auth\Registration;
 use App\Filament\Client\Resources\UserResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -31,7 +33,8 @@ class ClientPanelProvider extends PanelProvider
                 'primary' => Color::Blue,
                 'secondary' => Color::Gray,
             ])
-            ->login()
+            ->login(Login::class)
+            ->registration(Registration::class)
             ->spa()
             ->discoverResources(in: app_path('Filament/Client/Resources'), for: 'App\\Filament\\Client\\Resources')
             ->discoverPages(in: app_path('Filament/Client/Pages'), for: 'App\\Filament\\Client\\Pages')
