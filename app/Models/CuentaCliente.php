@@ -19,6 +19,7 @@ class CuentaCliente extends Model
      * @var array
      */
     protected $fillable = [
+        'metodo_pago',
         'sistema_pago',
         'billetera',
         'divisa',

@@ -11,8 +11,11 @@ use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
 use App\Enums\RegisterCuestionaryOptions as CuestionaryOption;
 use App\Helpers\Helpers;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
+use Filament\Actions\Action;
 use Filament\Events\Auth\Registered;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\Livewire;
 use Filament\Forms\Get;
 use Filament\Http\Responses\Auth\Contracts\RegistrationResponse;
 use Filament\Support\Exceptions\Halt;
@@ -21,6 +24,17 @@ use Filament\Support\RawJs;
 class Registration extends Register
 {
     protected static string $view = 'filament.client.pages.auth.registration';
+
+    public function getRegisterFormAction(): Action
+    {
+        return Action::make('register')
+            ->label(__('filament-panels::pages/auth/register.form.actions.register.label'))
+            ->visible(function (Component $component) {
+                // dd($component);
+                return true;
+            })
+            ->submit('register');
+    }
 
     public function register(): ?RegistrationResponse
     {
@@ -64,25 +78,25 @@ class Registration extends Register
             'pais' => $this->data['pais'],
             'ciudad' => $this->data['ciudad'],
             'direccion' => $this->data['direccion'],
-            'cod_postal' => $this->data['codigo_postal'],
+            'cod_postal' => $this->data['cod_postal'],
             'celular' => $this->data['telefono'],
             'is_activo' => true,
-            'promocion' => 'N/A',
-            'estado_cliente' => 'nuevo',
-            'fase_cliente' => 'nuevo',
-            'origenes' => 'N/A',
-            'infoeeuu' => 'N/A',
+            'estado_cliente' => 'New',
+            'fase_cliente' => 'New',
+            'infoeeuu' => $this->data['infoeeuu'],
             'caso' => $this->data['caso'],
-            'tipo_doc_subm' => $this->data['tipo_documento_soporte'],
-            'activo_subm' => 'N/A',
-            'metodo_pago' => $this->data['entidad'],
-            'doc_soporte' => $this->data['documento_soporte'],
-            'archivo_soporte' => $this->data['documento_soporte'],
-            'comprobante_pag' => 'N/A',
+            'tipo_doc_id' => $this->data['tipo_doc_id'],
+            'file_id' => $this->data['file_id'],
+            'tipo_doc_soporte' => $this->data['tipo_doc_soporte'],
+            'file_soporte' => $this->data['file_soporte'],
+            'comprobante_pag' => $this->data['comprobante_pag'],
         ]);
 
         // Abrir nueva cuenta
-
+        $user->cuentaCliente()->create([
+            'metodo_pago' => $this->data['metodo_pago'] ?? '',
+            'monto_total' => $this->data['monto'] ?? 0,
+        ]);
 
         event(new Registered($user));
 
@@ -144,7 +158,7 @@ class Registration extends Register
                                 ->label('Direccion:')
                                 ->required(),
                             // Codigo postal
-                            Forms\Components\TextInput::make('codigo_postal')
+                            Forms\Components\TextInput::make('cod_postal')
                                 ->label('Codigo postal:')
                                 ->required(),
                             // Ciudad
@@ -164,7 +178,7 @@ class Registration extends Register
                         ]),
                     Wizard\Step::make('Cuestionario')
                         ->afterValidation(function (Get $get) {
-                            $code = $get('est_tributario_usa');
+                            $code = $get('infoeeuu');
 
                             if ($code != false) {
                                 Helpers::sendErrorNotification('No es posible realizar el registro');
@@ -175,7 +189,7 @@ class Registration extends Register
                         })
                         ->schema([
                             // Terminos y condiciones
-                            Forms\Components\Radio::make('est_tributario_usa')
+                            Forms\Components\Radio::make('infoeeuu')
                                 ->label('¿Soy una persona de la que hay que informar en Estados Unidos?')
                                 ->boolean()
                                 ->inline()
@@ -194,16 +208,19 @@ class Registration extends Register
                                 ->required(),
                         ]),
                     Wizard\Step::make('Documentos')
+                        ->afterValidation(function (Livewire $livewire) {
+                            dd($livewire);
+                        })
                         ->schema([
                             // Documento de identidad
-                            Forms\Components\Select::make('tipo_documento_identidad')
+                            Forms\Components\Select::make('tipo_doc_id')
                                 ->label('Tipo de documento de identificacion:')
                                 ->options([
                                     'cedula' => 'Cedula',
                                     'pasaporte' => 'Pasaporte',
                                 ])
                                 ->required(),
-                            Forms\Components\SpatieMediaLibraryFileUpload::make('documento_identidad')
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('file_id')
                                 ->label('Sube el documento de identificacion:')
                                 ->collection('users_id_documents')
                                 ->required()
@@ -226,10 +243,10 @@ class Registration extends Register
                                     </span>
                                 ')),
                             // Documento de soporte
-                            Forms\Components\TextInput::make('tipo_documento_soporte')
+                            Forms\Components\TextInput::make('tipo_doc_soporte')
                                 ->label('Tipo de documento de soporte:')
                                 ->required(),
-                            Forms\Components\SpatieMediaLibraryFileUpload::make('documento_soporte')
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('file_soporte')
                                 ->label('Sube el documento de soporte:')
                                 ->collection('users_support_documents')
                                 ->required(),
@@ -241,7 +258,7 @@ class Registration extends Register
                                 ->numeric()
                                 ->mask(RawJs::make('$money($input)'))
                                 ->stripCharacters(','),
-                            Forms\Components\Select::make('entidad')
+                            Forms\Components\Select::make('metodo_pago')
                                 ->label('Elije tu metodo de pago preferido:')
                                 ->options([
                                     'theter' => 'Theter',
@@ -262,9 +279,12 @@ class Registration extends Register
                                         </div>
                                     </span>
                                     ')),
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('comprobante_pag')
+                                ->label('Sube el documento de soporte:')
+                                ->collection('newusers_comprobantes')
+                                ->required(),
                         ]),
-                ]),
-                // ->skippable()
+                    ])
             ]);
     }
 }
