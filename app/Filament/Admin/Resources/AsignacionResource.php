@@ -47,6 +47,7 @@ class AsignacionResource extends Resource
                     ->relationship('asesor', 'id') // Define la relación y la clave foránea
                     ->searchable()
                     ->preload()
+                    ->required()
                     ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
                     ->default(null),
                 Forms\Components\Toggle::make('estado_asignacion')

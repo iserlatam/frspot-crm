@@ -136,7 +136,7 @@ class Cliente extends Model implements HasMedia
                                     'Active' => 'Active',
                                     'No interested' => 'No interested',
                                     'Invalid number' => 'Invalid number',
-                                    'Stateless  '  => 'Stateless',
+                                    'Stateless'  => 'Stateless',
                                 ]),
 
                             Forms\Components\TextInput::make('fase_cliente')
