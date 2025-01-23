@@ -9,12 +9,12 @@
     <div class="text-center">
         <h3 class='text-2xl uppercase font-semibold'>Contenido</h3>
 
-        <ul class='mt-3 md:w-max text-left mx-auto'>
-            <li class='font-bold list-disc'>Qué es un Gráfico de Trading</li>
-            <li class='font-bold list-disc'>Cómo acceder a Gráficos de Trading en tiempo real</li>
-            <li class='font-bold list-disc'>Cómo leer Gráficos de Trading en 4 pasos</li>
-            <li class='font-bold list-disc'>Cómo entender los Gráficos de Velas Japonesas en trading</li>
-            <li class='font-bold list-disc'>Aprender a leer Gráficos de Forex - Conclusión</li>
+        <ul class='mt-3 md:w-max text-center mx-auto'>
+            <li class='font-bold '>Qué es un Gráfico de Trading</li>
+            <li class='font-bold '>Cómo acceder a Gráficos de Trading en tiempo real</li>
+            <li class='font-bold '>Cómo leer Gráficos de Trading en 4 pasos</li>
+            <li class='font-bold '>Cómo entender los Gráficos de Velas Japonesas en trading</li>
+            <li class='font-bold '>Aprender a leer Gráficos de Forex - Conclusión</li>
         </ul>
     </div>
 

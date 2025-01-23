@@ -27,19 +27,17 @@
       <h3 class="text-2xl uppercase font-semibold">
         Los 10 mejores indicadores de trading
       </h3>
-      <ul class="mt-4 md:w-max mx-auto text-left">
-        <li class="font-bold list-disc">Media móvil (MA)</li>
-        <li class="font-bold list-disc">Media móvil exponencial (EMA)</li>
-        <li class="font-bold list-disc">Oscilador estocástico</li>
-        <li class="font-bold list-disc">
-          Convergencia/divergencia de medias móviles (MACD)
-        </li>
-        <li class="font-bold list-disc">Bandas de Bollinger</li>
-        <li class="font-bold list-disc">Índice de fuerza relativo (RSI)</li>
-        <li class="font-bold list-disc">Retrocesos de Fibonacci</li>
-        <li class="font-bold list-disc">Nube de Ichimoku</li>
-        <li class="font-bold list-disc">Desviación estándar</li>
-        <li class="font-bold list-disc">Índice de promedio direccional</li>
+      <ul class="mt-4 md:w-max mx-auto text-center">
+        <li class="font-bold ">Media móvil (MA)</li>
+        <li class="font-bold ">Media móvil exponencial (EMA)</li>
+        <li class="font-bold ">Oscilador estocástico</li>
+        <li class="font-bold ">Convergencia/divergencia de medias móviles (MACD)</li>
+        <li class="font-bold ">Bandas de Bollinger</li>
+        <li class="font-bold ">Índice de fuerza relativo (RSI)</li>
+        <li class="font-bold ">Retrocesos de Fibonacci</li>
+        <li class="font-bold ">Nube de Ichimoku</li>
+        <li class="font-bold ">Desviación estándar</li>
+        <li class="font-bold ">Índice de promedio direccional</li>
       </ul>
     </div>
 

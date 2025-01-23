@@ -19,28 +19,28 @@
 
 
         <h3 class='uppercase font-bold text-center text-2xl mb-4 '>Contenido</h3>
-        <ul class='font-bold md:w-max mx-auto '>           
-            <li class="font-bold list-disc"> Qué son las señales de trading y cómo funcionan
+        <ul class='font-bold md:w-max mx-auto list-none text-center'>           
+            <li class="font-bold "> Qué son las señales de trading y cómo funcionan
             </li>
-            <li class="font-bold list-disc"> Tipos de señales de trading
+            <li class="font-bold "> Tipos de señales de trading
             </li>
-            <li class="font-bold list-disc"> Tipos de alertas de trading según los análisis
+            <li class="font-bold "> Tipos de alertas de trading según los análisis
             </li>
-            <li class="font-bold list-disc"> Proveedores de señales de trading
+            <li class="font-bold "> Proveedores de señales de trading
             </li>
-            <li class="font-bold list-disc"> Cómo encontrar los mejores proveedores de señales en 4 pasos
+            <li class="font-bold "> Cómo encontrar los mejores proveedores de señales en 4 pasos
             </li>
-            <li class="font-bold list-disc"> Beneficios de las señales para operar en Bolsa
+            <li class="font-bold "> Beneficios de las señales para operar en Bolsa
             </li>
-            <li class="font-bold list-disc"> Ejemplo de señales de trading en MetaTrader
+            <li class="font-bold "> Ejemplo de señales de trading en MetaTrader
             </li>
-            <li class="font-bold list-disc"> Cómo convertirte en proveedor de señales
+            <li class="font-bold "> Cómo convertirte en proveedor de señales
             </li>
-            <li class="font-bold list-disc"> Ventajas de las señales de trading
+            <li class="font-bold "> Ventajas de las señales de trading
             </li>
-            <li class="font-bold list-disc"> Desventajas Señales de Trading
+            <li class="font-bold "> Desventajas Señales de Trading
             </li>
-            <li class="font-bold list-disc"> Señales de trading - Conclusión
+            <li class="font-bold "> Señales de trading - Conclusión
             </li>           
         </ul>
     </div >
