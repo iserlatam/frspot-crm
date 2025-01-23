@@ -41,6 +41,14 @@ class CuentaClienteResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(
+                cuentaCliente::query()
+                ->whereHas('user', function (Builder $query) {
+                    $query->whereHas('roles', function ($query) {
+                        $query->where('name', 'cliente');
+                    });
+                })
+            )
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('Número de cuenta'),
