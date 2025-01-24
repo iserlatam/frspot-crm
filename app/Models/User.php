@@ -114,7 +114,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
                              *  DIRECTAMENTE A ESTE USUARIO
                              *
                              */
-                            Forms\Components\Fieldset::make('cliente')
+                            Forms\Components\Section::make('cliente')
                                 ->relationship('cliente')
                                 ->label('Datos personales y de pago')
                                 ->schema(Cliente::getForm()),
