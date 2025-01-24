@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\MovimientoResource\Pages;
 use App\Filament\Admin\Resources\MovimientoResource\RelationManagers;
 use App\Helpers\Helpers;
 use App\Models\CuentaCliente;
+use App\Models\Cliente;
 use App\Models\Movimiento;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -58,7 +59,13 @@ class MovimientoResource extends Resource
                             ->numeric(),
                         Forms\Components\Select::make('cuenta_cliente_id')
                             ->columnSpan(3)
-                            ->relationship('cuentaCliente', 'id')
+                            ->relationship('cuentaCliente', 'id', function (Builder $query) {
+                                $query->whereHas('user', function ($query) {
+                                    $query->whereHas('roles', function ($query) {
+                                        $query->where('name', 'cliente');
+                                    });
+                                });
+                            })
                             ->label('Número de cuenta del cliente')
                             ->searchable()
                             ->preload()

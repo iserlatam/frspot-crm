@@ -7,6 +7,7 @@ use Filament\Tables;
 use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Filament\Forms;
+use Filament\Forms\Components\Builder;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 class AccountsTable extends BaseWidget
@@ -19,8 +20,14 @@ class AccountsTable extends BaseWidget
     {
         return $table
             ->query(
-                CuentaCliente::query()->latest()
-            )
+                CuentaCliente::query()
+                    ->whereHas('user', function ($query){
+                        $query->whereHas('roles',function($query){
+                            $query->where('name','cliente');
+                        });
+                    })
+                )
+                
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('Número de cuenta'),

@@ -186,9 +186,14 @@ class Movimiento extends Model implements HasMedia
             );
         }
     }
-
-    public function cuentaCliente(): BelongsTo
-    {
-        return $this->belongsTo(CuentaCliente::class);
-    }
+    
+        public function cuentaCliente(): BelongsTo
+        {
+            return $this->belongsTo(CuentaCliente::class);
+        }
+    
+        public function cliente(): BelongsTo
+        {
+            return $this->belongsTo(Cliente::class);
+        }
 }
