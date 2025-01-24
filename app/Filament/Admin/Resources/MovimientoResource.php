@@ -29,6 +29,21 @@ class MovimientoResource extends Resource
 
     protected static ?string $navigationGroup = 'Cuentas y movimientos';
 
+    /**
+     *  EN ESTE ESPACIO SE USA EL METODO shouldRegisterNavigation PARA DETERMINAR SI EL USUARIO
+     *  TIENE PERMISOS PARA VER EL RECURSO EN EL PANEL DE ADMINISTRACION
+     *  @return bool
+     */
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Helpers::isSuperAdmin();
+    }
+
+    public static function canAccess(): bool
+    {
+        return Helpers::isSuperAdmin();
+    }
+
     public static function form(Form $form): Form
     {
         return $form

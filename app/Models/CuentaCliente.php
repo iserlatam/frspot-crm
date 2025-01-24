@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Helpers;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -53,17 +54,21 @@ class CuentaCliente extends Model
             Forms\Components\Grid::make()
                 ->columns(3)
                 ->schema([
-                    Forms\Components\Textarea::make('billetera')
+                    Forms\Components\TextInput::make('billetera')
                         // ->default('fr-')
                         ->columnSpanFull(),
                     Forms\Components\TextInput::make('sistema_pago')
                         ->maxLength(255)
                         ->default(null),
+                    Forms\Components\TextInput::make('metodo_pago')
+                        ->maxLength(50)
+                        ->default(null),
                     Forms\Components\TextInput::make('divisa')
                         ->maxLength(15)
                         ->default(null),
-                        Forms\Components\Toggle::make('estado_cuenta')
+                    Forms\Components\Toggle::make('estado_cuenta')
                         ->helperText('Estado actual de la cuenta')
+                        ->visible(fn () => Helpers::isSuperAdmin())
                         ->label(function ($state) {
                             return $state ? 'Activa' : 'Inactiva';
                         })

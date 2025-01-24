@@ -107,18 +107,15 @@ class User extends Authenticatable implements FilamentUser, HasMedia
                                 ]),
                         ]),
                     Forms\Components\Tabs\Tab::make('Perfil')
-                        ->schema([
+                        ->schema(
                             /**
                              *
                              *  INFORMACION DEL CLIENTE RELACIONADA
                              *  DIRECTAMENTE A ESTE USUARIO
                              *
                              */
-                            Forms\Components\Section::make('cliente')
-                                ->relationship('cliente')
-                                ->label('Datos personales y de pago')
-                                ->schema(Cliente::getForm()),
-                        ]),
+                            Cliente::getForm(),
+                        ),
                     Forms\Components\Tabs\Tab::make('Cuenta del cliente')
                         ->schema([
                             /**

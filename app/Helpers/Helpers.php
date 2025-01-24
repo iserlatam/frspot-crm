@@ -20,6 +20,11 @@ class Helpers extends NotificationHelpers
         return auth()->user()->hasRole('master');
     }
 
+    public static function isAsesor(): bool
+    {
+        return auth()->user()->hasRole('asesor');
+    }
+
     public static function isOwner(): bool
     {
         return auth()->user()->hasRole(['super_admin','master']);

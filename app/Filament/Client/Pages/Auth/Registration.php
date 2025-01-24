@@ -188,7 +188,6 @@ class Registration extends Register
                             return true;
                         })
                         ->schema([
-                            // Terminos y condiciones
                             Forms\Components\Radio::make('infoeeuu')
                                 ->label('¿Soy una persona de la que hay que informar en Estados Unidos?')
                                 ->boolean()

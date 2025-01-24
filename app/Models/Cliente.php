@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\RegisterCuestionaryOptions;
+use App\Helpers\Helpers;
 use Filament\Forms;
 use Filament\Forms\Components\Wizard;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,17 +33,23 @@ class Cliente extends Model implements HasMedia
         'celular',
         'telefono',
         'is_activo',
-        'promocion',
+
         'estado_cliente',
         'fase_cliente',
+
         'origenes',
+
         'infoeeuu',
         'caso',
-        'tipo_doc_subm',
-        'activo_subm',
-        'metodo_pago',
-        'doc_soporte',
-        'archivo_soporte',
+
+        'tipo_doc_id',
+        'file_id',
+
+        'est_docs',
+
+        'tipo_doc_soporte',
+        'file_soporte',
+
         'comprobante_pag',
         'user_id',
     ];
@@ -60,10 +68,11 @@ class Cliente extends Model implements HasMedia
 
     public static function getForm(): array
     {
-        return 
+        return
             [
                 Wizard::make([
                     Wizard\Step::make('Informacion Personal')
+                        ->columns(2)
                         ->schema([
                             Forms\Components\TextInput::make('nombre_completo')
                                 ->maxLength(150)
@@ -100,10 +109,18 @@ class Cliente extends Model implements HasMedia
                         ]),
                     Wizard\Step::make('Informacion de Marketing')
                         ->schema([
-                            Forms\Components\Section::make('informacion de seguimientos')
+                            Forms\Components\Section::make('Informacion de seguimientos')
                                 ->columns(3)
                                 ->schema([
-                                    Forms\Components\Select::make('estado')
+                                    Forms\Components\Toggle::make('is_activo')
+                                        ->visible(fn() => Helpers::isSuperAdmin())
+                                        ->helperText('Estado actual de la asignacion')
+                                        ->label(function ($state) {
+                                            return $state ? 'Activo' : 'Inactivo';
+                                        })
+                                        ->live()
+                                        ->default(1),
+                                    Forms\Components\Select::make('estado_cliente')
                                         ->options([
                                             'New' => 'New',
                                             'No answer' => 'No answer',
@@ -118,7 +135,7 @@ class Cliente extends Model implements HasMedia
                                             'Invalid number' => 'Invalid number',
                                             'Stateless  '  => 'Stateless',
                                         ]),
-                                    Forms\Components\Select::make('estado_cliente')
+                                    Forms\Components\Select::make('fase_cliente')
                                         ->options([
                                             'New' => 'New',
                                             'No answer' => 'No answer',
@@ -133,67 +150,64 @@ class Cliente extends Model implements HasMedia
                                             'Invalid number' => 'Invalid number',
                                             'Stateless'  => 'Stateless',
                                         ]),
-
-                                    Forms\Components\TextInput::make('fase_cliente')
-                                        ->maxLength(50)
-                                        ->default(null),
-                                ]),
-                            Forms\Components\Grid::make('3')
-                                ->schema([
-                                    Forms\Components\TextInput::make('promocion')
-                                        ->maxLength(1)
-                                        ->default(null),
-                                    Forms\Components\TextInput::make('origenes')
-                                        ->maxLength(60)
-                                        ->default(null),
-                                    Forms\Components\TextInput::make('infoeeuu')
-                                        ->maxLength(255)
-                                        ->default(null),
-                                ]),
-                            Forms\Components\Grid::make('3')
-                                ->schema([
-                                    Forms\Components\TextInput::make('caso')
-                                        ->maxLength(20)
-                                        ->default(null),
-                                    Forms\Components\TextInput::make('tipo_doc_subm')
-                                        ->maxLength(50)
-                                        ->default(null),
-                                    Forms\Components\TextInput::make('activo_subm')
-                                        ->maxLength(250)
-                                        ->default(null),
+                                    Forms\Components\Select::make('origenes')
+                                        ->options([
+                                            'AMZN' => 'AMZN',
+                                            'AMZN200' => 'AMZN200',
+                                            'AMZN280' => 'AMZN280',
+                                            'BTC' => 'BTC',
+                                            'PETROLEO' => 'PETROLEO',
+                                            'APPLE' => 'APPLE',
+                                            'CURSOS' => 'CURSOS',
+                                            'PETROBLAS' => 'PETROBLAS',
+                                            'XAUUSD' => 'XAUUSD',
+                                            'TESLA' => 'TESLA',
+                                            'INGRESOS_EXTRAS' => 'INGRESOS EXTRAS',
+                                            'FRSPOT' => 'FRSPOT',
+                                            'Conferencia_Musk' => 'Conferencia Musk',
+                                            'COCA-COLA' => 'COCA-COLA',
+                                            'ENTEL' => 'ENTEL',
+                                            'BIMBO' => 'BIMBO',
+                                        ]),
                                 ]),
                         ]),
-                    Wizard\Step::make('Información de Pago')
+                    Wizard\Step::make('Cuestionario')
+                        ->columns(2)
                         ->schema([
-                            Forms\Components\Grid::make()
-                                ->columns(3)
-                                ->schema([
-                                    Forms\Components\Textarea::make('billetera')
-                                        ->columnSpanFull(),
-                                    Forms\Components\Select::make('metodo_pago')
-                                        ->options([
-                                            'cripto' => 'CRIPTO',
-                                            'credito' => 'CREDITO',
-                                            'thether' => 'THETHER',
-                                        ])
-                                        ->default(null),
-                                    Forms\Components\TextInput::make('doc_soporte')
-                                        ->maxLength(50)
-                                        ->default(null),
-                                    Forms\Components\TextInput::make('divisa')
-                                        ->maxLength(15)
-                                        ->default(null),
-                                ]),
+                            Forms\Components\TextInput::make('infoeeuu')
+                                ->label('Informo en Estados Unidos?')
+                                ->readOnly(),
+                            Forms\Components\TextInput::make('caso')
+                                ->label('Caso seleccionado:')
+                                ->readOnly(),
+                        ]),
+                    Wizard\Step::make('Documentos subidos')
+                        ->schema([
                             Forms\Components\Grid::make()
                                 ->columns(2)
                                 ->schema([
-                                    Forms\Components\SpatieMediaLibraryFileUpload::make('archivo_soporte')
-                                        ->collection('clientes_payment_files'),
-                                    Forms\Components\SpatieMediaLibraryFileUpload::make('comprobante_pag')
-                                        ->collection('clientes_payment_files'),
+                                    Forms\Components\TextInput::make('tipo_doc_id')
+                                        ->datalist([
+                                            'DNI',
+                                            'PASAPORTE'
+                                        ])
+                                        ->default(null),
+                                    Forms\Components\SpatieMediaLibraryFileUpload::make('file_id')
+                                        ->collection('users_id_documents')
+                                        ->default(null),
+                                    Forms\Components\TextInput::make('tipo_doc_soporte')
+                                        ->datalist([
+                                            'SERVICIOS PUBLICOS',
+                                        ])
+                                        ->default(null),
+                                    Forms\Components\SpatieMediaLibraryFileUpload::make('file_soporte')
+                                        ->collection('users_support_documents')
+                                        ->default(null),
                                 ]),
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('comprobante_pag')
+                                ->collection('clientes_payment_files'),
                         ]),
-                    ])
+                ])
             ];
     }
 
