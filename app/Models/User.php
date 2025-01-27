@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Helpers\Helpers;
 use Filament\Forms;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -30,7 +31,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
         if ($panel->getId() === 'admin') {
-            return $this->hasRole('super_admin') || $this->hasRole('asesor');
+            return Helpers::isAsesor() || Helpers::isSuperAdmin();
         }
 
         return true;
@@ -107,15 +108,18 @@ class User extends Authenticatable implements FilamentUser, HasMedia
                                 ]),
                         ]),
                     Forms\Components\Tabs\Tab::make('Perfil')
-                        ->schema(
+                        ->schema([
                             /**
                              *
                              *  INFORMACION DEL CLIENTE RELACIONADA
                              *  DIRECTAMENTE A ESTE USUARIO
                              *
                              */
-                            Cliente::getForm(),
-                        ),
+                            Forms\Components\Fieldset::make('cliente')
+                                ->relationship('cliente')
+                                ->label('Informacion personal del cliente')
+                                ->schema(Cliente::getForm())
+                        ]),
                     Forms\Components\Tabs\Tab::make('Cuenta del cliente')
                         ->schema([
                             /**
