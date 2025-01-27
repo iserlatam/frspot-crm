@@ -42,7 +42,6 @@ class UserResource extends Resource
             ->schema(User::getForm());
     }
 
-
     public static function table(Table $table): Table
     {
         return $table
@@ -52,6 +51,9 @@ class UserResource extends Resource
             //     })
             // )
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
