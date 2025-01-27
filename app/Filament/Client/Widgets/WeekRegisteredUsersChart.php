@@ -2,6 +2,7 @@
 
 namespace App\Filament\Client\Widgets;
 
+use App\Helpers\Helpers;
 use Filament\Widgets\ChartWidget;
 
 class WeekRegisteredUsersChart extends ChartWidget
@@ -9,6 +10,11 @@ class WeekRegisteredUsersChart extends ChartWidget
     protected static ?string $heading = 'Usuarios registrados esta semana';
 
     protected static ?string $description = 'Cantidad de usuarios registrados en la semana actual.';
+
+    public static function canView(): bool
+    {
+        return Helpers::isSuperAdmin();
+    }
 
     protected function getData(): array
     {

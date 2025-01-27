@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\RegisterCuestionaryOptions;
 use App\Helpers\Helpers;
 use Filament\Forms;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Wizard;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -208,6 +209,7 @@ class Cliente extends Model implements HasMedia
                                 ->collection('clientes_payment_files'),
                         ]),
                 ])
+                ->skippable()
             ];
     }
 

@@ -25,14 +25,13 @@ class Registration extends Register
 {
     protected static string $view = 'filament.client.pages.auth.registration';
 
+    public $showSubmitButton = true;
+
     public function getRegisterFormAction(): Action
     {
         return Action::make('register')
             ->label(__('filament-panels::pages/auth/register.form.actions.register.label'))
-            ->visible(function (Component $component) {
-                // dd($component);
-                return true;
-            })
+            ->hidden(fn () => $this->showSubmitButton)
             ->submit('register');
     }
 
@@ -51,7 +50,7 @@ class Registration extends Register
 
             $data = $this->form->getState();
 
-            dd($data);
+            // dd($data);
 
             $this->callHook('afterValidate');
 
@@ -70,10 +69,12 @@ class Registration extends Register
 
         // dd($this->data);
 
+        $user->assignRole('cliente');
+
         // Registrar informacion del cliente
         $user->cliente()->create([
             'nombre_completo' => $this->data['nombre_completo'],
-            'identificacion' => $this->data['tipo_documento_identidad'],
+            'identificacion' => '',
             'fecha_nacimiento' => $this->data['fecha_nacimiento'],
             'pais' => $this->data['pais'],
             'ciudad' => $this->data['ciudad'],
@@ -86,10 +87,7 @@ class Registration extends Register
             'infoeeuu' => $this->data['infoeeuu'],
             'caso' => $this->data['caso'],
             'tipo_doc_id' => $this->data['tipo_doc_id'],
-            'file_id' => $this->data['file_id'],
             'tipo_doc_soporte' => $this->data['tipo_doc_soporte'],
-            'file_soporte' => $this->data['file_soporte'],
-            'comprobante_pag' => $this->data['comprobante_pag'],
         ]);
 
         // Abrir nueva cuenta
@@ -97,6 +95,11 @@ class Registration extends Register
             'metodo_pago' => $this->data['metodo_pago'] ?? '',
             'monto_total' => $this->data['monto'] ?? 0,
         ]);
+
+        // Asignar un asesor por defecto
+        // $user->asesor()->create([
+        //     'asesor_id' => 1,
+        // ]);
 
         event(new Registered($user));
 
@@ -133,6 +136,7 @@ class Registration extends Register
                                 ->autofocus(),
                             // Email
                             $this->getEmailFormComponent()
+                                ->helperText('Este correo sera utilizado para iniciar sesion..')
                                 ->label('Correo electronico:'),
                             // Telefono
                             Forms\Components\TextInput::make('telefono')
@@ -140,6 +144,7 @@ class Registration extends Register
                                 ->required(),
                             // Nombre de usuario
                             $this->getNameFormComponent()
+                                ->helperText('Este nombre sera utilizado para identificar tu usuario en el sistema.')
                                 ->label('Nombre de usuario:'),
                             // Contraseña
                             $this->getPasswordFormComponent()
@@ -207,8 +212,9 @@ class Registration extends Register
                                 ->required(),
                         ]),
                     Wizard\Step::make('Documentos')
-                        ->afterValidation(function (Livewire $livewire) {
-                            dd($livewire);
+                        ->afterValidation(function () {
+                            // dd($livewire); AQUI ES DONDE ESTOY INTENTANDO OBTENER EL COMPONENTE DEL BOTON PARA MOSTRARLO
+                            $this->showSubmitButton = false;
                         })
                         ->schema([
                             // Documento de identidad
@@ -223,8 +229,8 @@ class Registration extends Register
                                 ->label('Sube el documento de identificacion:')
                                 ->collection('users_id_documents')
                                 ->required()
-                                ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png'])
-                                ->maxSize(15000) // 15MB in KB
+                                // ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png'])
+                                 // 15MB in KB
                                 ->helperText(new HtmlString('
                                     <span style="font-size: 14px">
                                         <b>Nota importante:</b>
@@ -280,8 +286,7 @@ class Registration extends Register
                                     ')),
                             Forms\Components\SpatieMediaLibraryFileUpload::make('comprobante_pag')
                                 ->label('Sube el documento de soporte:')
-                                ->collection('newusers_comprobantes')
-                                ->required(),
+                                ->collection('newusers_comprobantes'),
                         ]),
                     ])
             ]);
