@@ -7,6 +7,7 @@ use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserImporter extends Importer
@@ -20,43 +21,46 @@ class UserImporter extends Importer
                 ->requiredMapping(),
             ImportColumn::make('email')
                 ->requiredMapping(),
-            ImportColumn::make('celular')
-                ->requiredMapping(false),
-            ImportColumn::make('pais')
-                ->requiredMapping(false),
-            ImportColumn::make('origen')
-                ->requiredMapping(false),
+            // ImportColumn::make('phone')
+            //     ->requiredMapping(false),
+            // ImportColumn::make('country')
+            //     ->requiredMapping(false),
+            // ImportColumn::make('origenes')
+            //     ->requiredMapping(false),
         ];
     }
 
     public function resolveRecord(): ?User
     {
-        $user = User::create([
-            'name' => substr($this->data['name'], 4) .  random_int(0000, 9999),
-            'email' => $this->data['email'],
-            'password' => Hash::make('Aa123456'),
-        ])->assignRole('cliente');
+        return DB::transaction(function () {
+            $user = User::create([
+                'name' => substr($this->data['name'], 4) .  random_int(0000, 9999),
+                'email' => $this->data['email'],
+                'password' => Hash::make('Aa123456'),
+            ])->assignRole('cliente');
 
-        $user->cliente()->create([
-            'nombre_completo' => $this->data['name'],
-            'celular' => $this->data['celular'],
-            'pais' => $this->data['pais'],
-            'origenes' => $this->data['origen'],
-        ]);
+            $user->cliente()->create([
+                'nombre_completo' => $this->data['name'],
+                'celular' => $this->data['celular'],
+                'pais' => $this->data['pais'],
+                'origenes' => $this->data['origen'],
+            ]);
 
-        // Abrir nueva cuenta
-        $user->cuentaCliente()->create([
-            'metodo_pago' => $this->data['metodo_pago'] ?? '',
-            'monto_total' => $this->data['monto'] ?? 0,
-        ]);
+            // Abrir nueva cuenta
+            $user->cuentaCliente()->create([
+                'metodo_pago' => $this->data['metodo_pago'] ?? '',
+                'monto_total' => $this->data['monto'] ?? 0,
+            ]);
 
-        // Asignar un asesor por defecto
-        // $user->asesor()->create([
-        //     'user_id' => 138,
-        //     'tipo_asesor' => 'CRM',
-        // ]);
+            // Asignar un asesor por defecto
+            $user->asignacion()->create([
+                'user_id' => $user->id,
+                'asesor_id' => 1,
+                'estado_asignacion' => true,
+            ]);
 
-        return $user;
+            return $user;
+        });
     }
 
     public static function getCompletedNotificationBody(Import $import): string

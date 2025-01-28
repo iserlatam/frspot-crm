@@ -258,11 +258,13 @@ class Registration extends Register
                         ]),
                     Wizard\Step::make('Depositar')
                         ->schema([
-                            Forms\Components\TextInput::make('monto')
+                            Forms\Components\Select::make('monto')
                                 ->label('Elija un monto:')
-                                ->numeric()
-                                ->mask(RawJs::make('$money($input)'))
-                                ->stripCharacters(','),
+                                ->options([
+                                    285 => '285',
+                                    578 => '578',
+                                    1324 => '1324',
+                                ]),
                             Forms\Components\Select::make('metodo_pago')
                                 ->label('Elije tu metodo de pago preferido:')
                                 ->options([
