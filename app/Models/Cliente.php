@@ -181,8 +181,7 @@ class Cliente extends Model implements HasMedia
                                     ->label('Informo en Estados Unidos?')
                                     ->formatStateUsing(function ($state) {
                                         return $state ? 'Si' : 'No';
-                                    })
-                                    ->readOnly(),
+                                    }),
                                 Forms\Components\TextInput::make('caso')
                                     ->label('Caso seleccionado:')
                                     ->formatStateUsing(function ($state) {
