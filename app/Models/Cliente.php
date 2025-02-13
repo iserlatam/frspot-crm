@@ -177,23 +177,23 @@ class Cliente extends Model implements HasMedia
                         Tabs\Tab::make('Cuestionario')
                             ->columns(2)
                             ->schema([
-                                Forms\Components\TextInput::make('infoeeuu')
-                                    ->label('Informo en Estados Unidos?')
-                                    ->formatStateUsing(function ($state) {
-                                        return $state ? 'Si' : 'No';
-                                    }),
-                                Forms\Components\TextInput::make('caso')
-                                    ->label('Caso seleccionado:')
-                                    ->formatStateUsing(function ($state) {
-                                        return match ($state) {
-                                            'a' => RegisterCuestionaryOptions::OPTION_A->value,
-                                            'b' => RegisterCuestionaryOptions::OPTION_B->value,
-                                            'c' => RegisterCuestionaryOptions::OPTION_C->value,
-                                            'd' => RegisterCuestionaryOptions::OPTION_D->value,
-                                            default => 'No especificado',
-                                        };
-                                    })
-                                    ->readOnly(),
+                                Forms\Components\Radio::make('infoeeuu')
+                                ->label('¿Soy una persona de la que hay que informar en Estados Unidos?')
+                                ->boolean()
+                                ->inline()
+                                ->inlineLabel(false)
+                                ->required(),
+                            Forms\Components\Radio::make('caso')
+                                ->label('Indica cual es tu caso:')
+                                ->inline()
+                                ->inlineLabel(false)
+                                ->options([
+                                    'a' => RegisterCuestionaryOptions::OPTION_A->value,
+                                    'b' => RegisterCuestionaryOptions::OPTION_B->value,
+                                    'c' => RegisterCuestionaryOptions::OPTION_C->value,
+                                    'd' => RegisterCuestionaryOptions::OPTION_D->value,
+                                ])
+                                ->required(),
                             ]),
                         Tabs\Tab::make('Documentos subidos')
                             ->schema([
