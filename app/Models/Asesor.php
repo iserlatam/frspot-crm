@@ -41,7 +41,7 @@ class Asesor extends Model
     {
         return $this->belongsTo(User::class,'user_id', 'id')
             ->whereHas('roles', function ($query) {
-                $query->where('name', 'asesor');
+                $query->where('name', "!=",'cliente');
             });
     }
 
