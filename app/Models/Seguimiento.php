@@ -38,58 +38,58 @@ class Seguimiento extends Model
 
     public static function getForm() {
         return [
-            Forms\Components\Grid::make()
-                ->columns(3)
-                ->schema([
-                    Forms\Components\Select::make('estado')
-                        ->label('Estado')
-                        ->options([
-                            'New' => 'New',
-                            'No answer' => 'No answer',
-                            'Answer' => 'Answer',
-                            'Call again' => 'Call Again',
-                            'Potential' => 'Potential',
-                            'Low potential' => 'Low Potential',
-                            'Declined' => 'Declined',
-                            'Under age' => 'Under Age',
-                            'Active' => 'Active',
-                            'No interested' => 'No interested',
-                            'Invalid number' => 'Invalid number',
-                            'Stateless  '  => 'Stateless',
-                        ])
-                        ->default(null),
-                    Forms\Components\Select::make('origen')
-                        ->label('Origen')
-                        ->options([
-                            'AMZN' => 'AMZN',
-                            'AMZN200' => 'AMZN200',
-                            'AMZN280' => 'AMZN280',
-                            'BTC' => 'BTC',
-                            'PETROLEO' => 'PETROLEO',
-                            'APPLE' => 'APPLE',
-                            'CURSOS' => 'CURSOS',
-                            'PETROBLAS' => 'PETROBLAS',
-                            'XAUUSD' => 'XAUUSD',
-                            'TESLA' => 'TESLA',
-                            'INGRESOS_EXTRAS' => 'INGRESOS EXTRAS',
-                            'FRSPOT' => 'FRSPOT',
-                            'Conferencia_Musk' => 'Conferencia Musk',
-                            'COCA-COLA' => 'COCA-COLA',
-                            'ENTEL' => 'ENTEL',
-                            'BIMBO' => 'BIMBO',
-                        ])
-                        ->default(null),
-                    Forms\Components\Select::make('fase')
-                        ->label('Fase')
-                        ->options([
-                            'Prospecto nuevo' => 'Prospecto Nuevo',
-                            'Contactado' => 'Contactado',
-                            'No contesta' => 'No contesta',
-                            'Activo' => 'Activo',
-                            'Decline' => 'Decline',
-                        ])
-                        ->default(null),
-                ]),
+            // Forms\Components\Grid::make()
+            //     ->columns(3)
+            //     ->schema([
+            //         Forms\Components\Select::make('estado')
+            //             ->label('Estado')
+            //             ->options([
+            //                 'New' => 'New',
+            //                 'No answer' => 'No answer',
+            //                 'Answer' => 'Answer',
+            //                 'Call again' => 'Call Again',
+            //                 'Potential' => 'Potential',
+            //                 'Low potential' => 'Low Potential',
+            //                 'Declined' => 'Declined',
+            //                 'Under age' => 'Under Age',
+            //                 'Active' => 'Active',
+            //                 'No interested' => 'No interested',
+            //                 'Invalid number' => 'Invalid number',
+            //                 'Stateless  '  => 'Stateless',
+            //             ])
+            //             ->default(null),
+            //         Forms\Components\Select::make('origen')
+            //             ->label('Origen')
+            //             ->options([
+            //                 'AMZN' => 'AMZN',
+            //                 'AMZN200' => 'AMZN200',
+            //                 'AMZN280' => 'AMZN280',
+            //                 'BTC' => 'BTC',
+            //                 'PETROLEO' => 'PETROLEO',
+            //                 'APPLE' => 'APPLE',
+            //                 'CURSOS' => 'CURSOS',
+            //                 'PETROBLAS' => 'PETROBLAS',
+            //                 'XAUUSD' => 'XAUUSD',
+            //                 'TESLA' => 'TESLA',
+            //                 'INGRESOS_EXTRAS' => 'INGRESOS EXTRAS',
+            //                 'FRSPOT' => 'FRSPOT',
+            //                 'Conferencia_Musk' => 'Conferencia Musk',
+            //                 'COCA-COLA' => 'COCA-COLA',
+            //                 'ENTEL' => 'ENTEL',
+            //                 'BIMBO' => 'BIMBO',
+            //             ])
+            //             ->default(null),
+            //         Forms\Components\Select::make('fase')
+            //             ->label('Fase')
+            //             ->options([
+            //                 'Prospecto nuevo' => 'Prospecto Nuevo',
+            //                 'Contactado' => 'Contactado',
+            //                 'No contesta' => 'No contesta',
+            //                 'Activo' => 'Activo',
+            //                 'Decline' => 'Decline',
+            //             ])
+            //             ->default(null),
+            //     ]),
             Forms\Components\RichEditor::make('descripcion')
                 ->columnSpanFull()
                 ->required(),
