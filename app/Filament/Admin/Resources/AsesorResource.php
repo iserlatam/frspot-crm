@@ -64,6 +64,9 @@ class AsesorResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Usuario asignado')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('user.roles.name')
+                    ->label('Rol asignado')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('tipo_asesor')
                     ->formatStateUsing(function ($state) {
                         return str($state)->upper();
