@@ -137,6 +137,7 @@ class Cliente extends Model implements HasMedia
                                                 'No interested' => 'No interested',
                                                 'Invalid number' => 'Invalid number',
                                                 'Stateless  '  => 'Stateless',
+                                                'interested'  => 'Interested',
                                             ]),
                                         Forms\Components\Select::make('fase_cliente')
                                             ->options([
@@ -152,6 +153,7 @@ class Cliente extends Model implements HasMedia
                                                 'No interested' => 'No interested',
                                                 'Invalid number' => 'Invalid number',
                                                 'Stateless'  => 'Stateless',
+                                                'interested'  => 'Interested',
                                             ]),
                                         Forms\Components\Select::make('origenes')
                                             ->options([
