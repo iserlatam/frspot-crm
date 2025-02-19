@@ -37,6 +37,19 @@ class SeguimientoResource extends Resource
     {
         return $table
             ->defaultSort('created_at', 'desc')
+            ->query(
+                function () {
+                    $query = Seguimiento::query();
+            
+                    if (Helpers::isAsesor()) {
+                        $query->whereHas('asesor.user', function ($query) {
+                            $query->where('name', auth()->user()->name);
+                        });
+                    }
+            
+                    return $query; // Siempre debe retornar una consulta válida
+                }
+            )
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Cliente')
