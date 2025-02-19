@@ -4,7 +4,9 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\AsignacionResource\Pages;
 use App\Filament\Admin\Resources\AsignacionResource\RelationManagers;
+use App\Helpers\Helpers;
 use App\Models\Asignacion;
+use App\Models\CuentaCliente;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -44,7 +46,10 @@ class AsignacionResource extends Resource
                     ->preload()
                     ->required(),
                 Forms\Components\Select::make('asesor_id')
-                    ->relationship('asesor', 'id') // Define la relación y la clave foránea
+                ->relationship("asesor", 'id', function($query){
+                    if(Helpers::isAsesor())
+                        $query->where('id',auth()->user()->asesor->id);
+                    }) // Define la relación y la clave foránea
                     ->searchable()
                     ->preload()
                     ->required()
@@ -63,6 +68,19 @@ class AsignacionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(
+                function () {
+                    $query = Asignacion::query();
+            
+                    if (Helpers::isAsesor()) {
+                        $query->whereHas('asesor.user', function ($query) {
+                            $query->where('id', auth()->user()->id);
+                        });
+                    }
+            
+                    return $query; // Siempre debe retornar una consulta válida
+                }
+            )
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
@@ -85,11 +103,21 @@ class AsignacionResource extends Resource
                     ->formatStateUsing(function ($state) {
                         return $state ? 'Activa' : 'Inactiva';
                     }),
-                Tables\Columns\TextColumn::make('created_at')
+                Tables\Columns\TextColumn::make('user.cliente.estado_cliente')
+                    ->label('Estado cliente')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('user.cliente.fase_cliente')
+                    ->label('fase cliente')
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('created_at')
                     ->label('Creada el')
                     ->dateTime()
                     ->sortable(),
-            ])
+                Tables\Columns\TextColumn::make('user.cliente.updated_at')
+                    ->label('Ultima actualizacion')
+                    ->searchable()
+                    ->dateTime(),
+                    ])
             ->filters([
                 SelectFilter::make('estado_asignacion')
                     ->options([
@@ -103,7 +131,11 @@ class AsignacionResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                ])
+                ->visible(function () {
+                    if(Helpers::isSuperAdmin())
+                        return true;
+                }),
             ]);
     }
 

@@ -106,7 +106,12 @@ class User extends Authenticatable implements FilamentUser, HasMedia
                                         ->required(fn(string $context): bool => $context === 'create')
                                         ->minLength(6),
                                 ]),
-                        ]),
+                        ])
+                        ->visible(function(){
+                            if(Helpers::isSuperAdmin()){
+                                return true;
+                            }
+                        }),
                     Forms\Components\Tabs\Tab::make('Perfil')
                         ->schema([
                             /**
@@ -132,7 +137,11 @@ class User extends Authenticatable implements FilamentUser, HasMedia
                                 ->relationship('cuentaCliente')
                                 ->label('La cuenta, el lugar donde se almacena el deposito y los movimientos')
                                 ->schema(CuentaCliente::getForm()),
-                        ]),
+                        ])->visible(function(){
+                            if(Helpers::isSuperAdmin()){
+                                return true;
+                            }
+                        }),
                 ])
         ];
     }

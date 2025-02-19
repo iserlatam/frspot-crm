@@ -109,7 +109,12 @@ class Cliente extends Model implements HasMedia
                                     ->tel()
                                     ->maxLength(25)
                                     ->default(null),
-                            ]),
+                            ])
+                            ->visible(function(){
+                                if(Helpers::isSuperAdmin()){
+                                    return true;
+                                }
+                            }),
                         Tabs\Tab::make('Informacion de Marketing')
                             ->schema([
                                 Forms\Components\Section::make('Informacion de seguimientos')
@@ -196,7 +201,12 @@ class Cliente extends Model implements HasMedia
                                     'd' => RegisterCuestionaryOptions::OPTION_D->value,
                                 ])
                                 ->required(),
-                            ]),
+                            ])
+                            ->visible(function(){
+                                if(Helpers::isSuperAdmin()){
+                                    return true;
+                                }
+                            }),
                         Tabs\Tab::make('Documentos subidos')
                             ->schema([
                                 Forms\Components\Grid::make()
@@ -222,7 +232,12 @@ class Cliente extends Model implements HasMedia
                                     ]),
                                 Forms\Components\SpatieMediaLibraryFileUpload::make('comprobante_pag')
                                     ->collection('clientes_payment_files'),
-                            ]),
+                            ])
+                            ->visible(function(){
+                                if(Helpers::isSuperAdmin()){
+                                    return true;
+                                }
+                            }),
                     ])
             ];
     }

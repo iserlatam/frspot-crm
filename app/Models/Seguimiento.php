@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Helpers;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -101,7 +102,10 @@ class Seguimiento extends Model
                 ->required()
                 ->default(null),
             Forms\Components\Select::make('asesor_id')
-                ->relationship('asesor', 'id') // Define la relación y la clave foránea
+                ->relationship("asesor", 'id', function($query){
+                    if(Helpers::isAsesor())
+                        $query->where('id',auth()->user()->asesor->id);
+                }) // Define la relación y la clave foránea
                 ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
                 ->preload()
                 ->searchable()

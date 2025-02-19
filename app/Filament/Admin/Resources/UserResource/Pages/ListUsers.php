@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\UserResource\Pages;
 
 use App\Filament\Admin\Resources\UserResource;
 use App\Filament\Imports\UserImporter;
+use App\Helpers\Helpers;
 use Filament\Actions;
 use Filament\Actions\ImportAction;
 use Filament\Resources\Pages\ListRecords;
@@ -19,6 +20,7 @@ class ListUsers extends ListRecords
             Actions\CreateAction::make(),
             ImportAction::make()
               ->importer(UserImporter::class)
+              ->visible(fn()=>Helpers::isSuperAdmin())
         ];
     }
 }

@@ -8,6 +8,7 @@ use App\Filament\Admin\Resources\UserResource\RelationManagers\AsignacionRelatio
 use App\Filament\Admin\Resources\UserResource\RelationManagers\CuentaClienteRelationManager;
 use App\Filament\Admin\Resources\UserResource\RelationManagers\SeguimientosRelationManager;
 use App\Filament\Admin\Resources\UserResource\RelationManagers\UserMovimientosRelationManager;
+use App\Helpers\Helpers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -45,11 +46,22 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            // ->query(
-            //     User::whereHas('roles', function ($query) {
-            //         $query->where('name', 'cliente');
-            //     })
-            // )
+           
+            ->query(
+                function () {
+                    $query = User::query();
+
+                    if (Helpers::isAsesor()) {
+                        $query->whereHas('roles', function ($query) {
+                            $query->where('name', 'cliente');
+                        });
+                        // ->where('asignacion.asesor.user.name', function ($query) {
+                        //     $query->where('name', auth()->user()->name);
+                        // });
+                    }
+                    return $query;
+                }
+            )
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->searchable()
@@ -59,16 +71,49 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->copyable()
                     ->tooltip('Haga click para copiar')
-                    ->searchable(),
+                    ->searchable()
+                    ->visible(function () {
+                        if (Helpers::isSuperAdmin()) {
+                            return true;
+                        }
+                    }),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->label('Rol asignado')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('cliente.estado_cliente')
+                    ->label('Estado cliente')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('cliente.fase_cliente')
+                    ->label('Fase cliente')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('asignacion.estado_asignacion')
+                    ->label('Estado asignacion')
+                    ->badge()
+                    ->searchable()
+                    ->color(function ($state) {
+                        return match ($state) {
+                            true => 'success',
+                            false => 'danger',
+                        };
+                    })
+                    ->formatStateUsing(function ($state) {
+                        return $state ? 'Activa' : 'Inactiva';
+                    }),
                 Tables\Columns\TextColumn::make('asignacion.asesor.user.name')
                     ->label('Asesor asignado')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('cliente.celular')
+                    ->copyable()
+                    ->label('Celular')
+                    ->tooltip('Haga click para copiar')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('cliente.updated_at')
+                    ->dateTime()
+                    ->label('ultima actualización')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
-                    ->label('Creado el')
+                    ->label('Fecha de creacion')
                     ->sortable()
             ])
             ->filters([
@@ -104,7 +149,12 @@ class UserResource extends Resource
                             ->success()
                             ->send();
                     })
-                    ->deselectRecordsAfterCompletion(),
+                    ->deselectRecordsAfterCompletion()
+                    ->visible(function(){
+                        if(Helpers::isSuperAdmin()){
+                            return true;
+                        }
+                    }),
                 /**
                  *  ASIGNAR ROL CLIENTE
                  */
@@ -130,7 +180,12 @@ class UserResource extends Resource
                             ->success()
                             ->send();
                     })
-                    ->deselectRecordsAfterCompletion(),
+                    ->deselectRecordsAfterCompletion()
+                    ->visible(function(){
+                        if(Helpers::isSuperAdmin()){
+                            return true;
+                        }
+                    }),
                 /**
                  *  ACCIONES DE ELIMINACION DE USUARIOS
                  */
