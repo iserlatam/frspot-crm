@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use NunoMaduro\Collision\Adapters\Phpunit\State;
 
 class UserResource extends Resource
 {
@@ -47,21 +48,26 @@ class UserResource extends Resource
     {
         return $table
            
-            ->query(
-                function () {
-                    $query = User::query();
-
-                    if (Helpers::isAsesor()) {
-                        $query->whereHas('roles', function ($query) {
-                            $query->where('name', 'cliente');
+            ->query(function () {
+                $query = User::query();
+            
+                if (Helpers::isAsesor()) {
+                    $query->whereHas('roles', function ($query) {
+                        $query->where('name', 'cliente');
+                    })
+                    ->whereHas('asignacion', function ($query) {
+                        $query->whereHas('asesor.user', function ($query) {
+                            $query->where('name', auth()->user()->name);
                         });
-                        // ->where('asignacion.asesor.user.name', function ($query) {
-                        //     $query->where('name', auth()->user()->name);
-                        // });
-                    }
-                    return $query;
+                    });
+                    // ->whereHas('asignacion.id', function($query){
+                    //     $query->where('estado_asignacion', true);
+                    // }); // Filtrar solo asignaciones activas
                 }
-            )
+            
+                return $query;
+            })
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->searchable()
@@ -101,6 +107,9 @@ class UserResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('asignacion.asesor.user.name')
                     ->label('Asesor asignado')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('asignacion.id')
+                    ->label('asignacion id')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.celular')
                     ->copyable()
