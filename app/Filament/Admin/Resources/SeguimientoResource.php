@@ -36,21 +36,22 @@ class SeguimientoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
-                Tables\Columns\TextColumn::make('descripcion')
-                    ->html(),
-                Tables\Columns\TextColumn::make('estado')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('fase')
-                    ->label('Origen')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('etiqueta')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Cliente')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('asesor.user.name')
                     ->label('Asesor')
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('descripcion')
+                    ->html(),
+                Tables\Columns\TextColumn::make('user.cliente.estado_cliente')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('user.cliente.fase_cliente')
+                    ->label('fase')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('etiqueta')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

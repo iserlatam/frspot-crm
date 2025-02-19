@@ -16,6 +16,12 @@ class Dashboard extends \Filament\Pages\Dashboard
 
     protected static string $view = 'filament.admin.pages.dashboard';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasRole('super_admin');
+    }
+
+
     // public $defaultAction = 'onboarding';
 
     public function getHeaderWidgets(): array
