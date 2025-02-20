@@ -17,10 +17,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // \App\Models\User::factory(2)->create();
-        Cliente::factory(2)
-            ->withUser()
-            ->withCuentaCliente()
-            ->create();
+        // Cliente::factory(2)
+        //     ->withUser()
+        //     ->withCuentaCliente()
+        //     ->create();
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
@@ -36,9 +36,9 @@ class DatabaseSeeder extends Seeder
         //     'divisa' => 'USDT',
         //     'cliente_id' => $newCliente['id'],
         // ]);
-        $this->call(RoleHasPermissionsTableSeeder::class);
-        $this->call(ModelHasRolesTableSeeder::class);
         $this->call(RolesTableSeeder::class);
         $this->call(PermissionsTableSeeder::class);
+        $this->call(RoleHasPermissionsTableSeeder::class);
+        $this->call(ModelHasRolesTableSeeder::class);
     }
 }

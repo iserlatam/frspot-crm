@@ -3,6 +3,8 @@
 namespace App\Filament\Admin\Resources\UserResource\RelationManagers;
 
 use App\Filament\Admin\Resources\AsignacionResource;
+use App\Helpers\Helpers;
+use App\Models\Asignacion;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -24,6 +26,17 @@ class AsignacionRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('id')
+            ->query(
+                function () {
+                    $query = Asignacion::query();
+
+                    if (!Helpers::isSuperAdmin()) {
+                        $query->where('asesor_id', auth()->user()->id);
+                    }
+
+                    return $query;
+                }
+            )
             ->columns([
                 Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('asesor.user.name')
