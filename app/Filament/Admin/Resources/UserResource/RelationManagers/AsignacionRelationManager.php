@@ -31,9 +31,13 @@ class AsignacionRelationManager extends RelationManager
                     $query = Asignacion::query();
 
                     if (!Helpers::isSuperAdmin()) {
-                        $query->where('asesor_id', auth()->user()->id);
+                        $query->where([
+                            ['user_id', $this->ownerRecord->id],
+                            ['asesor_id', auth()->user()->id]
+                        ]);
                     }
 
+                    dd($query->toJson());
                     return $query;
                 }
             )
