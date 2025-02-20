@@ -90,6 +90,7 @@ class AsignacionResource extends Resource
                     ->label('Cliente asignado'),
                 Tables\Columns\TextColumn::make('asesor.user.name')
                     ->label('Asesor asignado')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('estado_asignacion')
                     ->label('Estado de la asignacion')

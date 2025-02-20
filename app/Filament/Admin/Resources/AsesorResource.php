@@ -64,6 +64,9 @@ class AsesorResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Usuario asignado')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('user.email')
+                    ->label('Email del usuario')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('user.roles.name')
                     ->label('Rol asignado')
                     ->searchable(),

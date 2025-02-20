@@ -26,6 +26,12 @@ class SeguimientosRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('estado')
             ->columns([
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Cliente')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('asesor.user.name')
+                    ->label('Asesor')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('descripcion')
                     ->html(),
                 Tables\Columns\TextColumn::make('estado')
@@ -34,12 +40,6 @@ class SeguimientosRelationManager extends RelationManager
                     ->label('Origen')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('etiqueta')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->label('Cliente')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('asesor.user.name')
-                    ->label('Asesor')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
