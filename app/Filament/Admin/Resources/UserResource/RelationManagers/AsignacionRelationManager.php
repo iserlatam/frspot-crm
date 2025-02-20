@@ -37,12 +37,14 @@ class AsignacionRelationManager extends RelationManager
                         ]);
                     }
 
-                    dd($query->toJson());
+                    // dd($this->ownerRecord->id);
                     return $query;
                 }
             )
             ->columns([
                 Tables\Columns\TextColumn::make('id'),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Cliente asignado'),
                 Tables\Columns\TextColumn::make('asesor.user.name')
                     ->label('Asesor asignado'),
                 Tables\Columns\TextColumn::make('estado_asignacion')
