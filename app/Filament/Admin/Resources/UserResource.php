@@ -117,11 +117,11 @@ class UserResource extends Resource
                     ->tooltip('Haga click para copiar')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.updated_at')
-                    ->dateTime()
+                    ->date('M d/Y H:i:s')
                     ->label('ultima actualización')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->date('M d/y H:i:s')
                     ->label('Fecha de creacion')
                     ->sortable()
             ])

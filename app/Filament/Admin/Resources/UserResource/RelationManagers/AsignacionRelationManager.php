@@ -28,15 +28,21 @@ class AsignacionRelationManager extends RelationManager
             ->recordTitleAttribute('id')
             ->query(
                 function () {
+                    
                     $query = Asignacion::query();
-
                     if (!Helpers::isSuperAdmin()) {
-                        $query->where([
-                            ['user_id', $this->ownerRecord->id],
-                            ['asesor_id', auth()->user()->id]
-                        ]);
-                    }
 
+                        $query->whereHas('asesor.user', function ($query) {
+                            $query->where('id', auth()->user()->id);
+                        });
+                        $query->whereHas('user', function ($query) {
+                            $query->where('name', $this->ownerRecord->name);
+                        });
+                    }else{  
+                        $query->whereHas('user', function ($query) {
+                            $query->where('name', $this->ownerRecord->name);
+                        });
+                    }
                     // dd($this->ownerRecord->id);
                     return $query;
                 }
@@ -59,6 +65,10 @@ class AsignacionRelationManager extends RelationManager
                     ->formatStateUsing(function ($state) {
                         return $state ? 'Activa' : 'Inactiva';
                     }),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Fecha de creacion')
+                    ->date('M d/Y H:i:s'),
+                    
             ])
             ->filters([
                 //

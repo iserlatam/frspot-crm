@@ -4,17 +4,22 @@ namespace App\Filament\Admin\Resources\UserResource\RelationManagers;
 
 use App\Filament\Admin\Resources\SeguimientoResource;
 use App\Helpers\Helpers;
+use App\Models\Cliente;
+use App\Models\Seguimiento;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\Relationship;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SeguimientosRelationManager extends RelationManager
 {
     protected static string $relationship = 'seguimientos';
+
 
     public function form(Form $form): Form
     {
@@ -24,7 +29,25 @@ class SeguimientosRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('estado')
+            ->defaultSort('created_at', 'desc')
+            ->query(
+                function () {
+                    $query = Seguimiento::query();
+                    
+                    if (Helpers::isAsesor()) {
+                        $query->whereHas('asesor.user', function ($query) {
+                            $query->where('name', auth()->user()->name);
+                        });
+                        $query->whereHas('user', function ($query) {
+                            $query->where('name', $this->ownerRecord->name);
+                        });
+                    }
+
+
+                    return $query; // Siempre debe retornar una consulta válida
+                }
+            )
+            // ->recordTitleAttribute('id')
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Cliente')
@@ -33,16 +56,15 @@ class SeguimientosRelationManager extends RelationManager
                     ->label('Asesor')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('descripcion')
-                    ->html(),
-                Tables\Columns\TextColumn::make('estado')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('fase')
-                    ->label('Origen')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('etiqueta')
-                    ->searchable(),
+                    ->html()
+                    ->limit(120),
+                Tables\Columns\TextColumn::make('user.cliente.estado_cliente')
+                ->label('Estado Actual'),
+                Tables\Columns\TextColumn::make('user.cliente.fase_cliente')
+                    ->label('Fase Actual'),                 
+                Tables\Columns\TextColumn::make('etiqueta'),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->date('M d/Y H:i:s')
                     ->label('Creado el')
                     ->sortable(),
             ])
@@ -54,9 +76,20 @@ class SeguimientosRelationManager extends RelationManager
                 Helpers::renderReloadTableAction(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
+                Tables\Actions\ViewAction::make()
+                    ->iconButton()
+                    ->tooltip('Ver comentario')
+                    ->iconPosition('before')
+                    ->icon('heroicon-o-eye')
+                    ->color('success'),
+                Tables\Actions\EditAction::make()
+                    ->iconButton()
+                    ->tooltip('Editar comentario')
+                    ->visible(fn() => Helpers::isSuperAdmin()),
+                Tables\Actions\DeleteAction::make()
+                    ->iconButton()
+                    ->tooltip('Borrar comentario'),
+            ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

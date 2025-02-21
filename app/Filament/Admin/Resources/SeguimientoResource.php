@@ -12,6 +12,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -58,16 +59,20 @@ class SeguimientoResource extends Resource
                     ->label('Asesor')
                     ->searchable(),
                     Tables\Columns\TextColumn::make('descripcion')
-                    ->html(),
+                    ->html()
+                    ->wrap()
+                    ->limit(100),
                 Tables\Columns\TextColumn::make('user.cliente.estado_cliente')
+                    ->label('Estado actual')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.cliente.fase_cliente')
-                    ->label('fase')
+                    ->label('Fase Actual')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('etiqueta')
-                    ->searchable(),
+                    ->searchable()
+                    ->visible(false),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->date('M d/Y H:i:s')
                     ->label('Creado el')
                     ->sortable(),
             ])
@@ -78,8 +83,14 @@ class SeguimientoResource extends Resource
                 Helpers::renderReloadTableAction(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
+                Tables\Actions\ViewAction::make()
+                    ->label('ver comentario')
+                    ->iconPosition('before')
+                    ->icon('heroicon-o-eye')
+                    ->color('success'),
+                Tables\Actions\EditAction::make()
+                     ->visible(fn () => helpers::isSuperAdmin())
+            ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

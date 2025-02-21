@@ -87,7 +87,8 @@ class AsignacionResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('Cliente asignado'),
+                    ->label('Cliente asignado')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('asesor.user.name')
                     ->label('Asesor asignado')
                     ->sortable()
@@ -112,12 +113,12 @@ class AsignacionResource extends Resource
                     ->searchable(),
                     Tables\Columns\TextColumn::make('created_at')
                     ->label('Creada el')
-                    ->dateTime()
+                    ->date('M d/Y H:i:s')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.cliente.updated_at')
                     ->label('Ultima actualizacion')
                     ->searchable()
-                    ->dateTime(),
+                    ->date('M d/Y H:i:s'),
                     ])
             ->filters([
                 SelectFilter::make('estado_asignacion')
