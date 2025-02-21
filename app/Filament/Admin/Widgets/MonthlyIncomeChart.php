@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Widgets;
 
+use App\Helpers\Helpers;
 use Filament\Widgets\ChartWidget;
 
 class MonthlyIncomeChart extends ChartWidget
@@ -9,6 +10,11 @@ class MonthlyIncomeChart extends ChartWidget
     protected static ?string $heading = 'Ingresos registrados mensuales';
 
     protected static ?string $description = 'Sumatoria total de todos los ingresos de depositos en la ultima semana.';
+
+    public static function canView(): bool
+    {
+        return Helpers::isOwner();
+    }
 
     protected function getData(): array
     {

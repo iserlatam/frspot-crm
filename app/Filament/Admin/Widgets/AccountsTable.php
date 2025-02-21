@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Widgets;
 
+use App\Helpers\Helpers;
 use App\Models\CuentaCliente;
 use Filament\Tables;
 use Filament\Tables\Enums\ActionsPosition;
@@ -16,6 +17,11 @@ class AccountsTable extends BaseWidget
 
     protected int | string | array $columnSpan = 'full';
 
+    public static function canView(): bool
+    {
+        return Helpers::isOwner();
+    }
+
     public function table(Table $table): Table
     {
         return $table
@@ -27,7 +33,7 @@ class AccountsTable extends BaseWidget
                         });
                     })
                 )
-                
+
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('Número de cuenta'),

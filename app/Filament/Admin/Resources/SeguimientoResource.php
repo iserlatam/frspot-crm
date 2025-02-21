@@ -41,13 +41,13 @@ class SeguimientoResource extends Resource
             ->query(
                 function () {
                     $query = Seguimiento::query();
-            
+
                     if (Helpers::isAsesor()) {
                         $query->whereHas('asesor.user', function ($query) {
                             $query->where('name', auth()->user()->name);
                         });
                     }
-            
+
                     return $query; // Siempre debe retornar una consulta válida
                 }
             )
@@ -67,6 +67,9 @@ class SeguimientoResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.cliente.fase_cliente')
                     ->label('Fase Actual')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('user.asignacion.asesor.user.name')
+                    ->label('Asesor asignado')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('etiqueta')
                     ->searchable()
