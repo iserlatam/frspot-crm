@@ -75,6 +75,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->limit(10)
                     ->copyable()
                     ->tooltip('Haga click para copiar')
                     ->searchable(),                   
@@ -148,7 +149,7 @@ class UserResource extends Resource
                             ->relationship('asesor', 'id') // Define la relación y la clave foránea
                             ->searchable()
                             ->preload()
-                            ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
+                            ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name ?? 'Sin nombre')
                             ->default(null),
                     ])
                     ->action(function (array $data, Collection $records) {
