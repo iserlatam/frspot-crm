@@ -7,8 +7,10 @@ use App\Filament\Admin\Resources\AsignacionResource\RelationManagers;
 use App\Helpers\Helpers;
 use App\Models\Asignacion;
 use App\Models\CuentaCliente;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
@@ -43,6 +45,8 @@ class AsignacionResource extends Resource
                     ->relationship('userWithRoleCliente', 'name')
                     ->label('Cliente a ser asignado')
                     ->searchable()
+                    ->default(fn ($livewire) => $livewire instanceof RelationManager ? $livewire->ownerRecord->id : null) 
+                    ->disabled(fn($livewire) => $livewire instanceof RelationManager)
                     ->preload()
                     ->required(),
                 Forms\Components\Select::make('asesor_id')

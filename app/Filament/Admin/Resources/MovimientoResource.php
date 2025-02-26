@@ -158,6 +158,15 @@ class MovimientoResource extends Resource
                         return 'No Aplica';
                     })
                     ->searchable(),
+                Tables\Columns\TextColumn::make('cuentaCliente.divisa')
+                    ->label('divisa')
+                    ->formatStateUsing(function ($record) {
+                        if (isset($record->cuentaCliente)) {
+                            return $record->cuentaCliente->divisa;
+                        }
+                        return 'No Aplica';
+                    })
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado el')
                     ->date('M d/Y H:i:s')

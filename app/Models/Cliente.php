@@ -79,42 +79,46 @@ class Cliente extends Model implements HasMedia
                             ->schema([
                                 Forms\Components\TextInput::make('nombre_completo')
                                     ->maxLength(150)
-                                    ->default(null),
+                                    ->default(null)
+                                    ->readOnly(fn () => Helpers::isAsesor()),
                                 Forms\Components\TextInput::make('identificacion')
                                     ->maxLength(50)
-                                    ->default(null),
+                                    ->default(null)
+                                    ->readOnly(fn () => Helpers::isAsesor()),
                                 Forms\Components\DatePicker::make('fecha_nacimiento')
-                                    ->native(),
+                                    ->native()
+                                    ->disabled(fn () => Helpers::isAsesor()),
                                 Forms\Components\Select::make('genero')
                                     ->options([
                                         'm' => 'Masculino',
                                         'f' => 'Femenino',
-                                    ]),
+                                    ])
+                                    ->disabled(fn () => Helpers::isAsesor()),
                                 Forms\Components\TextInput::make('pais')
                                     ->maxLength(50)
-                                    ->default(null),
+                                    ->default(null)
+                                    ->readOnly(fn () => Helpers::isAsesor()),
                                 Forms\Components\TextInput::make('ciudad')
                                     ->maxLength(50)
-                                    ->default(null),
+                                    ->default(null)
+                                    ->readOnly(fn () => Helpers::isAsesor()),
                                 Forms\Components\TextInput::make('direccion')
                                     ->maxLength(250)
-                                    ->default(null),
+                                    ->default(null)
+                                    ->readOnly(fn () => Helpers::isAsesor()),
                                 Forms\Components\TextInput::make('cod_postal')
                                     ->maxLength(50)
-                                    ->default(null),
+                                    ->default(null)
+                                    ->readOnly(fn () => Helpers::isAsesor()),
                                 Forms\Components\TextInput::make('celular')
                                     ->maxLength(25)
-                                    ->default(null),
+                                    ->default(null)
+                                    ->readOnly(fn () => Helpers::isAsesor()),
                                 Forms\Components\TextInput::make('telefono')
                                     ->tel()
                                     ->maxLength(25)
                                     ->default(null),
-                            ])
-                            ->visible(function(){
-                                if(Helpers::isSuperAdmin()){
-                                    return true;
-                                }
-                            }),
+                                ]),                          
                         Tabs\Tab::make('Informacion de Marketing')
                             ->schema([
                                 Forms\Components\Section::make('Informacion de seguimientos')

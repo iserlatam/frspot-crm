@@ -77,14 +77,14 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->copyable()
                     ->tooltip('Haga click para copiar')
-                    ->searchable()
-                    ->visible(function () {
-                        if (Helpers::isSuperAdmin()) {
-                            return true;
-                        }
-                    }),
-                Tables\Columns\TextColumn::make('roles.name')
-                    ->label('Rol asignado')
+                    ->searchable(),                   
+                Tables\Columns\TextColumn::make('cliente.celular')
+                    ->copyable()
+                    ->label('Celular')
+                    ->tooltip('Haga click para copiar')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('cliente.pais')
+                    ->label('pais')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.estado_cliente')
                     ->label('Estado cliente')
@@ -92,6 +92,20 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('cliente.fase_cliente')
                     ->label('Fase cliente')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('cliente.origenes')
+                    ->label('Origen cliente')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('asignacion.asesor.user.name')
+                    ->label('Asesor asignado')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('cliente.updated_at')
+                    ->date('M d/Y H:i:s')
+                    ->label('ultima actualización')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->date('M d/y H:i:s')
+                    ->label('Fecha de creacion')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('asignacion.estado_asignacion')
                     ->label('Estado asignacion')
                     ->badge()
@@ -105,25 +119,12 @@ class UserResource extends Resource
                     ->formatStateUsing(function ($state) {
                         return $state ? 'Activa' : 'Inactiva';
                     }),
-                Tables\Columns\TextColumn::make('asignacion.asesor.user.name')
-                    ->label('Asesor asignado')
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->label('Rol asignado')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('asignacion.id')
                     ->label('asignacion id')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('cliente.celular')
-                    ->copyable()
-                    ->label('Celular')
-                    ->tooltip('Haga click para copiar')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('cliente.updated_at')
-                    ->date('M d/Y H:i:s')
-                    ->label('ultima actualización')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->date('M d/y H:i:s')
-                    ->label('Fecha de creacion')
-                    ->sortable()
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('roles')
@@ -131,7 +132,9 @@ class UserResource extends Resource
                     ->relationship('roles', 'name')
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                ->iconButton()
+                ->tooltip('Editar usuario'),
             ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
                 /**

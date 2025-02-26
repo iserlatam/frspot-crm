@@ -90,9 +90,13 @@ class SeguimientoResource extends Resource
                     ->label('ver comentario')
                     ->iconPosition('before')
                     ->icon('heroicon-o-eye')
+                    ->iconButton()
+                    ->tooltip('Ver comentario')
                     ->color('success'),
                 Tables\Actions\EditAction::make()
-                     ->visible(fn () => helpers::isSuperAdmin())
+                    ->iconButton()
+                    ->tooltip('Editar comentario')
+                    ->visible(fn () => helpers::isSuperAdmin())
             ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

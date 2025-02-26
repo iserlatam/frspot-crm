@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Filament\Forms;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class Seguimiento extends Model
 {
@@ -103,7 +104,8 @@ class Seguimiento extends Model
                 ->preload()
                 ->searchable()
                 ->required()
-                ->default(null),
+                ->default(fn ($livewire) => $livewire instanceof RelationManager ? $livewire->ownerRecord->id : null) 
+                ->disabled(fn($livewire) => $livewire instanceof RelationManager),
             Forms\Components\TextInput::make('asesor_id')
                 ->visible(function () {
                     return !Helpers::isOwner();
