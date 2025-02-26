@@ -53,11 +53,11 @@ class UserImporter extends Importer
             ]);
 
             // Asignar un asesor por defecto
-            $user->asignacion()->create([
-                'user_id' => $user->id,
-                'asesor_id' => 1,
-                'estado_asignacion' => true,
-            ]);
+            // $user->asignacion()->create([
+            //     'user_id' => $user->id,
+            //     'asesor_id' => 1,
+            //     'estado_asignacion' => true,
+            // ]);
 
             return $user;
         });
