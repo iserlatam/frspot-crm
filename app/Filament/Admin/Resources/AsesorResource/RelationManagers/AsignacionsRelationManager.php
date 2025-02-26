@@ -31,12 +31,29 @@ class AsignacionsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->recordTitleAttribute('user_id')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('ID'),
+                    ->label('ID')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('Cliente asignado'),
+                    ->label('Cliente asignado')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('user.cliente.estado_cliente')
+                    ->label('Estado cliente')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('user.cliente.fase_cliente')
+                    ->label('Fase cliente')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('asesor.user.name')
+                    ->label('asesor asignado')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('estado_asignacion')
                     ->label('Estado de la asignacion')
                     ->badge()
@@ -48,10 +65,13 @@ class AsignacionsRelationManager extends RelationManager
                     })
                     ->formatStateUsing(function ($state) {
                         return $state ? 'Activa' : 'Inactiva';
-                    }),
+                    })
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Asignado el')
-                    ->dateTime(),
+                    ->dateTime()
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
                 //
