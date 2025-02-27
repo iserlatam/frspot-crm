@@ -13,6 +13,7 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -72,6 +73,7 @@ class AsignacionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->query(
                 function () {
                     $query = Asignacion::query();
@@ -90,6 +92,7 @@ class AsignacionResource extends Resource
                     ->label('ID')
                     ->sortable()
                     ->searchable(),
+                
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Cliente asignado')
                     ->searchable(),
@@ -129,8 +132,37 @@ class AsignacionResource extends Resource
                     ->options([
                         true => 'Activa',
                         false => 'Inactiva'
+                    ]),
+                Filter::make('created_at_day')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_at_day')
+                            ->label('Día específico')
+                            ->displayFormat('d/m/Y'),
                     ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_at_day'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', $date)
+                            );
+                    }),
+                // Filter::make('asesor_id')
+                //     ->form([
+                //         Forms\Components\Select::make('asesor_id')
+                //             ->relationship('asesor', 'id')
+                //             ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
+                //             ->searchable()
+                //             ->preload(),                        
+                //     ])
+                //     ->query(function (Builder $query, $data){                       
+                //         return $query->when(
+                //             !empty($data) && !empty($data['asesor_id']),
+                //                 function ($query, $data) {
+                //                     $query->where('asesor_id', $data);
+                //             });                         
+                //     }),
             ])
+            ->deferFilters()
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])

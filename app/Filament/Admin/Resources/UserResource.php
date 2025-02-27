@@ -12,6 +12,7 @@ use App\Helpers\Helpers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationGroup;
@@ -19,6 +20,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Enums\ActionsPosition;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -44,8 +47,7 @@ class UserResource extends Resource
             ->schema(User::getForm());
     }
 
-    public static function table(Table $table): Table
-    {
+    public static function table(Table $table): Table {
         return $table
            
             ->query(function () {
@@ -129,9 +131,23 @@ class UserResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('roles')
-                    ->label('Rol asignado')
-                    ->relationship('roles', 'name')
-            ])
+                ->label('Rol asignado')
+                    ->relationship('roles', 'name'),
+                Filter::make('created_at_day')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_at_day')
+                            ->label('Día específico')
+                            ->displayFormat('d/m/Y'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_at_day'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', $date)
+                            );
+                    }),
+            ])             
+            ->deferFilters()
             ->actions([
                 Tables\Actions\EditAction::make()
                 ->iconButton()
@@ -205,7 +221,7 @@ class UserResource extends Resource
                 Tables\Actions\DeleteBulkAction::make('delete'),
             ]);
     }
-
+    
     public static function getRelations(): array
     {
         return [
