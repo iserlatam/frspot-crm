@@ -192,8 +192,7 @@ class Cliente extends Model implements HasMedia
                                 ->label('¿Soy una persona de la que hay que informar en Estados Unidos?')
                                 ->boolean()
                                 ->inline()
-                                ->inlineLabel(false)
-                                ->required(),
+                                ->inlineLabel(false),                                
                             Forms\Components\Radio::make('caso')
                                 ->label('Indica cual es tu caso:')
                                 ->inline()
@@ -203,8 +202,7 @@ class Cliente extends Model implements HasMedia
                                     'b' => RegisterCuestionaryOptions::OPTION_B->value,
                                     'c' => RegisterCuestionaryOptions::OPTION_C->value,
                                     'd' => RegisterCuestionaryOptions::OPTION_D->value,
-                                ])
-                                ->required(),
+                                ]),
                             ])
                             ->visible(function(){
                                 if(Helpers::isSuperAdmin()){
