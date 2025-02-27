@@ -14,6 +14,7 @@ use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Relationship;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SeguimientosRelationManager extends RelationManager
@@ -33,7 +34,7 @@ class SeguimientosRelationManager extends RelationManager
             ->query(
                 function () {
                     $query = Seguimiento::query();
-                    
+
                     if (Helpers::isAsesor()) {
                         $query->whereHas('asesor.user', function ($query) {
                             $query->where('name', auth()->user()->name);
@@ -63,7 +64,7 @@ class SeguimientosRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('user.cliente.estado_cliente')
                 ->label('Estado Actual'),
                 Tables\Columns\TextColumn::make('user.cliente.fase_cliente')
-                    ->label('Fase Actual'),                 
+                    ->label('Fase Actual'),
                 Tables\Columns\TextColumn::make('etiqueta'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->date('M d/Y H:i:s')
@@ -74,7 +75,24 @@ class SeguimientosRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                ->using(function(array $data, string $model){
+                    $cliente = Cliente::where('user_id', $data['user_id'])->first();
+
+                    $cliente->update([
+                            'estado_cliente' => $data['estado'],
+                            'origenes' => $data['origen'],
+                            'fase_cliente' => $data['fase'],
+                        ]);
+
+                    // Agregar registro a HistorialSeguimiento
+
+                    return $model::create([
+                        'user_id' => $data['user_id'],
+                        'asesor_id' => $data['asesor_id'],
+                        'descripcion' => $data['descripcion'],
+                    ]);
+                }),
                 Helpers::renderReloadTableAction(),
             ])
             ->actions([
@@ -85,6 +103,28 @@ class SeguimientosRelationManager extends RelationManager
                     ->icon('heroicon-o-eye')
                     ->color('success'),
                 Tables\Actions\EditAction::make()
+                    ->fillForm([
+                        'estado' => $this->ownerRecord->cliente->estado_cliente,
+                        'origen' => $this->ownerRecord->cliente->origenes,
+                        'fase' => $this->ownerRecord->cliente->fase_cliente,
+                    ])
+                    ->using(function(Model $record, array $data){
+                        $cliente = Cliente::where('user_id', $data['user_id'])->first();
+
+                        $cliente->update([
+                            'estado_cliente' => $data['estado'],
+                            'origenes' => $data['origen'],
+                            'fase_cliente' => $data['fase'],
+                        ]);
+
+                        $record->update([
+                            'user_id' => $data['user_id'],
+                            'asesor_id' => $data['asesor_id'],
+                            'descripcion' => $data['descripcion'],
+                        ]);
+
+                        return $record;
+                    })
                     ->iconButton()
                     ->tooltip('Editar comentario')
                     ->visible(fn() => Helpers::isSuperAdmin()),

@@ -19,6 +19,8 @@ class ListSeguimientos extends ListRecords
                 ->using(function(array $data, string $model){
                     $cliente = Cliente::where('user_id', $data['user_id'])->first();
 
+                    dd($cliente);
+
                     $cliente->update([
                             'estado_cliente' => $data['estado'],
                             'origenes' => $data['origen'],
@@ -26,7 +28,6 @@ class ListSeguimientos extends ListRecords
                         ]);
 
                     // Agregar registro a HistorialSeguimiento
-
 
                     return $model::create([
                         'user_id' => $data['user_id'],

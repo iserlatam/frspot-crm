@@ -57,6 +57,16 @@ class Seguimiento extends Model
                             'Stateless  '  => 'Stateless',
                         ])
                         ->default(null),
+                    Forms\Components\Select::make('fase')
+                        ->label('Fase')
+                        ->options([
+                            'Prospecto nuevo' => 'Prospecto Nuevo',
+                            'Contactado' => 'Contactado',
+                            'No contesta' => 'No contesta',
+                            'Activo' => 'Activo',
+                            'Decline' => 'Decline',
+                        ])
+                        ->default(null),
                     Forms\Components\Select::make('origen')
                         ->label('Origen')
                         ->options([
@@ -76,16 +86,6 @@ class Seguimiento extends Model
                             'COCA-COLA' => 'COCA-COLA',
                             'ENTEL' => 'ENTEL',
                             'BIMBO' => 'BIMBO',
-                        ])
-                        ->default(null),
-                    Forms\Components\Select::make('fase')
-                        ->label('Fase')
-                        ->options([
-                            'Prospecto nuevo' => 'Prospecto Nuevo',
-                            'Contactado' => 'Contactado',
-                            'No contesta' => 'No contesta',
-                            'Activo' => 'Activo',
-                            'Decline' => 'Decline',
                         ])
                         ->default(null),
                 ]),
