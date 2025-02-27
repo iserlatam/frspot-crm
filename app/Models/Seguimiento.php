@@ -55,16 +55,25 @@ class Seguimiento extends Model
                             'No interested' => 'No interested',
                             'Invalid number' => 'Invalid number',
                             'Stateless  '  => 'Stateless',
+                            'interested'  => 'interested',
                         ])
                         ->default(null),
                     Forms\Components\Select::make('fase')
                         ->label('Fase')
                         ->options([
-                            'Prospecto nuevo' => 'Prospecto Nuevo',
-                            'Contactado' => 'Contactado',
-                            'No contesta' => 'No contesta',
-                            'Activo' => 'Activo',
-                            'Decline' => 'Decline',
+                            'New' => 'New',
+                            'No answer' => 'No answer',
+                            'Answer' => 'Answer',
+                            'Call again' => 'Call Again',
+                            'Potential' => 'Potential',
+                            'Low potential' => 'Low Potential',
+                            'Declined' => 'Declined',
+                            'Under age' => 'Under Age',
+                            'Active' => 'Active',
+                            'No interested' => 'No interested',
+                            'Invalid number' => 'Invalid number',
+                            'Stateless'  => 'Stateless',
+                            'interested'  => 'interested',
                         ])
                         ->default(null),
                     Forms\Components\Select::make('origen')

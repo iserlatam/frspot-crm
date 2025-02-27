@@ -19,7 +19,6 @@ class ListSeguimientos extends ListRecords
                 ->using(function(array $data, string $model){
                     $cliente = Cliente::where('user_id', $data['user_id'])->first();
 
-                    dd($cliente);
 
                     $cliente->update([
                             'estado_cliente' => $data['estado'],
