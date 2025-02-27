@@ -41,11 +41,7 @@ class SeguimientosRelationManager extends RelationManager
                         $query->whereHas('user', function ($query) {
                             $query->where('name', $this->ownerRecord->name);
                         });
-                    } else{
-                        $query->whereHas('user', function ($query) {
-                            $query->where('name', $this->ownerRecord->name);
-                        });
-                    }
+                    }                    
                     return $query; // Siempre debe retornar una consulta válida
                 }
             )
