@@ -19,7 +19,7 @@ class Dashboard extends \Filament\Pages\Dashboard
 
     public static function canAccess(): bool
     {
-        return Helpers::isOwner() || Helpers::isAsesor();
+        return Helpers::isOwner();
     }
 
     public function getHeaderWidgets(): array
