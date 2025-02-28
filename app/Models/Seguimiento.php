@@ -112,7 +112,7 @@ class Seguimiento extends Model
                         });
                     } else {
                         $query->whereHas('asignacion', function ($query) use ($livewire) {
-                            $query->where('id', $livewire->ownerRecord->id);
+                            fn ($livewire) => $livewire instanceof SeguimientosRelationManager ? $livewire->ownerRecord->id : null;                       
                         });
                     }
                 })

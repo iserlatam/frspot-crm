@@ -104,9 +104,9 @@ class SeguimientosRelationManager extends RelationManager
                     ->color('success'),
                 Tables\Actions\EditAction::make()
                     ->fillForm([
-                        'estado' => $this->ownerRecord->cliente->estado_cliente,
-                        'origen' => $this->ownerRecord->cliente->origenes,
-                        'fase' => $this->ownerRecord->cliente->fase_cliente,
+                        'estado' => $this->ownerRecord->cliente->estado_cliente ?? '',
+                        'origen' => $this->ownerRecord->cliente->origenes ?? '',
+                        'fase' => $this->ownerRecord->cliente->fase_cliente ?? '',
                     ])
                     ->using(function(Model $record, array $data){
                         $cliente = Cliente::where('user_id', $data['user_id'])->first();
