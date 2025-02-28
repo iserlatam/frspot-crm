@@ -75,7 +75,9 @@ class UserResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->copyable()
+                    ->tooltip('Haga click para copiar'),
                 Tables\Columns\TextColumn::make('email')
                     ->limit(10)
                     ->copyable()

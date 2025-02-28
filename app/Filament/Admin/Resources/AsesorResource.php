@@ -60,7 +60,9 @@ class AsesorResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
-                    ->sortable(),
+                    ->sortable()
+                    ->copyable()
+                    ->tooltip('Haga click para copiar'),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Usuario asignado')
                     ->searchable(),
