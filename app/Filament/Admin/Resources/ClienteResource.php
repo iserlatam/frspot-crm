@@ -92,11 +92,13 @@ class ClienteResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
+                    ->date('M d/Y h:i A')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
+                    ->date('M d/Y h:i A')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([

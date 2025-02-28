@@ -67,7 +67,7 @@ class SeguimientosRelationManager extends RelationManager
                     ->label('Fase Actual'),
                 Tables\Columns\TextColumn::make('etiqueta'),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->date('M d/Y H:i:s')
+                    ->date('M d/Y h:i A')
                     ->label('Creado el')
                     ->sortable(),
             ])

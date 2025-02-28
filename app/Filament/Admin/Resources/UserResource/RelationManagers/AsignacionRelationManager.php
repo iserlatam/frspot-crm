@@ -67,8 +67,7 @@ class AsignacionRelationManager extends RelationManager
                     }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha de creacion')
-                    ->date('M d/Y H:i:s'),
-                    
+                    ->date('M d/Y h:i A'),                   
             ])
             ->filters([
                 //

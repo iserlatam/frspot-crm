@@ -65,6 +65,8 @@ class AsesorResource extends Resource
                     ->tooltip('Haga click para copiar'),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Usuario asignado')
+                    ->copyable()
+                    ->tooltip('Haga click para copiar')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.email')
                     ->label('Email del usuario')
@@ -78,7 +80,7 @@ class AsesorResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado el')
-                    ->dateTime()
+                    ->date('M d/Y h:i A')
                     ->sortable(),
             ])
             ->filters([

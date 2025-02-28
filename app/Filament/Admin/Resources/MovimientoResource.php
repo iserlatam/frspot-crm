@@ -169,7 +169,7 @@ class MovimientoResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado el')
-                    ->date('M d/Y H:i:s')
+                    ->date('M d/Y h:i A')
                     ->sortable()
             ])
             ->filters([

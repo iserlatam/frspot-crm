@@ -8,6 +8,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -74,7 +75,19 @@ class AsignacionsRelationManager extends RelationManager
                     ->searchable(),
             ])
             ->filters([
-                //
+             Filter::make('created_at_day')
+                ->form([
+                    Forms\Components\DatePicker::make('created_at_day')
+                        ->label('Día específico')
+                        ->displayFormat('d/m/Y'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['created_at_day'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', $date)
+                        );
+                }),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),

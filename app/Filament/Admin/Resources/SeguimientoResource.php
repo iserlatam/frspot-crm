@@ -75,7 +75,7 @@ class SeguimientoResource extends Resource
                     ->searchable()
                     ->visible(false),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->date('M d/Y H:i:s')
+                    ->date('M d/Y h:i A')
                     ->label('Creado el')
                     ->sortable(),
             ])

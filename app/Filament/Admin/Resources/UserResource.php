@@ -95,7 +95,7 @@ class UserResource extends Resource
                     ->label('Estado cliente')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.fase_cliente')
-                    ->label('Fase cliente')
+                    ->label('Fase actual')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.origenes')
                     ->label('Origen cliente')
@@ -104,11 +104,11 @@ class UserResource extends Resource
                     ->label('Asesor asignado')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.updated_at')
-                    ->date('M d/Y H:i:s')
+                    ->date('M d/Y h:i A')
                     ->label('ultima actualización')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->date('M d/y H:i:s')
+                    ->date('M d/y h:i A')
                     ->label('Fecha de creacion')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('asignacion.estado_asignacion')

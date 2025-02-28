@@ -120,12 +120,12 @@ class AsignacionResource extends Resource
                     ->searchable(),
                     Tables\Columns\TextColumn::make('created_at')
                     ->label('Creada el')
-                    ->date('M d/Y H:i:s')
+                    ->date('M d/Y h:i A')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.cliente.updated_at')
                     ->label('Ultima actualizacion')
                     ->searchable()
-                    ->date('M d/Y H:i:s'),
+                    ->date('M d/Y h:i A'),
                     ])
             ->filters([
                 SelectFilter::make('estado_asignacion')
