@@ -111,7 +111,9 @@ class Seguimiento extends Model
                             $query->where('id', $livewire->ownerRecord->id);
                         });
                     } else {
-                        $query->where('id', $livewire->ownerRecord->id);
+                        $query->whereHas('asignacion', function ($query) use ($livewire) {
+                            $query->where('id', $livewire->ownerRecord->id);
+                        });
                     }
                 })
                 ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->name)
