@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Filament\Admin\Resources\UserResource\RelationManagers\SeguimientosRelationManager;
 use App\Helpers\Helpers;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Filament\Forms;
 use Filament\Resources\RelationManagers\RelationManager;
+use PhpParser\Node\Expr\Instanceof_;
 
 class Seguimiento extends Model
 {
@@ -101,20 +103,24 @@ class Seguimiento extends Model
             Forms\Components\RichEditor::make('descripcion')
                 ->columnSpanFull()
                 ->required(),
-            Forms\Components\Select::make('user_id')
-                ->relationship('userWithRoleCliente', 'name', modifyQueryUsing: function ($query) {
+                Forms\Components\Select::make('user_id')
+                ->relationship('userWithRoleCliente', 'name', modifyQueryUsing: function ($query, $livewire) {
                     if (Helpers::isAsesor()) {
-                        $query->whereHas('asignacion', function ($query) {
+                        $query->whereHas('asignacion', function ($query) use ($livewire) {
                             $query->where('asesor_id', auth()->user()->asesor->id);
+                            $query->where('cliente_id', $livewire->ownerRecord->id);
                         });
+                    } else {
+                        $query->where('id', $livewire->ownerRecord->id);
                     }
                 })
+                ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->name)
                 ->label('Cliente')
                 ->preload()
                 ->searchable()
                 ->required()
-                ->default(fn ($livewire) => $livewire instanceof RelationManager ? $livewire->ownerRecord->id : null) 
-                ->disabled(fn($livewire) => $livewire instanceof RelationManager),
+                ->default(fn ($livewire) => $livewire instanceof SeguimientosRelationManager ? $livewire->ownerRecord->id : null)
+                ,// ->disabled(fn($livewire) => $livewire instanceof SeguimientosRelationManager),          
             Forms\Components\TextInput::make('asesor_id')
                 ->visible(function () {
                     return !Helpers::isOwner();
