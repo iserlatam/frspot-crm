@@ -58,6 +58,7 @@ class Seguimiento extends Model
                             'Invalid number' => 'Invalid number',
                             'Stateless  '  => 'Stateless',
                             'interested'  => 'interested',
+                            'Recovery'  => 'Recovery',
                         ])
                         ->default(null),
                     Forms\Components\Select::make('fase')
@@ -75,7 +76,8 @@ class Seguimiento extends Model
                             'No interested' => 'No interested',
                             'Invalid number' => 'Invalid number',
                             'Stateless'  => 'Stateless',
-                            'interested'  => 'interested',
+                            'Interested'  => 'Interested',
+                            'Recovery'  => 'Recovery',
                         ])
                         ->default(null),
                     Forms\Components\Select::make('origen')
