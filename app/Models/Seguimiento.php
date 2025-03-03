@@ -108,7 +108,9 @@ class Seguimiento extends Model
                     if (Helpers::isAsesor()) {
                         $query->whereHas('asignacion', function ($query) use ($livewire) {
                             $query->where('asesor_id', auth()->user()->asesor->id);
-                            $query->where('id', $livewire->ownerRecord->id);
+                            if ($livewire instanceof SeguimientosRelationManager) {
+                                $query->where('id', $livewire->ownerRecord->id);
+                            };
                         });
                     } else {
                         $query->whereHas('asignacion', function ($query) use ($livewire) {
