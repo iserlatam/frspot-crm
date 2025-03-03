@@ -55,10 +55,10 @@ class Seguimiento extends Model
                             'Under age' => 'Under Age',
                             'Active' => 'Active',
                             'No interested' => 'No interested',
+                            'Recovery'  => 'Recovery',
                             'Invalid number' => 'Invalid number',
                             'Stateless  '  => 'Stateless',
                             'interested'  => 'interested',
-                            'Recovery'  => 'Recovery',
                         ])
                         ->default(null),
                     Forms\Components\Select::make('fase')
@@ -74,10 +74,10 @@ class Seguimiento extends Model
                             'Under age' => 'Under Age',
                             'Active' => 'Active',
                             'No interested' => 'No interested',
+                            'Recovery'  => 'Recovery',
                             'Invalid number' => 'Invalid number',
                             'Stateless'  => 'Stateless',
                             'Interested'  => 'Interested',
-                            'Recovery'  => 'Recovery',
                         ])
                         ->default(null),
                     Forms\Components\Select::make('origen')
