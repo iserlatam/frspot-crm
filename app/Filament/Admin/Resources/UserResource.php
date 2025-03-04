@@ -10,7 +10,6 @@ use App\Filament\Admin\Resources\UserResource\RelationManagers\SeguimientosRelat
 use App\Filament\Admin\Resources\UserResource\RelationManagers\UserMovimientosRelationManager;
 use App\Helpers\Helpers;
 use App\Models\User;
-use Attribute;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -19,7 +18,6 @@ use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Filters\Filter;
@@ -30,8 +28,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use NunoMaduro\Collision\Adapters\Phpunit\State;
-
-use function Laravel\Prompts\search;
 
 class UserResource extends Resource
 {
@@ -136,103 +132,25 @@ class UserResource extends Resource
                     ->label('asignacion id')
                     ->searchable(),
             ])
-            //inicio filtros
             ->filters([
-                Filter::make('filtros')
-                ->form([
-                    Forms\Components\Grid::make(2) // 📌 Organiza los filtros en 3 columnas
-                        ->schema([
-                            // 📌 Filtro por Asesor Asignado
-                            Forms\components\Select::make('asignacion.asesor.user.name')
-                                ->relationship('asignacion.asesor', 'id')
-                                ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
-                                ->preload()
-                                ->columnSpanFull()
-                                ->searchable()                               
-                                ->label('Asesor asignado'),      
-                            
-                            // 📌 Filtro por Día Específico
-                            Forms\Components\DatePicker::make('created_at_day')
-                            ->label('Día específico') 
-                            ->columnSpanFull()                         
+                Tables\Filters\SelectFilter::make('roles')
+                ->label('Rol asignado')
+                    ->relationship('roles', 'name'),
+                Filter::make('created_at_day')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_at_day')
+                            ->label('Día específico')
                             ->displayFormat('d/m/Y'),
-                        ]),
-                    Forms\Components\Grid::make(2)
-                        ->schema([
-                            Forms\Components\Select::make('cliente_estado_cliente')
-                                ->options([
-                                    'New' => 'New',
-                                    'No answer' => 'No answer',
-                                    'Answer' => 'Answer',
-                                    'Call again' => 'Call Again',
-                                    'Potential' => 'Potential',
-                                    'Low potential' => 'Low Potential',
-                                    'Declined' => 'Declined',
-                                    'Under age' => 'Under Age',
-                                    'Active' => 'Active',
-                                    'No interested' => 'No interested',
-                                    'Invalid number' => 'Invalid number',
-                                    'Stateless'  => 'Stateless',
-                                    'Interested'  => 'Interested',
-                                    'Recovery'  => 'Recovery',
-                                    ])
-                                ->label('Estado cliente'),
-                            // 📌 Filtro por Fase del Cliente
-                            Forms\Components\Select::make('cliente_fase_cliente')
-                                ->options([
-                                'New' => 'New',
-                                'No answer' => 'No answer',
-                                'Answer' => 'Answer',
-                                'Call again' => 'Call Again',
-                                'Potential' => 'Potential',
-                                'Low potential' => 'Low Potential',
-                                'Declined' => 'Declined',
-                                'Under age' => 'Under Age',
-                                'Active' => 'Active',
-                                'No interested' => 'No interested',
-                                'Invalid number' => 'Invalid number',
-                                'Stateless'  => 'Stateless',
-                                'Interested'  => 'Interested',
-                                'Recovery'  => 'Recovery',
-                                ])
-                                ->label('Fase cliente'),                         
-                            // 📌 Filtro por Estado del Cliente
-                            
-                        ]),
-                    Forms\Components\Grid::make(2)
-                        ->schema([
-                             // 📌 Filtro por Rol
-                             Forms\components\Select::make('roles')
-                             ->label('Rol asignado')                     
-                             ->relationship('roles', 'name'),
-                              
-                        // 📌 Filtro por País del Cliente
-                            Forms\Components\TextInput::make('cliente_pais')
-                                ->label('País Cliente')
-                                ->default(''),
-                         ])
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
-                            ->when($data['created_at_day'] ?? null, fn ($query, $date) => 
-                                $query->whereDate('created_at', $date)
-                            )
-                            ->when($data['cliente_estado_cliente'] ?? null, fn ($query, $estado) => 
-                                $query->whereHas('cliente', fn ($query) => $query->where('estado_cliente', $estado))
-                            )
-                            ->when($data['cliente_fase_cliente'] ?? null, fn ($query, $fase) => 
-                                $query->whereHas('cliente', fn ($query) => $query->where('fase_cliente', $fase))
-                            )
-                            ->when($data['cliente_pais'] ?? null, fn ($query, $pais) => 
-                                $query->whereHas('cliente', fn ($query) => $query->where('pais', $pais))
+                            ->when(
+                                $data['created_at_day'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', $date)
                             );
                     }),
-            ])
-            
+            ])             
             ->deferFilters()
-               
-            //fin filtros            
-
             ->actions([
                 Tables\Actions\EditAction::make()
                 ->iconButton()
@@ -303,8 +221,8 @@ class UserResource extends Resource
                 /**
                  *  ACCIONES DE ELIMINACION DE USUARIOS
                  */
-                 Tables\Actions\DeleteBulkAction::make('delete'),
-                ]);
+                Tables\Actions\DeleteBulkAction::make('delete'),
+            ]);
     }
     
     public static function getRelations(): array

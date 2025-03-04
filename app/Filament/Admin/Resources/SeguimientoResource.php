@@ -83,81 +83,20 @@ class SeguimientoResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                Filter::make('seguimiento_filters')
-                    ->form([
-                        Forms\Components\Grid::make(2)
-                            ->schema([
-                                Forms\Components\DatePicker::make('created_at_day')
-                                    ->label('Día específico')
-                                    ->columnSpanFull()
-                                    ->displayFormat('d/m/Y'),  
-                                // 📌 Filtro por Estado del Cliente
-                                Forms\Components\Select::make('estado_cliente')
-                                    ->options([
-                                        'New' => 'New',
-                                        'No answer' => 'No answer',
-                                        'Answer' => 'Answer',
-                                        'Call again' => 'Call Again',
-                                        'Potential' => 'Potential',
-                                        'Low potential' => 'Low Potential',
-                                        'Declined' => 'Declined',
-                                        'Under age' => 'Under Age',
-                                        'Active' => 'Active',
-                                        'No interested' => 'No interested',
-                                        'Invalid number' => 'Invalid number',
-                                        'Stateless'  => 'Stateless',
-                                        'Interested'  => 'Interested',
-                                        'Recovery'  => 'Recovery',
-                                        ])
-                                    ->label('Estado cliente'),
-                            
-                                // 📌 Filtro por Fase del Cliente
-                                Forms\Components\Select::make('fase_cliente')
-                                    ->options([
-                                    'New' => 'New',
-                                    'No answer' => 'No answer',
-                                    'Answer' => 'Answer',
-                                    'Call again' => 'Call Again',
-                                    'Potential' => 'Potential',
-                                    'Low potential' => 'Low Potential',
-                                    'Declined' => 'Declined',
-                                    'Under age' => 'Under Age',
-                                    'Active' => 'Active',
-                                    'No interested' => 'No interested',
-                                    'Invalid number' => 'Invalid number',
-                                    'Stateless'  => 'Stateless',
-                                    'Interested'  => 'Interested',
-                                    'Recovery'  => 'Recovery',
-                                    ])
-                                    ->label('Fase cliente'),      
-                                    Forms\Components\Select::make('asesor_name')
-                                    ->label('Asesor asignado')
-                                    ->options(fn() => \App\Models\User::whereHas('asesor')->pluck('name', 'name')) // Muestra solo asesores
-                                    ->searchable()
-                                    ->preload()
-                                    ->columnSpanFull(),
-                                
-                                      
-                            ]),          
-                        ])
-                        ->query(function (Builder $query, array $data): Builder {
-                            return $query
-                                ->when($data['created_at_day'] ?? null, fn ($query, $date) => 
-                                    $query->whereDate('created_at', $date)
-                                )
-                                ->when($data['estado_cliente'] ?? null,fn ($query, $estado) => $query->whereHas('user.cliente', function ($query) use ($estado) {
-                                    $query->where('estado_cliente', $estado);
-                                }))
-                                ->when($data['fase_cliente'] ?? null,fn ($query, $fase) => $query->whereHas('user.cliente', function ($query) use ($fase) {
-                                    $query->where('fase_cliente', $fase);
-                                }))
-                                ->when($data['asesor_name'] ?? null, fn ($query, $asesorNombre) => 
-                                $query->whereHas('asesor.user', function ($query) use ($asesorNombre) {
-                                    $query->where('name', $asesorNombre);
-                                }));
-                        }),
+             Filter::make('created_at_day')
+                ->form([
+                    Forms\Components\DatePicker::make('created_at_day')
+                        ->label('Día específico')
+                        ->displayFormat('d/m/Y'),
                 ])
-                ->deferFilters()
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['created_at_day'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', $date)
+                        );
+                })
+            ])
             ->headerActions([
                 Helpers::renderReloadTableAction(),
             ])
