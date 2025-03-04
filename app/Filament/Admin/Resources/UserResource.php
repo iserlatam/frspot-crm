@@ -138,19 +138,20 @@ class UserResource extends Resource
             ])
             //inicio filtros
             ->filters([
+
+                // 📌 Filtro por Asesor Asignado
+                SelectFilter::make('asignacion.asesor.user.name')
+                ->relationship('asignacion.asesor', 'id')
+                ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
+                ->preload()
+                ->searchable()
+                ->label('Asesor asignado'),
+
                 Filter::make('filtros')
                 ->form([
                     Forms\Components\Grid::make(2) // 📌 Organiza los filtros en 3 columnas
                         ->schema([
-                            // 📌 Filtro por Asesor Asignado
-                            Forms\Components\Select::make('asignacion.asesor.user.name')
-                                ->relationship('asignacion.asesor', 'id')
-                                ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
-                                ->preload()
-                                ->columnSpanFull()
-                                ->searchable()                               
-                                ->label('Asesor asignado'),      
-                            
+
                             // 📌 Filtro por Día Específico
                             Forms\Components\DatePicker::make('created_at_day')
                             ->label('Día específico') 
