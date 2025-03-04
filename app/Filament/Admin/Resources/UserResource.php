@@ -143,7 +143,7 @@ class UserResource extends Resource
                     Forms\Components\Grid::make(2) // 📌 Organiza los filtros en 3 columnas
                         ->schema([
                             // 📌 Filtro por Asesor Asignado
-                            Forms\components\Select::make('asignacion.asesor.user.name')
+                            Forms\Components\Select::make('asignacion.asesor.user.name')
                                 ->relationship('asignacion.asesor', 'id')
                                 ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
                                 ->preload()
@@ -202,7 +202,7 @@ class UserResource extends Resource
                     Forms\Components\Grid::make(2)
                         ->schema([
                              // 📌 Filtro por Rol
-                             Forms\components\Select::make('roles')
+                             Forms\Components\Select::make('roles')
                              ->label('Rol asignado')                     
                              ->relationship('roles', 'name'),
                               
