@@ -40,8 +40,7 @@ class CreateSeguimiento extends CreateRecord
 
             $cliente->update([
                     'estado_cliente' => $data['estado'],
-                    'origenes' => $data['origen'],
-                    'fase_cliente' => $data['fase'],
+                    'fase_cliente' => $data['fase'],                    
                 ]);
 
             Seguimiento::create([

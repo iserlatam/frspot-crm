@@ -40,7 +40,7 @@ class Seguimiento extends Model
     public static function getForm() {
         return [
             Forms\Components\Grid::make()
-                ->columns(3)
+                ->columns(2)
                 ->schema([
                     Forms\Components\Select::make('estado')
                         ->label('Estado')
@@ -60,6 +60,7 @@ class Seguimiento extends Model
                             'Stateless  '  => 'Stateless',
                             'interested'  => 'interested',
                         ])
+                        ->required()
                         ->default(null),
                     Forms\Components\Select::make('fase')
                         ->label('Fase')
@@ -79,28 +80,8 @@ class Seguimiento extends Model
                             'Stateless'  => 'Stateless',
                             'Interested'  => 'Interested',
                         ])
-                        ->default(null),
-                    Forms\Components\Select::make('origen')
-                        ->label('Origen')
-                        ->options([
-                            'AMZN' => 'AMZN',
-                            'AMZN200' => 'AMZN200',
-                            'AMZN280' => 'AMZN280',
-                            'BTC' => 'BTC',
-                            'PETROLEO' => 'PETROLEO',
-                            'APPLE' => 'APPLE',
-                            'CURSOS' => 'CURSOS',
-                            'PETROBLAS' => 'PETROBLAS',
-                            'XAUUSD' => 'XAUUSD',
-                            'TESLA' => 'TESLA',
-                            'INGRESOS_EXTRAS' => 'INGRESOS EXTRAS',
-                            'FRSPOT' => 'FRSPOT',
-                            'Conferencia_Musk' => 'Conferencia Musk',
-                            'COCA-COLA' => 'COCA-COLA',
-                            'ENTEL' => 'ENTEL',
-                            'BIMBO' => 'BIMBO',
-                        ])
-                        ->default(null),
+                        ->required()
+                        ->default(null),                 
                 ]),
             Forms\Components\RichEditor::make('descripcion')
                 ->columnSpanFull()
@@ -116,7 +97,9 @@ class Seguimiento extends Model
                         });
                     } else {
                         $query->whereHas('asignacion', function ($query) use ($livewire) {
-                            fn ($livewire) => $livewire instanceof SeguimientosRelationManager ? $livewire->ownerRecord->id : null;                       
+                            if ($livewire instanceof SeguimientosRelationManager) {
+                                $query->where('id', $livewire->ownerRecord->id);
+                            };
                         });
                     }
                 })

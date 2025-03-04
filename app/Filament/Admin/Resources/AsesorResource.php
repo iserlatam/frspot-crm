@@ -59,7 +59,7 @@ class AsesorResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
+                    ->label('ID de asesor')
                     ->sortable()
                     ->copyable()
                     ->tooltip('Haga click para copiar'),
@@ -70,6 +70,8 @@ class AsesorResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.email')
                     ->label('Email del usuario')
+                    ->copyable()
+                    ->tooltip('Haga click para copiar')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.roles.name')
                     ->label('Rol asignado')

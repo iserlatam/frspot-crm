@@ -48,7 +48,8 @@ class AsignacionRelationManager extends RelationManager
                 }
             )
             ->columns([
-                Tables\Columns\TextColumn::make('id'),
+                Tables\Columns\TextColumn::make('id')
+                ->label('ID de asigancion'),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Cliente asignado'),
                 Tables\Columns\TextColumn::make('asesor.user.name')

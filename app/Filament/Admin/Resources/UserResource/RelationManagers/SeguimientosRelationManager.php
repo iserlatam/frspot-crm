@@ -80,8 +80,7 @@ class SeguimientosRelationManager extends RelationManager
                     $cliente = Cliente::where('user_id', $data['user_id'])->first();
 
                     $cliente->update([
-                            'estado_cliente' => $data['estado'],
-                            'origenes' => $data['origen'],
+                            'estado_cliente' => $data['estado'],                           
                             'fase_cliente' => $data['fase'],
                         ]);
 

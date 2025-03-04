@@ -72,6 +72,7 @@ class UserResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
+                    ->label('ID de usuario')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')

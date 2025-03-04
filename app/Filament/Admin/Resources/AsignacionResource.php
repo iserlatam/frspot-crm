@@ -89,7 +89,7 @@ class AsignacionResource extends Resource
             )
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
+                    ->label('ID de asignacion')
                     ->sortable()
                     ->searchable(),
                 

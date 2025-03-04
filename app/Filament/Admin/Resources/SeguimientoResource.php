@@ -55,6 +55,8 @@ class SeguimientoResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Cliente')
+                    ->copyable()
+                    ->tooltip('Nombre del cliente')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('asesor.user.name')
                     ->label('Asesor')
