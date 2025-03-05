@@ -73,7 +73,7 @@ class AsignacionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('user.cliente.updated_at', 'desc')
             ->query(
                 function () {
                     $query = Asignacion::query();
@@ -125,6 +125,7 @@ class AsignacionResource extends Resource
                 Tables\Columns\TextColumn::make('user.cliente.updated_at')
                     ->label('Ultima actualizacion')
                     ->searchable()
+                    ->sortable()
                     ->date('M d/Y h:i A'),
                     ])
             ->filters([
