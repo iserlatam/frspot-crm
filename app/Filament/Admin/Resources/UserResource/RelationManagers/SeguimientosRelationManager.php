@@ -34,20 +34,10 @@ class SeguimientosRelationManager extends RelationManager
             ->query(
                 function () {
                     $query = Seguimiento::query();
-
-                    if (Helpers::isAsesor()) {
-                        $query->whereHas('asesor.user', function ($query) {
-                            $query->where('name', auth()->user()->name);
-                        });
-                        $query->whereHas('user', function ($query) {
-                            $query->where('name', $this->ownerRecord->name);
-                        });
-                    } else{
-                        $query->whereHas('user', function ($query) {
-                            $query->where('name', $this->ownerRecord->name);
-                        });
-                    }
-                    return $query; // Siempre debe retornar una consulta válida
+          
+                    $query->whereHas('user', function ($query) {
+                        $query->where('name', $this->ownerRecord->name);
+                    });                    
                 }
             )
             // ->recordTitleAttribute('id')
