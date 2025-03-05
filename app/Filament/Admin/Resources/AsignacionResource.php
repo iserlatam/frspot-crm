@@ -95,6 +95,8 @@ class AsignacionResource extends Resource
                 
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Cliente asignado')
+                    ->copyable()
+                    ->tooltip('Haga click para copiar')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('asesor.user.name')
                     ->label('Asesor asignado')
