@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\SeguimientoResource;
 use App\Helpers\Helpers;
 use App\Models\Cliente;
 use App\Models\Seguimiento;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -52,15 +53,18 @@ class SeguimientosRelationManager extends RelationManager
                     ->html()
                     ->limit(120),
                 Tables\Columns\TextColumn::make('user.cliente.estado_cliente')
-                ->label('Estado Actual'),
+                    ->label('Estado Actual'),
                 Tables\Columns\TextColumn::make('user.cliente.fase_cliente')
                     ->label('Fase Actual'),
-                Tables\Columns\TextColumn::make('etiqueta'),
-                Tables\Columns\TextColumn::make('created_at')
+                Tables\Columns\TextColumn::make('user.cliente.updated_at')
                     ->date('M d/Y h:i A')
-                    ->label('Creado el')
+                    ->label('última actualizacion')
                     ->sortable(),
-            ])
+                Tables\Columns\TextColumn::make('created_at')
+                        ->date('M d/Y h:i A')
+                        ->label('Creado el')
+                        ->sortable(),
+                ])
             ->filters([
                 //
             ])
@@ -72,7 +76,10 @@ class SeguimientosRelationManager extends RelationManager
                     $cliente->update([
                             'estado_cliente' => $data['estado'],                           
                             'fase_cliente' => $data['fase'],
+                            
                         ]);
+                        
+                    $cliente->touch();
 
                     // Agregar registro a HistorialSeguimiento
 

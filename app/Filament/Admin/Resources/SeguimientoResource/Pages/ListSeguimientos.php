@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\SeguimientoResource\Pages;
 use App\Filament\Admin\Resources\SeguimientoResource;
 use App\Models\Cliente;
 use App\Models\Seguimiento;
+use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -24,6 +25,8 @@ class ListSeguimientos extends ListRecords
                             'estado_cliente' => $data['estado'],
                             'fase_cliente' => $data['fase'],
                         ]);
+
+                    $cliente->touch();
 
                     // Agregar registro a HistorialSeguimiento
 

@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\SeguimientoResource\Pages;
 use App\Filament\Admin\Resources\SeguimientoResource;
 use App\Models\Cliente;
 use App\Models\Seguimiento;
+use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Support\Exceptions\Halt;
@@ -40,8 +41,10 @@ class CreateSeguimiento extends CreateRecord
 
             $cliente->update([
                     'estado_cliente' => $data['estado'],
-                    'fase_cliente' => $data['fase'],                    
+                    'fase_cliente' => $data['fase'],
                 ]);
+                
+            $cliente->touch();
 
             Seguimiento::create([
                 'user_id' => $data['user_id'],
