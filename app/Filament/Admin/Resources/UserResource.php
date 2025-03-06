@@ -82,6 +82,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->copyable()
+                    ->extraCellAttributes(['class'=>''])
                     ->tooltip('Haga click para copiar'),
                 Tables\Columns\TextColumn::make('email')
                     ->limit(10)
@@ -273,25 +274,38 @@ class UserResource extends Resource
                 /**
                  *  ASIGNAR ROL CLIENTE
                  */
-                BulkAction::make('Asignar nuevo rol')
+                BulkAction::make('Asignar nuevo estado')
                     ->color('info')
                     ->icon('heroicon-s-identification')
                     ->form([
-                        Select::make('role')
-                            ->options([
-                                'master' => 'Master',
-                                'asesor' => 'Asesor',
-                                'cliente' => 'Cliente',
+                        Select::make('estado_cliente')
+                        ->options([
+                            'New' => 'New',
+                            'No answer' => 'No answer',
+                            'Answer' => 'Answer',
+                            'Call again' => 'Call Again',
+                            'Potential' => 'Potential',
+                            'Low potential' => 'Low Potential',
+                            'Declined' => 'Declined',
+                            'Under age' => 'Under Age',
+                            'Active' => 'Active',
+                            'No interested' => 'No interested',
+                            'Recovery'  => 'Recovery',
+                            'Invalid number' => 'Invalid number',
+                            'Stateless'  => 'Stateless',
+                            'Interested'  => 'Interested',
                             ])
-                    ])
+                            ->required()
+                        ])
                     ->action(function (array $data, Collection $records) {
-                        // OBTENER EL VALOR DE ROLE DESDE EL MODAL
-                        $records->each->syncRoles($data['role']);
+                        $records->each(function($user)use($data){
+                            $user?->cliente->update(['estado_cliente'=> $data['estado_cliente']]);
+                        });
                     })
                     ->after(function () {
                         // NOTIFICAR QUE LA ASIGNACION FUE EXITOSA
                         Notification::make()
-                            ->title('Roles actualizado con éxito')
+                            ->title('estado actualizado con éxito')
                             ->success()
                             ->send();
                     })

@@ -8,14 +8,21 @@ use App\Helpers\Helpers;
 use App\Models\Asesor;
 use App\Models\Seguimiento;
 use App\Models\User;
+use Exception;
+use Faker\Extension\Helper;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Illuminate\Database\Eloquent\Collection;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -174,10 +181,111 @@ class SeguimientoResource extends Resource
                     ->tooltip('Editar comentario')
                     ->visible(fn () => helpers::isSuperAdmin())
             ], position: ActionsPosition::BeforeCells)
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+            ->bulkActions([               
+                BulkAction::make('asignar nuevo estado')
+                    ->color('warning')
+                    ->icon('heroicon-s-identification')
+                    ->form([
+                        Select::make('estado_cliente')
+                        ->label('Estado del cliente')
+                        ->options([
+                            'New' => 'New',
+                            'No answer' => 'No answer',
+                            'Answer' => 'Answer',
+                            'Call again' => 'Call Again',
+                            'Potential' => 'Potential',
+                            'Low potential' => 'Low Potential',
+                            'Declined' => 'Declined',
+                            'Under age' => 'Under Age',
+                            'Active' => 'Active',
+                            'No interested' => 'No interested',
+                            'Recovery'  => 'Recovery',
+                            'Invalid number' => 'Invalid number',
+                            'Stateless'  => 'Stateless',
+                            'Interested'  => 'Interested',
+                        ])
+                        ->required(),
+                    ])
+                    ->action(function(array $data, Collection $records): void {
+                        // Validación del campo fase_cliente
+                        if (!isset($data['estado_cliente']) || empty($data['estado_cliente'])) {
+                            throw new Exception('El campo estado_cliente no tiene valor.');
+                        }
+            
+                        // Actualizar fase de cada cliente
+                        $records->each(function ($seguimiento) use ($data) {
+                            // Obtener el cliente a través del usuario
+                            $cliente = $seguimiento->user?->cliente;
+            
+                            if (!$cliente) {
+                                throw new Exception('No se encontró un cliente asociado a este seguimiento.');
+                            }
+            
+                            // Actualizar la fase del cliente
+                            $cliente->update(['estado_cliente' => $data['estado_cliente']]);
+                        });
+                    })
+                    ->after(function () {
+                        // NOTIFICAR QUE LA ASIGNACION FUE EXITOSA
+                        Notification::make()
+                            ->title('estado actualizado con éxito')
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion()
+                    ->visible(fn()=>Helpers::isSuperAdmin()),
+                BulkAction::make('asignar nueva fase')
+                    ->color('success')
+                    ->icon('heroicon-s-arrow-path')
+                    ->form([
+                        Select::make('fase_cliente')
+                        ->label('Fase del cliente')
+                        ->options([
+                            'New' => 'New',
+                            'No answer' => 'No answer',
+                            'Answer' => 'Answer',
+                            'Call again' => 'Call Again',
+                            'Potential' => 'Potential',
+                            'Low potential' => 'Low Potential',
+                            'Declined' => 'Declined',
+                            'Under age' => 'Under Age',
+                            'Active' => 'Active',
+                            'No interested' => 'No interested',
+                            'Recovery'  => 'Recovery',
+                            'Invalid number' => 'Invalid number',
+                            'Stateless'  => 'Stateless',
+                            'Interested'  => 'Interested',
+                        ])
+                        ->required(),
+                    ])
+                    ->action(function(array $data, Collection $records): void {
+                        // Validación del campo fase_cliente
+                        if (!isset($data['fase_cliente']) || empty($data['fase_cliente'])) {
+                            throw new Exception('El campo fase_cliente no tiene valor.');
+                        }
+            
+                        // Actualizar fase de cada cliente
+                        $records->each(function ($seguimiento) use ($data) {
+                            // Obtener el cliente a través del usuario
+                            $cliente = $seguimiento->user?->cliente;
+            
+                            if (!$cliente) {
+                                throw new Exception('No se encontró un cliente asociado a este seguimiento.');
+                            }
+            
+                            // Actualizar la fase del cliente
+                            $cliente->update(['fase_cliente' => $data['fase_cliente']]);
+                        });
+                    })
+                    ->after(function () {
+                        // NOTIFICAR QUE LA ASIGNACION FUE EXITOSA
+                        Notification::make()
+                            ->title('Fase actualizado con éxito')
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion()
+                    ->visible(fn()=>Helpers::isSuperAdmin()),
             ]);
     }
 
