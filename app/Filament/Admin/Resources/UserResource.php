@@ -85,8 +85,10 @@ class UserResource extends Resource
                     ->extraCellAttributes(['class'=>''])
                     ->tooltip('Haga click para copiar'),
                 Tables\Columns\TextColumn::make('email')
-                    ->limit(10)
+                    // ->limit(10)
+                    ->formatStateUsing(fn($record) => Helpers::isSuperAdmin() ? $record->email : '*****@*****.***')
                     ->copyable()
+                    ->copyableState(fn($record) =>$record->email)
                     ->tooltip('Haga click para copiar')
                     ->searchable(),                   
                 Tables\Columns\TextColumn::make('cliente.celular')
