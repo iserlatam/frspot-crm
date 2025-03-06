@@ -64,14 +64,16 @@ class SeguimientoResource extends Resource
                     ->label('Cliente')
                     ->copyable()
                     ->tooltip('Nombre del cliente')
+                    ->limit('20')
+                    // ->extraAttributes(['style' => 'max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;'])
                     ->searchable(),
                 Tables\Columns\TextColumn::make('asesor.user.name')
                     ->label('Asesor')
                     ->searchable(),
                     Tables\Columns\TextColumn::make('descripcion')
                     ->html()
-                    ->wrap()
-                    ->limit(100),
+                    ->wrap(true)
+                    ->extraAttributes(['style' => 'max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;']),
                 Tables\Columns\TextColumn::make('user.cliente.estado_cliente')
                     ->label('Estado actual')
                     ->searchable(),
