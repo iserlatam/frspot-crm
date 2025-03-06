@@ -73,7 +73,7 @@ class UserResource extends Resource
             
                 return $query;
             })
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('created_at', 'asc')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID de usuario')
@@ -102,11 +102,11 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('cliente.fase_cliente')
                     ->label('Fase actual')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('cliente.origenes')
-                    ->label('Origen cliente')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('asignacion.asesor.user.name')
                     ->label('Asesor asignado')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('cliente.origenes')
+                    ->label('Origen cliente')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.updated_at')
                     ->date('M d/Y h:i A')
@@ -231,7 +231,7 @@ class UserResource extends Resource
             ])
             
             ->deferFilters()
-               
+    
             //fin filtros            
 
             ->actions([
@@ -300,6 +300,49 @@ class UserResource extends Resource
                         if(Helpers::isSuperAdmin()){
                             return true;
                         }
+                    }),
+                BulkAction::make('assignar nueva fase')
+                    ->color('success')
+                    ->icon('heroicon-s-arrow-path')
+                    ->form([
+                        Select::make('fase')
+                        ->label('Fase del cliente')
+                        ->options([
+                            'New' => 'New',
+                            'No answer' => 'No answer',
+                            'Answer' => 'Answer',
+                            'Call again' => 'Call Again',
+                            'Potential' => 'Potential',
+                            'Low potential' => 'Low Potential',
+                            'Declined' => 'Declined',
+                            'Under age' => 'Under Age',
+                            'Active' => 'Active',
+                            'No interested' => 'No interested',
+                            'Recovery'  => 'Recovery',
+                            'Invalid number' => 'Invalid number',
+                            'Stateless'  => 'Stateless',
+                            'Interested'  => 'Interested',
+                        ])
+                        ->required(),
+                    ])
+                    ->action(function( array $data, Collection $records): void {
+                        $records->each(function ($user)use($data){
+                            $user->assingNewFase($data['fase']);
+                        });
+                    })
+                    ->after(function () {
+                        // NOTIFICAR QUE LA ASIGNACION FUE EXITOSA
+                        Notification::make()
+                            ->title('Fase actualizado con éxito')
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion()
+                    ->visible(function(){
+                        if(Helpers::isSuperAdmin()){
+                            return true;
+                        }
+                        return false;
                     }),
                 /**
                  *  ACCIONES DE ELIMINACION DE USUARIOS
