@@ -92,9 +92,11 @@ class UserResource extends Resource
                     ->tooltip('Haga click para copiar')
                     ->searchable(),                   
                 Tables\Columns\TextColumn::make('cliente.celular')
-                    ->copyable()
-                    ->label('Celular')
+                     ->label('Celular')
+                    ->formatStateUsing(fn($record)=>Helpers::isSuperAdmin()?$record->cliente?->celular:'********')
                     ->tooltip('Haga click para copiar')
+                    ->copyable()
+                    ->copyableState(fn($record) => $record->cliente?->celular)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.pais')
                     ->label('pais')
