@@ -227,6 +227,8 @@ class User extends Authenticatable implements FilamentUser, HasMedia
         static::deleting(function ($user) {
             $user->cliente()->delete();
             $user->cuentaCliente()->delete();
+            $user->Seguimientos()->delete();
+            $user->asignacion()->delete();
         });
     }
 }

@@ -97,6 +97,7 @@ class AsignacionResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Cliente asignado')
                     ->copyable()
+                    ->sortable()
                     ->tooltip('Haga click para copiar')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('asesor.user.name')
@@ -117,9 +118,11 @@ class AsignacionResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('user.cliente.estado_cliente')
                     ->label('Estado cliente')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.cliente.fase_cliente')
                     ->label('Fase cliente')
+                    ->sortable()
                     ->searchable(),
                     Tables\Columns\TextColumn::make('updated_at')
                     ->label('Actualización de asignación')
@@ -144,20 +147,64 @@ class AsignacionResource extends Resource
                 ->visible(fn()=>Helpers::isSuperAdmin())
                 ->label('Asesor asignado'),
                 
-                Filter::make('updated_at_day')
+                Filter::make('asignacion_filtros')
                     ->form([
                         Forms\Components\DatePicker::make('updated_at_day')
                             ->label('Fecha de actualización')
                             ->displayFormat('d/m/Y'),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
+                            Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\Select::make('cliente_estado_cliente')
+                                    ->options([
+                                        'New' => 'New',
+                                        'No answer' => 'No answer',
+                                        'Answer' => 'Answer',
+                                        'Call again' => 'Call Again',
+                                        'Potential' => 'Potential',
+                                        'Low potential' => 'Low Potential',
+                                        'Declined' => 'Declined',
+                                        'Under age' => 'Under Age',
+                                        'Active' => 'Active',
+                                        'No interested' => 'No interested',
+                                        'Invalid number' => 'Invalid number',
+                                        'Stateless'  => 'Stateless',
+                                        'Interested'  => 'Interested',
+                                        'Recovery'  => 'Recovery',
+                                        ])
+                                    ->label('Estado cliente'),
+                                // 📌 Filtro por Fase del Cliente
+                                Forms\Components\Select::make('cliente_fase_cliente')
+                                    ->options([
+                                        'New' => 'New',
+                                        'No answer' => 'No answer',
+                                        'Answer' => 'Answer',
+                                        'Call again' => 'Call Again',
+                                        'Potential' => 'Potential',
+                                        'Low potential' => 'Low Potential',
+                                        'Declined' => 'Declined',
+                                        'Under age' => 'Under Age',
+                                        'Active' => 'Active',
+                                        'No interested' => 'No interested',
+                                        'Invalid number' => 'Invalid number',
+                                        'Stateless'  => 'Stateless',
+                                        'Interested'  => 'Interested',
+                                        'Recovery'  => 'Recovery',
+                                    ])
+                                    ->label('Fase cliente'),                                                               
+                            ])
+                        ])
+                                                   
+                    ->query(function (Builder $query, array $data): Builder {                     
                         return $query
-                            ->when(
-                                $data['updated_at_day'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('updated_at', $date)
-                            );
+                            ->when($data['updated_at_day'] ?? null ,fn (Builder $query, $date): Builder => $query->whereDate('updated_at', $date)
+                            )
+                            ->when($data['cliente_estado_cliente'] ?? null , function ($query,$estado){
+                                $query->whereHas('user.cliente', fn($query) => $query->where('estado_cliente', $estado));
+                            })
+                            ->when($data['cliente_fase_cliente'] ?? null , function ($query,$fase){
+                                $query->whereHas('user.cliente', fn($query) => $query->where('fase_cliente', $fase));
+                            });                       
                     }),
-                
             ])
             ->deferFilters()
             ->actions([
