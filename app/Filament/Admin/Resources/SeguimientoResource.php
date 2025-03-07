@@ -13,6 +13,7 @@ use Faker\Extension\Helper;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Tables\Columns\Concerns\HasWidth;
 use Illuminate\Database\Eloquent\Collection;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -73,8 +74,12 @@ class SeguimientoResource extends Resource
                     ->searchable(),
                     Tables\Columns\TextColumn::make('descripcion')
                     ->html()
-                    ->wrap(true)
-                    ->extraAttributes(['style' => 'max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;']),
+                    ->limit(300)
+                    ->wrap() // Habilita el envolvimiento básico
+                    ->extraAttributes([
+                        'class' => 'max-w-md break-words', // Limita el ancho máximo y fuerza el salto de palabras
+                        'style' => 'white-space: pre-wrap; word-break: break-word; max-width: 400px; text-wrap: true; word-break: break-all; overflow-wrap: break-word;', // Control adicional con CSS
+                    ]),
                 Tables\Columns\TextColumn::make('user.cliente.estado_cliente')
                     ->label('Estado actual')
                     ->searchable(),
@@ -289,6 +294,8 @@ class SeguimientoResource extends Resource
                     })
                     ->deselectRecordsAfterCompletion()
                     ->visible(fn()=>Helpers::isSuperAdmin()),
+                Tables\Actions\DeleteBulkAction::make('delete')
+                    ->visible(fn()=> Helpers::isSuperAdmin()),
             ]);
     }
 

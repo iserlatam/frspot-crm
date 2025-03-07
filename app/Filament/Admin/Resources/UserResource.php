@@ -365,7 +365,8 @@ class UserResource extends Resource
                 /**
                  *  ACCIONES DE ELIMINACION DE USUARIOS
                  */
-                 Tables\Actions\DeleteBulkAction::make('delete'),
+                 Tables\Actions\DeleteBulkAction::make('delete')
+                    ->visible(fn()=> Helpers::isSuperAdmin()),
                 ]);
     }
     
