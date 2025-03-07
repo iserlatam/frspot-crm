@@ -108,8 +108,8 @@ class Seguimiento extends Model
                 ->preload()
                 ->searchable()
                 ->required()
-                ->default(fn ($livewire) => $livewire instanceof SeguimientosRelationManager ? $livewire->ownerRecord->id : null)
-                ->disabled(fn($livewire) => $livewire instanceof SeguimientosRelationManager),          
+                ->default(fn ($livewire) => $livewire instanceof SeguimientosRelationManager ? $livewire->ownerRecord->id : null),
+                // ->disabled(fn($livewire) => $livewire instanceof SeguimientosRelationManager),          
             Forms\Components\TextInput::make('asesor_id')
                 ->visible(function () {
                     return !Helpers::isOwner();
