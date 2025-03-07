@@ -73,7 +73,7 @@ class AsignacionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('user.cliente.updated_at','asc')
+            ->defaultSort('user.cliente.updated_at','desc')
             ->query(
                 function () {
                     $query = Asignacion::query();
@@ -90,9 +90,10 @@ class AsignacionResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID de asignacion')
+                    ->copyable()
+                    ->tooltip('haga click para copiar')
                     ->sortable()
                     ->searchable(),
-                
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Cliente asignado')
                     ->copyable()
@@ -103,7 +104,7 @@ class AsignacionResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('estado_asignacion')
-                    ->label('Estado de la asignacion')
+                    ->label('Estado de la asignación')
                     ->badge()
                     ->color(function ($state) {
                         return match ($state) {
@@ -118,52 +119,45 @@ class AsignacionResource extends Resource
                     ->label('Estado cliente')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.cliente.fase_cliente')
-                    ->label('fase cliente')
+                    ->label('Fase cliente')
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('created_at')
-                    ->label('Creada el')
+                    Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualización de asignación')
                     ->date('M d/Y h:i A')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user.cliente.updated_at')
-                    ->label('Ultima actualizacion')
-                    ->searchable()
+                    Tables\Columns\TextColumn::make('user.cliente.updated_at')
+                    ->label('Última actualización cliente')
                     ->sortable()
                     ->date('M d/Y h:i A'),
-                    ])
+                    Tables\Columns\TextColumn::make('created_at')
+                        ->label('fecha de creacion')
+                        ->date('M d/Y h:i A')
+                        ->sortable(),
+                ])
             ->filters([
-                SelectFilter::make('estado_asignacion')
-                    ->options([
-                        true => 'Activa',
-                        false => 'Inactiva'
-                    ]),
-                Filter::make('created_at_day')
+                // 📌 Filtro por Asesor Asignado
+                SelectFilter::make('asesor.user.name')
+                ->relationship('asesor', 'id')
+                ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
+                ->preload()
+                ->searchable()
+                ->visible(fn()=>Helpers::isSuperAdmin())
+                ->label('Asesor asignado'),
+                
+                Filter::make('updated_at_day')
                     ->form([
-                        Forms\Components\DatePicker::make('created_at_day')
-                            ->label('Día específico')
+                        Forms\Components\DatePicker::make('updated_at_day')
+                            ->label('Fecha de actualización')
                             ->displayFormat('d/m/Y'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
                             ->when(
-                                $data['created_at_day'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', $date)
+                                $data['updated_at_day'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('updated_at', $date)
                             );
                     }),
-                // Filter::make('asesor_id')
-                //     ->form([
-                //         Forms\Components\Select::make('asesor_id')
-                //             ->relationship('asesor', 'id')
-                //             ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
-                //             ->searchable()
-                //             ->preload(),                        
-                //     ])
-                //     ->query(function (Builder $query, $data){                       
-                //         return $query->when(
-                //             !empty($data) && !empty($data['asesor_id']),
-                //                 function ($query, $data) {
-                //                     $query->where('asesor_id', $data);
-                //             });                         
-                //     }),
+                
             ])
             ->deferFilters()
             ->actions([

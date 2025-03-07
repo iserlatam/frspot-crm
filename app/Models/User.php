@@ -165,7 +165,9 @@ class User extends Authenticatable implements FilamentUser, HasMedia
             $asignacion->update([
                 'asesor_id' => $asesor_id,
                 'estado_asignacion' => true,
+                'updated_at' => now(),
             ]);
+            
             return;
         }
 
