@@ -62,6 +62,7 @@ class SeguimientoResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Cliente')
+                    ->sortable()
                     ->copyable()
                     ->tooltip('Nombre del cliente')
                     ->limit('20')
