@@ -82,6 +82,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->copyable()
+                    ->limit(20)
                     ->extraCellAttributes(['class'=>''])
                     ->tooltip('Haga click para copiar'),
                 Tables\Columns\TextColumn::make('email')
@@ -90,6 +91,7 @@ class UserResource extends Resource
                     ->copyable()
                     ->copyableState(fn($record) =>$record->email)
                     ->tooltip('Haga click para copiar')
+                    ->limit(15)
                     ->searchable(),                   
                 Tables\Columns\TextColumn::make('cliente.celular')
                      ->label('Celular')
@@ -219,24 +221,59 @@ class UserResource extends Resource
                          ])
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when($data['created_at_day'] ?? null, fn ($query, $date) => 
-                                $query->whereDate('created_at', $date)
-                            )
-                            ->when($data['cliente_estado_cliente'] ?? null, fn ($query, $estado) => 
-                                $query->whereHas('cliente', fn ($query) => $query->where('estado_cliente', $estado))
-                            )
-                            ->when($data['cliente_fase_cliente'] ?? null, fn ($query, $fase) => 
-                                $query->whereHas('cliente', fn ($query) => $query->where('fase_cliente', $fase))
-                            )
-                            ->when($data['cliente_pais'] ?? null, fn ($query, $pais) => 
-                                $query->whereHas('cliente', fn ($query) => $query->where('pais', $pais))
-                            );
+                        // Seleccionar solo campos necesarios
+                        $query = $query->select([
+                            'id', 'created_at', 'cliente_id', 'asignacion_id',
+                            // Añadir otros campos esenciales que necesites
+                        ]);
+                        
+                        // Aplicar filtro de fecha
+                        if ($data['created_at_day'] ?? null) {
+                            $query->whereDate('created_at', $data['created_at_day']);
+                        }
+                        
+                        // Optimizar filtros relacionados con cliente usando una sola consulta whereHas
+                        $hasClienteFilter = ($data['cliente_estado_cliente'] ?? null) || 
+                                           ($data['cliente_fase_cliente'] ?? null) || 
+                                           ($data['cliente_pais'] ?? null);
+                        
+                        if ($hasClienteFilter) {
+                            $query->whereHas('cliente', function ($clienteQuery) use ($data) {
+                                if ($data['cliente_estado_cliente'] ?? null) {
+                                    $clienteQuery->where('estado_cliente', $data['cliente_estado_cliente']);
+                                }
+                                
+                                if ($data['cliente_fase_cliente'] ?? null) {
+                                    $clienteQuery->where('fase_cliente', $data['cliente_fase_cliente']);
+                                }
+                                
+                                if ($data['cliente_pais'] ?? null) {
+                                    $clienteQuery->where('pais', $data['cliente_pais']);
+                                }
+                                
+                                return $clienteQuery;
+                            });
+                            
+                            // Cargar las relaciones necesarias con constraint para evitar cargar datos innecesarios
+                            $query->with(['cliente' => function ($q) use ($data) {
+                                $q->select(['id', 'estado_cliente', 'fase_cliente', 'pais']);
+                            }]);
+                        }
+                        
+                        // Aplicar filtro de roles si está presente
+                        if ($data['roles'] ?? null) {
+                            $query->whereHas('roles', function ($roleQuery) use ($data) {
+                                $roleQuery->where('id', $data['roles']);
+                            });
+                        }
+                        
+                        // Aplicar los límites de paginación aquí no es necesario
+                        // ya que Filament maneja la paginación automáticamente
+                        
+                        return $query;
                     }),
-            ])
-            
+            ])       
             ->deferFilters()
-    
             //fin filtros            
 
             ->actions([

@@ -32,10 +32,8 @@ class UserResource extends Resource
 
     public static function canAccess(): bool
     {
-        if (
-            auth()->user()->hasRole('cliente')
-            && auth()->user()->id == request()->is("client/users/" . auth()->user()->id . "*")
-        ) {
+        if (auth()->user()->hasRole('cliente') && auth()->user()->id == request()->is("client/users/" . auth()->user()->id . "*"))
+        {
             return true;
         }
 
