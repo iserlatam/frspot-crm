@@ -57,19 +57,17 @@ class UserResource extends Resource
            
             ->query(function () {
                 $query = User::query();
-            
+
+                $query->whereHas('roles', function ($query) {
+                    $query->where('name', 'cliente');
+                });
+                
                 if (Helpers::isAsesor()) {
-                    $query->whereHas('roles', function ($query) {
-                        $query->where('name', 'cliente');
-                    })
-                    ->whereHas('asignacion', function ($query) {
+                    $query->whereHas('asignacion', function ($query) {
                         $query->whereHas('asesor.user', function ($query) {
                             $query->where('name', auth()->user()->name);
                         });
                     });
-                    // ->whereHas('asignacion.id', function($query){
-                    //     $query->where('estado_asignacion', true);
-                    // }); // Filtrar solo asignaciones activas
                 }
             
                 return $query;
@@ -77,22 +75,24 @@ class UserResource extends Resource
             ->defaultSort('cliente.updated_at', fn() => Helpers::isSuperAdmin() ? 'desc' : 'asc')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('ID de usuario')
+                    ->label('usuario')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable()
                     ->copyable()
-                    ->limit(20)
-                    ->extraCellAttributes(['class'=>''])
-                    ->tooltip('Haga click para copiar'),
+                    ->limit(fn()=>Helpers::isSuperAdmin() ? 6 : 15 )
+                    ->tooltip(function ($record) : ?string {
+                        return $record->name;
+                    }),
                 Tables\Columns\TextColumn::make('email')
                     // ->limit(10)
                     ->formatStateUsing(fn($record) => Helpers::isSuperAdmin() ? $record->email : '*****@*****.***')
                     ->copyable()
                     ->copyableState(fn($record) =>$record->email)
                     ->tooltip('Haga click para copiar')
-                    ->limit(15)
+                    ->limit(fn()=>Helpers::isSuperAdmin() ? 6 : 15 )
                     ->searchable(),                   
                 Tables\Columns\TextColumn::make('cliente.celular')
                      ->label('Celular')
