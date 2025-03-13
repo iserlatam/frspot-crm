@@ -61,7 +61,14 @@ class Seguimiento extends Model
                             'interested'  => 'interested',
                         ])
                         ->required()
-                        ->default(null),
+                        ->default(function ($livewire) {
+                            if ($livewire instanceof SeguimientosRelationManager) {
+                                $owner = $livewire->getOwnerRecord();
+                                return $owner->cliente?->estado_cliente;
+                            }
+                            
+                            return null;
+                        }),
                     Forms\Components\Select::make('fase')
                         ->label('Fase')
                         ->options([
@@ -81,7 +88,14 @@ class Seguimiento extends Model
                             'Interested'  => 'Interested',
                         ])
                         ->required()
-                        ->default(null),                 
+                        ->default(function ($livewire) {
+                            if ($livewire instanceof SeguimientosRelationManager) {
+                                $owner = $livewire->getOwnerRecord();
+                                return $owner->cliente?->fase_cliente;
+                            }
+                            
+                            return null;
+                        }),                 
                 ]),
             Forms\Components\RichEditor::make('descripcion')
                 ->columnSpanFull()

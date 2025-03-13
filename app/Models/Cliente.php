@@ -147,7 +147,7 @@ class Cliente extends Model implements HasMedia
                                                 'Invalid number' => 'Invalid number',
                                                 'Stateless  '  => 'Stateless',
                                                 'interested'  => 'Interested',
-                                                'Recovery'  => 'Recovery',
+                                                'RECOVERY' => 'RECOVERY',
                                             ]),
                                         Forms\Components\Select::make('fase_cliente')
                                             ->options([
@@ -164,10 +164,11 @@ class Cliente extends Model implements HasMedia
                                                 'Invalid number' => 'Invalid number',
                                                 'Stateless'  => 'Stateless',
                                                 'interested'  => 'Interested',
-                                                'Recovery'  => 'Recovery',
+                                                'RECOVERY' => 'RECOVERY',
                                             ]),
                                         Forms\Components\Select::make('origenes')
                                             ->options([
+                                                'RECOVERY' => 'RECOVERY',
                                                 'AMZN' => 'AMZN',
                                                 'AMZN200' => 'AMZN200',
                                                 'AMZN280' => 'AMZN280',

@@ -51,7 +51,12 @@ class SeguimientosRelationManager extends RelationManager
                     ->searchable(),
                 Tables\Columns\TextColumn::make('descripcion')
                     ->html()
-                    ->limit(120),
+                    ->limit(300)
+                    ->wrap() // Habilita el envolvimiento básico
+                    ->extraAttributes([
+                        'class' => 'max-w-md break-words', // Limita el ancho máximo y fuerza el salto de palabras
+                        'style' => 'white-space: pre-wrap; word-break: break-word; min-width: 250px; text-wrap: true; word-break: break-all; overflow-wrap: break-word;', // Control adicional con CSS
+                    ]),
                 Tables\Columns\TextColumn::make('user.cliente.estado_cliente')
                     ->label('Estado Actual'),
                 Tables\Columns\TextColumn::make('user.cliente.fase_cliente')
