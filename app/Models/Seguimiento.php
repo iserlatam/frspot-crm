@@ -88,14 +88,7 @@ class Seguimiento extends Model
                             'Interested'  => 'Interested',
                         ])
                         ->required()
-                        ->default(function ($livewire) {
-                            if ($livewire instanceof SeguimientosRelationManager) {
-                                $owner = $livewire->getOwnerRecord();
-                                return $owner->cliente?->fase_cliente;
-                            }
-                            
-                            return null;
-                        }),                 
+                        ->default(null),                 
                 ]),
             Forms\Components\RichEditor::make('descripcion')
                 ->columnSpanFull()
