@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use NunoMaduro\Collision\Adapters\Phpunit\State;
 
 use function Laravel\Prompts\search;
@@ -73,7 +74,7 @@ class UserResource extends Resource
             
                 return $query;
             })
-            ->defaultSort('created_at', 'asc')
+            ->defaultSort('cliente.updated_at', fn() => Helpers::isSuperAdmin() ? 'desc' : 'asc')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID de usuario')
@@ -287,7 +288,7 @@ class UserResource extends Resource
                  */
                 BulkAction::make('Asignar asesor')
                     ->color('primary')
-                    ->icon('heroicon-s-arrows-right-left')
+                    ->icon('heroicon-s-identification')
                     ->form([
                         Select::make('asesor_id')
                             ->relationship('asesor', 'id') // Define la relación y la clave foránea
@@ -317,7 +318,7 @@ class UserResource extends Resource
                  */
                 BulkAction::make('Asignar nuevo estado')
                     ->color('info')
-                    ->icon('heroicon-s-identification')
+                    ->icon('heroicon-s-arrows-right-left')
                     ->form([
                         Select::make('estado_cliente')
                         ->options([
