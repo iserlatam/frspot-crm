@@ -14,16 +14,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
-use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
-use Vormkracht10\TwoFactorAuth\Enums\TwoFactorType;
 
 class User extends Authenticatable implements FilamentUser, HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, TwoFactorAuthenticatable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia;
 
     /**
      * The attributes that should be cast.
@@ -48,7 +46,6 @@ class User extends Authenticatable implements FilamentUser, HasMedia
         'name',
         'email',
         'password',
-        'two_factor_type'
     ];
 
     /**
@@ -69,7 +66,6 @@ class User extends Authenticatable implements FilamentUser, HasMedia
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'two_factor_type' => TwoFactorType::class,
     ];
 
     public static function getForm(): array
@@ -171,7 +167,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
                 'estado_asignacion' => true,
                 'updated_at' => now(),
             ]);
-
+            
             return;
         }
 
@@ -186,12 +182,12 @@ class User extends Authenticatable implements FilamentUser, HasMedia
     {
         $cliente = Cliente::where('user_id', $this->id)->first();
         if($cliente){
-            $cliente->update([
-                'fase_cliente' => $newFase,
+            $cliente->update([                    
+                'fase_cliente' => $newFase,               
             ]);
-        }
+        }      
     }
-
+    
     public function asesor(): HasOne
     {
         return $this->hasOne(Asesor::class);
