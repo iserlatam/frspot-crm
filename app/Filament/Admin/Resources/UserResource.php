@@ -143,7 +143,8 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('asignacion.id')
                     ->label('asignacion id')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable()
             ])
             //inicio filtros
             ->filters([
@@ -153,7 +154,15 @@ class UserResource extends Resource
                 ->relationship('asignacion.asesor', 'id')
                 ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
                 ->searchable()
+                ->preload()
                 ->label('Asesor asignado'),
+
+                Tables\Filters\Filter::make('sin_asignacion')
+                    ->label('sin asignaicon')
+                    ->toggle()
+                    ->query(function (Builder $query): Builder {
+                        return $query->whereDoesntHave('asignacion');
+                        }),
 
                 Filter::make('filtros')
                 ->form([

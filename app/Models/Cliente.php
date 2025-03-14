@@ -133,39 +133,9 @@ class Cliente extends Model implements HasMedia
                                             ->live()
                                             ->default(1),
                                         Forms\Components\Select::make('estado_cliente')
-                                            ->options([
-                                                'New' => 'New',
-                                                'No answer' => 'No answer',
-                                                'Answer' => 'Answer',
-                                                'Call again' => 'Call Again',
-                                                'Potential' => 'Potential',
-                                                'Low potential' => 'Low Potential',
-                                                'Declined' => 'Declined',
-                                                'Under age' => 'Under Age',
-                                                'Active' => 'Active',
-                                                'No interested' => 'No interested',
-                                                'Invalid number' => 'Invalid number',
-                                                'Stateless  '  => 'Stateless',
-                                                'interested'  => 'Interested',
-                                                'RECOVERY' => 'RECOVERY',
-                                            ]),
+                                            ->options(Helpers::getEstatusOptions()),
                                         Forms\Components\Select::make('fase_cliente')
-                                            ->options([
-                                                'New' => 'New',
-                                                'No answer' => 'No answer',
-                                                'Answer' => 'Answer',
-                                                'Call again' => 'Call Again',
-                                                'Potential' => 'Potential',
-                                                'Low potential' => 'Low Potential',
-                                                'Declined' => 'Declined',
-                                                'Under age' => 'Under Age',
-                                                'Active' => 'Active',
-                                                'No interested' => 'No interested',
-                                                'Invalid number' => 'Invalid number',
-                                                'Stateless'  => 'Stateless',
-                                                'interested'  => 'Interested',
-                                                'RECOVERY' => 'RECOVERY',
-                                            ]),
+                                            ->options(Helpers::getFaseOptions()),
                                         Forms\Components\Select::make('origenes')
                                             ->options([
                                                 'RECOVERY' => 'RECOVERY',
