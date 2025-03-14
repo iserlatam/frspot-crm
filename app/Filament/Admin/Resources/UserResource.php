@@ -188,22 +188,22 @@ class UserResource extends Resource
                                 ->label('Estado cliente'),
                             // 📌 Filtro por Fase del Cliente
                             Forms\Components\Select::make('cliente_fase_cliente')
-                                ->options([
-                                'New' => 'New',
+                            ->options([
+                                // 'New' => 'New',
+                                'Call again' => 'Call Again',
                                 'No answer' => 'No answer',
                                 'Answer' => 'Answer',
-                                'Call again' => 'Call Again',
-                                'Potential' => 'Potential',
-                                'Low potential' => 'Low Potential',
-                                'Declined' => 'Declined',
-                                'Under age' => 'Under Age',
-                                'Active' => 'Active',
-                                'No interested' => 'No interested',
-                                'Invalid number' => 'Invalid number',
-                                'Stateless'  => 'Stateless',
                                 'Interested'  => 'Interested',
-                                'Recovery'  => 'Recovery',
-                                ])
+                                'Declined' => 'Declined',
+                                'Potential' => 'Potential',
+                                'No interested' => 'No interested',
+                                'Stateless'  => 'Stateless',
+                                'Under age' => 'Under Age',
+                                'Invalid number' => 'Invalid number',
+                                'Low potential' => 'Low Potential',
+                                // 'Active' => 'Active',
+                                // 'Recovery'  => 'Recovery',
+                            ])
                                 ->label('Fase cliente'),                         
                             // 📌 Filtro por Estado del Cliente
                             
@@ -321,23 +321,8 @@ class UserResource extends Resource
                     ->icon('heroicon-s-arrows-right-left')
                     ->form([
                         Select::make('estado_cliente')
-                        ->options([
-                            'New' => 'New',
-                            'No answer' => 'No answer',
-                            'Answer' => 'Answer',
-                            'Call again' => 'Call Again',
-                            'Potential' => 'Potential',
-                            'Low potential' => 'Low Potential',
-                            'Declined' => 'Declined',
-                            'Under age' => 'Under Age',
-                            'Active' => 'Active',
-                            'No interested' => 'No interested',
-                            'Recovery'  => 'Recovery',
-                            'Invalid number' => 'Invalid number',
-                            'Stateless'  => 'Stateless',
-                            'Interested'  => 'Interested',
-                            ])
-                            ->required()
+                        ->options(Helpers::getEstatusOptions())
+                        ->required()
                         ])
                     ->action(function (array $data, Collection $records) {
                         $records->each(function($user)use($data){
@@ -363,22 +348,7 @@ class UserResource extends Resource
                     ->form([
                         Select::make('fase')
                         ->label('Fase del cliente')
-                        ->options([
-                            'New' => 'New',
-                            'No answer' => 'No answer',
-                            'Answer' => 'Answer',
-                            'Call again' => 'Call Again',
-                            'Potential' => 'Potential',
-                            'Low potential' => 'Low Potential',
-                            'Declined' => 'Declined',
-                            'Under age' => 'Under Age',
-                            'Active' => 'Active',
-                            'No interested' => 'No interested',
-                            'Recovery'  => 'Recovery',
-                            'Invalid number' => 'Invalid number',
-                            'Stateless'  => 'Stateless',
-                            'Interested'  => 'Interested',
-                        ])
+                        ->options(Helpers::getFaseOptions())
                         ->required(),
                     ])
                     ->action(function( array $data, Collection $records): void {

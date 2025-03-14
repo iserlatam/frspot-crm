@@ -46,19 +46,20 @@ class Seguimiento extends Model
                         ->label('Estado')
                         ->options([
                             'New' => 'New',
-                            'No answer' => 'No answer',
                             'Answer' => 'Answer',
+                            'No answer' => 'No answer',
                             'Call again' => 'Call Again',
-                            'Potential' => 'Potential',
-                            'Low potential' => 'Low Potential',
+                            'interested'  => 'interested',
+                            'Deposit' => 'Deposit',
                             'Declined' => 'Declined',
-                            'Under age' => 'Under Age',
+                            'Potential' => 'Potential',
                             'Active' => 'Active',
                             'No interested' => 'No interested',
+                            'Stateless'  => 'Stateless',
                             'Recovery'  => 'Recovery',
                             'Invalid number' => 'Invalid number',
-                            'Stateless  '  => 'Stateless',
-                            'interested'  => 'interested',
+                            'Under age' => 'Under Age',
+                            'Low potential' => 'Low Potential',
                         ])
                         ->required()
                         ->default(function ($livewire) {
@@ -71,22 +72,7 @@ class Seguimiento extends Model
                         }),
                     Forms\Components\Select::make('fase')
                         ->label('Fase')
-                        ->options([
-                            'New' => 'New',
-                            'No answer' => 'No answer',
-                            'Answer' => 'Answer',
-                            'Call again' => 'Call Again',
-                            'Potential' => 'Potential',
-                            'Low potential' => 'Low Potential',
-                            'Declined' => 'Declined',
-                            'Under age' => 'Under Age',
-                            'Active' => 'Active',
-                            'No interested' => 'No interested',
-                            'Recovery'  => 'Recovery',
-                            'Invalid number' => 'Invalid number',
-                            'Stateless'  => 'Stateless',
-                            'Interested'  => 'Interested',
-                        ])
+                        ->options(Helpers::getFaseOptions())
                         ->required()
                         ->default(null),                 
                 ]),
