@@ -54,4 +54,12 @@ class Asesor extends Model
     {
         return $this->hasMany(Seguimiento::class);
     }
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($asesor) {
+            $asesor->asignacion()->delete();
+        });
+    }
 }

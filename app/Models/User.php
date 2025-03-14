@@ -229,6 +229,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
             $user->cuentaCliente()->delete();
             $user->Seguimientos()->delete();
             $user->asignacion()->delete();
+            $user->asesor()->delete();
         });
     }
 }
