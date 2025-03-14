@@ -152,7 +152,6 @@ class UserResource extends Resource
                 SelectFilter::make('asignacion.asesor.user.name')
                 ->relationship('asignacion.asesor', 'id')
                 ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
-                ->preload()
                 ->searchable()
                 ->label('Asesor asignado'),
 
