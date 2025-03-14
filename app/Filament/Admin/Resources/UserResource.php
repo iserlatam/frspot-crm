@@ -112,7 +112,8 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('asignacion.asesor.user.name')
                     ->label('Asesor asignado')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('cliente.origenes')
                     ->label('Origen cliente')
                     ->searchable(),
@@ -169,41 +170,11 @@ class UserResource extends Resource
                     Forms\Components\Grid::make(2)
                         ->schema([
                             Forms\Components\Select::make('cliente_estado_cliente')
-                                ->options([
-                                    'New' => 'New',
-                                    'No answer' => 'No answer',
-                                    'Answer' => 'Answer',
-                                    'Call again' => 'Call Again',
-                                    'Potential' => 'Potential',
-                                    'Low potential' => 'Low Potential',
-                                    'Declined' => 'Declined',
-                                    'Under age' => 'Under Age',
-                                    'Active' => 'Active',
-                                    'No interested' => 'No interested',
-                                    'Invalid number' => 'Invalid number',
-                                    'Stateless'  => 'Stateless',
-                                    'Interested'  => 'Interested',
-                                    'Recovery'  => 'Recovery',
-                                    ])
+                                ->options(Helpers::getEstatusOptions())
                                 ->label('Estado cliente'),
                             // 📌 Filtro por Fase del Cliente
                             Forms\Components\Select::make('cliente_fase_cliente')
-                            ->options([
-                                // 'New' => 'New',
-                                'Call again' => 'Call Again',
-                                'No answer' => 'No answer',
-                                'Answer' => 'Answer',
-                                'Interested'  => 'Interested',
-                                'Declined' => 'Declined',
-                                'Potential' => 'Potential',
-                                'No interested' => 'No interested',
-                                'Stateless'  => 'Stateless',
-                                'Under age' => 'Under Age',
-                                'Invalid number' => 'Invalid number',
-                                'Low potential' => 'Low Potential',
-                                // 'Active' => 'Active',
-                                // 'Recovery'  => 'Recovery',
-                            ])
+                            ->options(Helpers::getFaseOptions())
                                 ->label('Fase cliente'),                         
                             // 📌 Filtro por Estado del Cliente
                             
