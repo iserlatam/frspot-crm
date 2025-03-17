@@ -44,24 +44,17 @@ class Seguimiento extends Model
                 ->schema([
                     Forms\Components\Select::make('estado')
                         ->label('Estado')
-                        ->options([
-                            'New' => 'New',
-                            'Answer' => 'Answer',
-                            'No answer' => 'No answer',
-                            'Call again' => 'Call Again',
-                            'interested'  => 'interested',
-                            'Deposit' => 'Deposit',
-                            'Declined' => 'Declined',
-                            'Potential' => 'Potential',
-                            'Active' => 'Active',
-                            'No interested' => 'No interested',
-                            'Stateless'  => 'Stateless',
-                            'Recovery'  => 'Recovery',
-                            'Invalid number' => 'Invalid number',
-                            'Under age' => 'Under Age',
-                            'Low potential' => 'Low Potential',
-                        ])
+                        ->options(Helpers::getEstatusOptions())
                         ->required()
+                        ->disabled(function ($livewire) {
+                            if ($livewire instanceof SeguimientosRelationManager) {
+                                $owner = $livewire->getOwnerRecord();
+                                if($owner->cliente->contador_ediciones > 0)
+                                return true;
+                            }
+                            
+                            return null;
+                        })
                         ->default(function ($livewire) {
                             if ($livewire instanceof SeguimientosRelationManager) {
                                 $owner = $livewire->getOwnerRecord();
@@ -74,25 +67,41 @@ class Seguimiento extends Model
                         ->label('Fase')
                         ->options(Helpers::getFaseOptions())
                         ->required()
-                        ->default(null),                 
+                        ->helperText(function ($livewire){
+                            if ($livewire instanceof SeguimientosRelationManager) {
+                                $owner = $livewire->getOwnerRecord();   
+
+                                return 'fase actual: '.$owner->cliente->fase_cliente;
+                            }
+                            return null;
+                        })                           
+                        ->default(null),  
+                    Forms\Components\TextInput::make('contador_ediciones')
+                        ->disabled()
+                        ->default(fn($livewire) => $livewire->ownerRecord->cliente?->contador_ediciones ?? 0)
+                        ->visible(function($livewire){
+                            if ($livewire instanceof SeguimientosRelationManager) {
+                                $owner = $livewire->getOwnerRecord();
+                                if($owner->cliente->contador_ediciones > 0)
+                                return true;
+                            }
+                            return false;
+                        })
+                        ->label('Contador de ediciones'),           
                 ]),
             Forms\Components\RichEditor::make('descripcion')
                 ->columnSpanFull()
                 ->required(),
-                Forms\Components\Select::make('user_id')
+            Forms\Components\Select::make('user_id')
                 ->relationship('userWithRoleCliente', 'name', modifyQueryUsing: function ($query, $livewire) {
+                    
+                    if ($livewire instanceof SeguimientosRelationManager) {
+                        $query->where('id', $livewire->ownerRecord->id);
+                    }
+                                        
                     if (Helpers::isAsesor()) {
-                        $query->whereHas('asignacion', function ($query) use ($livewire) {
+                        $query->whereHas('asignacion', function ($query) {
                             $query->where('asesor_id', auth()->user()->asesor->id);
-                            if ($livewire instanceof SeguimientosRelationManager) {
-                                $query->where('id', $livewire->ownerRecord->id);
-                            };
-                        });
-                    } else {
-                        $query->whereHas('asignacion', function ($query) use ($livewire) {
-                            if ($livewire instanceof SeguimientosRelationManager) {
-                                $query->where('id', $livewire->ownerRecord->id);
-                            };
                         });
                     }
                 })
@@ -101,8 +110,7 @@ class Seguimiento extends Model
                 ->preload()
                 ->searchable()
                 ->required()
-                ->default(fn ($livewire) => $livewire instanceof SeguimientosRelationManager ? $livewire->ownerRecord->id : null),
-                // ->disabled(fn($livewire) => $livewire instanceof SeguimientosRelationManager),          
+                ->default(fn ($livewire) => $livewire instanceof SeguimientosRelationManager ? $livewire->ownerRecord->id : null),                         
             Forms\Components\TextInput::make('asesor_id')
                 ->visible(function () {
                     return !Helpers::isOwner();

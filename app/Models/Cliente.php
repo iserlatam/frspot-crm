@@ -221,4 +221,18 @@ class Cliente extends Model implements HasMedia
     {
         return $this->belongsTo(User::class);
     }
-}
+
+    // En app/Models/Cliente.php
+    protected static function booted()
+    {
+        static::updating(function ($cliente) {
+            // Si el cliente ya existe y se está actualizando
+            if ($cliente->exists) {
+                // Reducir el contador solo si es mayor que 0
+                if ($cliente->contador_ediciones > 0) {
+                    $cliente->contador_ediciones--;
+                }
+            }
+        });
+    }
+    }

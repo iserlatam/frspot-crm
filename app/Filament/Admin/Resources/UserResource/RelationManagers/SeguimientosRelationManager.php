@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\UserResource\RelationManagers;
 
 use App\Filament\Admin\Resources\SeguimientoResource;
 use App\Helpers\Helpers;
+use App\Helpers\NotificationHelpers;
 use App\Models\Cliente;
 use App\Models\Seguimiento;
 use Carbon\Carbon;
@@ -77,17 +78,38 @@ class SeguimientosRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                 ->using(function(array $data, string $model){
                     $cliente = Cliente::where('user_id', $data['user_id'])->first();
-
-                    $cliente->update([
-                            'estado_cliente' => $data['estado'],                           
-                            'fase_cliente' => $data['fase'],
-                            
-                        ]);
+                    
+                    // Obtener los datos completos del formulario
+                    $formData = array_merge([
+                        'estado' => $cliente->estado_cliente,
+                        'fase' => $cliente->fase_cliente,
+                    ], $data);
+                    
+                    // Guardar valores anteriores para comparar
+                    $estadoAnterior = $cliente->estado_cliente;
+                    $faseAnterior = $cliente->fase_cliente;
+                    
+                    // Verificar si la fase es la misma
+                    // if ($faseAnterior == $formData['fase']) {
+                    //     NotificationHelpers::sendErrorNotification('La fase no puede ser la misma');
                         
+                    // }
+                    
+                    // Actualizar cliente
+                    $cliente->update([
+                        'estado_cliente' => $formData['estado'],                           
+                        'fase_cliente' => $formData['fase'],
+                    ]);
+                    
+                    // Lógica del contador...
+                    // if ($faseAnterior != $formData['fase']) {
+                    //     if ($cliente->contador_ediciones > 0) {
+                    //         $cliente->decrement('contador_ediciones');
+                    //     }
+                    // }
+                    
                     $cliente->touch();
-
-                    // Agregar registro a HistorialSeguimiento
-
+                
                     return $model::create([
                         'user_id' => $data['user_id'],
                         'asesor_id' => $data['asesor_id'],
