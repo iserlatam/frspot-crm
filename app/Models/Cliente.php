@@ -230,7 +230,7 @@ class Cliente extends Model implements HasMedia
             if ($cliente->exists) {
                 // Reducir el contador solo si es mayor que 0
                 if ($cliente->contador_ediciones > 0) {
-                    $cliente->contador_ediciones = 0;
+                    $cliente->contador_ediciones--;
                 }
             }
         });

@@ -265,21 +265,6 @@ class UserResource extends Resource
                 /**
                  *  ASIGNACION MASIVA
                  */
-                BulkAction::make('eliminar contador de ediciones')
-                    ->color('danger')
-                    ->icon('heroicon-s-arrow-path')                
-                    ->action(function(Collection $records): void {
-                        $records->each(function ($user) {
-                            $user?->cliente->touch();  
-                        });
-                    })
-                    ->after(function () {
-                        // NOTIFICAR QUE LA OPERACIÓN FUE EXITOSA
-                        Notification::make()
-                            ->title('Contador de ediciones actualizado con éxito')
-                            ->success()
-                            ->send();
-                    }),
                 BulkAction::make('Asignar asesor')
                     ->color('primary')
                     ->icon('heroicon-s-identification')
