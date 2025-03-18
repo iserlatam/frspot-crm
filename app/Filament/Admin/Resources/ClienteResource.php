@@ -8,17 +8,21 @@ use App\Models\Cliente;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use League\CommonMark\Extension\Table\TableSection;
 
 class ClienteResource extends Resource
 {
     protected static ?string $model = Cliente::class;
 
-    protected static bool $isDiscovered = false;
+    protected static bool $isDiscovered = true;
 
     protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
 
@@ -39,6 +43,8 @@ class ClienteResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nombre_completo')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('contador_ediciones')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('identificacion')
                     ->searchable(),
@@ -108,9 +114,21 @@ class ClienteResource extends Resource
                 // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                BulkAction::make('eliminar contador de ediciones')
+                    ->color('danger')
+                    ->icon('heroicon-s-arrow-path')                
+                    ->action(function(Collection $records): void {
+                        $records->each(function ($cliente) {
+                            $cliente->touch();  
+                        });
+                    })
+                    ->after(function () {
+                        // NOTIFICAR QUE LA OPERACIÓN FUE EXITOSA
+                        Notification::make()
+                            ->title('Contador de ediciones actualizado con éxito')
+                            ->success()
+                            ->send();
+                    })
             ]);
     }
 
