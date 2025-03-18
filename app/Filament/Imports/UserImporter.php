@@ -42,8 +42,10 @@ class UserImporter extends Importer
             $user->cliente()->create([
                 'nombre_completo' => $this->data['name'],
                 'celular' => $this->data['celular'],
-                'pais' => $this->data['pais'],
+                'estado_cliente' => $this->data['estado'],
+                'fase_cliente' => $this->data['fase'],
                 'origenes' => $this->data['origen'],
+                'pais' => $this->data['pais'],
             ]);
 
             // Abrir nueva cuenta
