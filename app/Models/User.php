@@ -167,7 +167,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
                 'estado_asignacion' => true,
                 'updated_at' => now(),
             ]);
-            
+
             return;
         }
 
@@ -182,12 +182,12 @@ class User extends Authenticatable implements FilamentUser, HasMedia
     {
         $cliente = Cliente::where('user_id', $this->id)->first();
         if($cliente){
-            $cliente->update([                    
-                'fase_cliente' => $newFase,               
+            $cliente->update([
+                'fase_cliente' => $newFase,
             ]);
-        }      
+        }
     }
-    
+
     public function asesor(): HasOne
     {
         return $this->hasOne(Asesor::class);

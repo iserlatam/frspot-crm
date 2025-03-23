@@ -54,14 +54,20 @@ class UserResource extends Resource
 
     public static function table(Table $table): Table {
         return $table
-           
-            ->query(function () {
-                $query = User::query();
 
-                $query->whereHas('roles', function ($query) {
-                    $query->where('name', 'cliente');
-                });
-                
+            ->query(function () {
+                // UTILIZAR LAZY HACE QUE NO SE BUSQUEN TODOS LOS REGISTROS SINO UN LOTE DE 1000
+                // "WITH" PRECARGA LAS RELACIONES QUESE VAN A UTILIZAR REPETIDAMENTE
+                $query = User::query()
+                    ->with(['asignacion', 'asignacion.asesor', 'cliente', 'roles'])
+                    ->lazy();
+
+                // ESTO NO ES NECESARIO YA QUE EL SUPER ADMIN SIEMPRE PUEDE VER A TODOS SUS USUARIOS
+                // REDUCE LOS TIEMPOS DE CARGA AL INICIAR EL MODULO @USERS
+                // $query->whereHas('roles', function ($query) {
+                //     $query->where('name', 'cliente');
+                // });
+
                 if (Helpers::isAsesor()) {
                     $query->whereHas('asignacion', function ($query) {
                         $query->whereHas('asesor.user', function ($query) {
@@ -69,10 +75,10 @@ class UserResource extends Resource
                         });
                     });
                 }
-            
+
                 return $query;
             })
-            ->defaultSort('cliente.updated_at', fn() => Helpers::isSuperAdmin() ? 'desc' : 'asc')
+            ->defaultSort('cliente.updated_at', )
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('usuario')
@@ -82,7 +88,7 @@ class UserResource extends Resource
                     ->label('Nombre')
                     ->searchable()
                     ->copyable()
-                    ->limit(fn()=>Helpers::isSuperAdmin() ? 6 : 15 )
+                    ->limit(fn() => Helpers::isSuperAdmin() ? 6 : 15 )
                     ->tooltip(function ($record) : ?string {
                         return $record->name;
                     }),
@@ -93,7 +99,7 @@ class UserResource extends Resource
                     ->copyableState(fn($record) =>$record->email)
                     ->tooltip('Haga click para copiar')
                     ->limit(fn()=>Helpers::isSuperAdmin() ? 6 : 15 )
-                    ->searchable(),                   
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.celular')
                      ->label('Celular')
                     ->formatStateUsing(fn($record)=>Helpers::isSuperAdmin()?$record->cliente?->celular:'********')
@@ -171,8 +177,8 @@ class UserResource extends Resource
 
                             // 📌 Filtro por Día Específico
                             Forms\Components\DatePicker::make('created_at_day')
-                            ->label('Día específico') 
-                            ->columnSpanFull()                         
+                            ->label('Día específico')
+                            ->columnSpanFull()
                             ->displayFormat('d/m/Y'),
                         ]),
                     Forms\Components\Grid::make(2)
@@ -183,17 +189,17 @@ class UserResource extends Resource
                             // 📌 Filtro por Fase del Cliente
                             Forms\Components\Select::make('cliente_fase_cliente')
                             ->options(Helpers::getFaseOptions())
-                                ->label('Fase cliente'),                         
+                                ->label('Fase cliente'),
                             // 📌 Filtro por Estado del Cliente
-                            
+
                         ]),
                     Forms\Components\Grid::make(2)
                         ->schema([
                              // 📌 Filtro por Rol
                              Forms\Components\Select::make('roles')
-                             ->label('Rol asignado')                     
+                             ->label('Rol asignado')
                              ->relationship('roles', 'name'),
-                              
+
                         // 📌 Filtro por País del Cliente
                             Forms\Components\TextInput::make('cliente_pais')
                                 ->label('País Cliente')
@@ -206,55 +212,55 @@ class UserResource extends Resource
                             'id', 'created_at', 'cliente_id', 'asignacion_id',
                             // Añadir otros campos esenciales que necesites
                         ]);
-                        
+
                         // Aplicar filtro de fecha
                         if ($data['created_at_day'] ?? null) {
                             $query->whereDate('created_at', $data['created_at_day']);
                         }
-                        
+
                         // Optimizar filtros relacionados con cliente usando una sola consulta whereHas
-                        $hasClienteFilter = ($data['cliente_estado_cliente'] ?? null) || 
-                                           ($data['cliente_fase_cliente'] ?? null) || 
+                        $hasClienteFilter = ($data['cliente_estado_cliente'] ?? null) ||
+                                           ($data['cliente_fase_cliente'] ?? null) ||
                                            ($data['cliente_pais'] ?? null);
-                        
+
                         if ($hasClienteFilter) {
                             $query->whereHas('cliente', function ($clienteQuery) use ($data) {
                                 if ($data['cliente_estado_cliente'] ?? null) {
                                     $clienteQuery->where('estado_cliente', $data['cliente_estado_cliente']);
                                 }
-                                
+
                                 if ($data['cliente_fase_cliente'] ?? null) {
                                     $clienteQuery->where('fase_cliente', $data['cliente_fase_cliente']);
                                 }
-                                
+
                                 if ($data['cliente_pais'] ?? null) {
                                     $clienteQuery->where('pais', $data['cliente_pais']);
                                 }
-                                
+
                                 return $clienteQuery;
                             });
-                            
+
                             // Cargar las relaciones necesarias con constraint para evitar cargar datos innecesarios
                             $query->with(['cliente' => function ($q) use ($data) {
                                 $q->select(['id', 'estado_cliente', 'fase_cliente', 'pais']);
                             }]);
                         }
-                        
+
                         // Aplicar filtro de roles si está presente
                         if ($data['roles'] ?? null) {
                             $query->whereHas('roles', function ($roleQuery) use ($data) {
                                 $roleQuery->where('id', $data['roles']);
                             });
                         }
-                        
+
                         // Aplicar los límites de paginación aquí no es necesario
                         // ya que Filament maneja la paginación automáticamente
-                        
+
                         return $query;
                     }),
-            ])       
+            ])
             ->deferFilters()
-            //fin filtros            
+            //fin filtros
 
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -400,7 +406,7 @@ class UserResource extends Resource
                     ->visible(fn()=> Helpers::isSuperAdmin()),
                 ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
