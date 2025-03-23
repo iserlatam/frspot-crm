@@ -48,19 +48,36 @@ class UserResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema(User::getForm());
+        return $form->schema(User::getForm());
     }
 
-    public static function table(Table $table): Table {
+    public static function table(Table $table): Table
+    {
         return $table
 
             ->query(function () {
                 // UTILIZAR LAZY HACE QUE NO SE BUSQUEN TODOS LOS REGISTROS SINO UN LOTE DE 1000
                 // "WITH" PRECARGA LAS RELACIONES QUESE VAN A UTILIZAR REPETIDAMENTE
                 $query = User::query()
-                    ->with(['asignacion', 'asignacion.asesor', 'cliente', 'roles'])
-                    ->lazy();
+                    ->with([
+                        // Campos de la relación cliente
+                        'cliente',
+                        // Campos de la relación asignacion
+                        'asignacion.asesor.user',
+                        'asignacion',
+                        // Campos de la relacion roles
+                        'roles:id,name',
+                    ])
+                    ->select(
+                        [
+                            // Campos del modelo
+                            'id',
+                            'name',
+                            'email',
+                            'created_at',
+                            'updated_at',
+                        ]
+                    );
 
                 // ESTO NO ES NECESARIO YA QUE EL SUPER ADMIN SIEMPRE PUEDE VER A TODOS SUS USUARIOS
                 // REDUCE LOS TIEMPOS DE CARGA AL INICIAR EL MODULO @USERS
@@ -68,17 +85,18 @@ class UserResource extends Resource
                 //     $query->where('name', 'cliente');
                 // });
 
+                // EL ACCESOR TIENE SOLO LOS REGISTROS RELACIONADOS A EL
+                // NO ES NECESARIO HACER OTRO whereHas YA QUE TODO SE PUEDE ANIDAR
+                // UTILIZAMOS LAZY AL FINAL PARA QUE NO SE CARGUEN TODOS LOS REGISTROS AL MISMO TIEMPO SINO SOLO LOS NECESARIOS
                 if (Helpers::isAsesor()) {
-                    $query->whereHas('asignacion', function ($query) {
-                        $query->whereHas('asesor.user', function ($query) {
-                            $query->where('name', auth()->user()->name);
-                        });
+                    $query->whereHas('asignacion.asesor.user', function ($query) {
+                        $query->where('id', auth()->user()->id)->lazy();
                     });
                 }
 
                 return $query;
             })
-            ->defaultSort('cliente.updated_at', )
+            ->defaultSort('cliente.updated_at')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('usuario')
@@ -88,21 +106,20 @@ class UserResource extends Resource
                     ->label('Nombre')
                     ->searchable()
                     ->copyable()
-                    ->limit(fn() => Helpers::isSuperAdmin() ? 6 : 15 )
-                    ->tooltip(function ($record) : ?string {
+                    ->limit(fn() => Helpers::isSuperAdmin() ? 6 : 15)
+                    ->tooltip(function ($record): ?string {
                         return $record->name;
                     }),
                 Tables\Columns\TextColumn::make('email')
                     // ->limit(10)
                     ->formatStateUsing(fn($record) => Helpers::isSuperAdmin() ? $record->email : '*****@*****.***')
                     ->copyable()
-                    ->copyableState(fn($record) =>$record->email)
+                    ->copyableState(fn($record) => $record->email)
                     ->tooltip('Haga click para copiar')
-                    ->limit(fn()=>Helpers::isSuperAdmin() ? 6 : 15 )
+                    ->limit(fn() => Helpers::isSuperAdmin() ? 6 : 15)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('cliente.celular')
-                     ->label('Celular')
-                    ->formatStateUsing(fn($record)=>Helpers::isSuperAdmin()?$record->cliente?->celular:'********')
+                Tables\Columns\TextColumn::make('cliente.celular')->label('Celular')
+                    ->formatStateUsing(fn($record) => Helpers::isSuperAdmin() ? $record->cliente?->celular : '********')
                     ->tooltip('Haga click para copiar')
                     ->copyable()
                     ->copyableState(fn($record) => $record->cliente?->celular)
@@ -113,24 +130,11 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('cliente.estado_cliente')
                     ->label('Estado cliente')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('cliente.fase_cliente')
-                    ->label('Fase actual')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('asignacion.asesor.user.name')
-                    ->label('Asesor asignado')
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('cliente.origenes')
-                    ->label('Origen cliente')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('cliente.updated_at')
-                    ->date('M d/Y h:i A')
-                    ->label('ultima actualización')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->date('M d/y h:i A')
-                    ->label('Fecha de creacion')
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('cliente.fase_cliente')->label('Fase actual')->searchable(),
+                Tables\Columns\TextColumn::make('asignacion.asesor.user.name')->label('Asesor asignado')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('cliente.origenes')->label('Origen cliente')->searchable(),
+                Tables\Columns\TextColumn::make('cliente.updated_at')->date('M d/Y h:i A')->label('ultima actualización')->sortable(),
+                Tables\Columns\TextColumn::make('created_at')->date('M d/y h:i A')->label('Fecha de creacion')->sortable(),
                 Tables\Columns\TextColumn::make('asignacion.estado_asignacion')
                     ->label('Estado asignacion')
                     ->badge()
@@ -144,129 +148,101 @@ class UserResource extends Resource
                     ->formatStateUsing(function ($state) {
                         return $state ? 'Activa' : 'Inactiva';
                     }),
-                Tables\Columns\TextColumn::make('roles.name')
-                    ->label('Rol asignado')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('asignacion.id')
-                    ->label('asignacion id')
-                    ->searchable()
-                    ->sortable()
+                Tables\Columns\TextColumn::make('roles.name')->label('Rol asignado')->searchable(),
+                Tables\Columns\TextColumn::make('asignacion.id')->label('asignacion id')->searchable()->sortable(),
             ])
             //inicio filtros
             ->filters([
-
                 // 📌 Filtro por Asesor Asignado
+                // OK
                 SelectFilter::make('asignacion.asesor.user.name')
-                ->relationship('asignacion.asesor', 'id')
-                ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
-                ->searchable()
-                ->preload()
-                ->label('Asesor asignado'),
+                    ->relationship('asignacion.asesor', 'id')
+                    ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
+                    ->searchable()
+                    ->preload()
+                    ->label('Asesor asignado'),
 
+                // OK
                 Tables\Filters\Filter::make('sin_asignacion')
-                    ->label('sin asignaicon')
+                    ->label('Sin asignacion')
                     ->toggle()
                     ->query(function (Builder $query): Builder {
                         return $query->whereDoesntHave('asignacion');
-                        }),
+                    }),
 
-                Filter::make('filtros')
-                ->form([
-                    Forms\Components\Grid::make(2) // 📌 Organiza los filtros en 3 columnas
-                        ->schema([
+                Tables\Filters\Filter::make('Filtros de marketing')
+                    ->form([
+                        Forms\Components\Grid::make(2) // 📌 Organiza los filtros en 2 columnas
+                            ->schema([
+                                Forms\Components\Select::make('estado_cliente')
+                                    ->label('Estado cliente')
+                                    ->options(Helpers::getEstatusOptions())
+                                    ->placeholder('Selecciona un estado'),
 
-                            // 📌 Filtro por Día Específico
-                            Forms\Components\DatePicker::make('created_at_day')
-                            ->label('Día específico')
-                            ->columnSpanFull()
-                            ->displayFormat('d/m/Y'),
-                        ]),
-                    Forms\Components\Grid::make(2)
-                        ->schema([
-                            Forms\Components\Select::make('cliente_estado_cliente')
-                                ->options(Helpers::getEstatusOptions())
-                                ->label('Estado cliente'),
-                            // 📌 Filtro por Fase del Cliente
-                            Forms\Components\Select::make('cliente_fase_cliente')
-                            ->options(Helpers::getFaseOptions())
-                                ->label('Fase cliente'),
-                            // 📌 Filtro por Estado del Cliente
+                                Forms\Components\Select::make('fase_cliente')
+                                    ->label('Fase cliente')
+                                    ->options(Helpers::getFaseOptions())
+                                    ->placeholder('Selecciona una fase'),
 
-                        ]),
-                    Forms\Components\Grid::make(2)
-                        ->schema([
-                             // 📌 Filtro por Rol
-                             Forms\Components\Select::make('roles')
-                             ->label('Rol asignado')
-                             ->relationship('roles', 'name'),
-
-                        // 📌 Filtro por País del Cliente
-                            Forms\Components\TextInput::make('cliente_pais')
-                                ->label('País Cliente')
-                                ->default(''),
-                         ])
+                                Forms\Components\TextInput::make('pais')
+                                    ->label('Pais')
+                                    ->placeholder('Escribe el pais del cliente')
+                                    ->columnSpanFull(),
+                            ]),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        // Seleccionar solo campos necesarios
-                        $query = $query->select([
-                            'id', 'created_at', 'cliente_id', 'asignacion_id',
-                            // Añadir otros campos esenciales que necesites
-                        ]);
-
-                        // Aplicar filtro de fecha
-                        if ($data['created_at_day'] ?? null) {
-                            $query->whereDate('created_at', $data['created_at_day']);
-                        }
-
-                        // Optimizar filtros relacionados con cliente usando una sola consulta whereHas
-                        $hasClienteFilter = ($data['cliente_estado_cliente'] ?? null) ||
-                                           ($data['cliente_fase_cliente'] ?? null) ||
-                                           ($data['cliente_pais'] ?? null);
-
-                        if ($hasClienteFilter) {
-                            $query->whereHas('cliente', function ($clienteQuery) use ($data) {
-                                if ($data['cliente_estado_cliente'] ?? null) {
-                                    $clienteQuery->where('estado_cliente', $data['cliente_estado_cliente']);
-                                }
-
-                                if ($data['cliente_fase_cliente'] ?? null) {
-                                    $clienteQuery->where('fase_cliente', $data['cliente_fase_cliente']);
-                                }
-
-                                if ($data['cliente_pais'] ?? null) {
-                                    $clienteQuery->where('pais', $data['cliente_pais']);
-                                }
-
-                                return $clienteQuery;
+                        return $query
+                            ->with(['cliente'])
+                            ->when($data['estado_cliente'] ?? null, function ($query, $value) {
+                                $query->whereHas('cliente', fn($q) => $q->where('estado_cliente', $value))->lazy();
+                            })
+                            ->when($data['fase_cliente'] ?? null, function ($query, $value) {
+                                $query->whereHas('cliente', fn($q) => $q->where('fase_cliente', $value))->lazy();
+                            })
+                            ->when($data['pais'] ?? null, function ($query, $value) {
+                                $query->whereHas('cliente', fn($q) => $q->where('pais', 'like', "%$value%"))->lazy();
                             });
+                    }),
 
-                            // Cargar las relaciones necesarias con constraint para evitar cargar datos innecesarios
-                            $query->with(['cliente' => function ($q) use ($data) {
-                                $q->select(['id', 'estado_cliente', 'fase_cliente', 'pais']);
-                            }]);
-                        }
+                // FILTRAR POR ROLE DE CLIENTE => SE USA UN SELECT CON RELATIONSHIP ROLES
+                SelectFilter::make('roles')
+                    ->relationship('roles', 'name')
+                    ->label('Rol asignado'),
 
-                        // Aplicar filtro de roles si está presente
-                        if ($data['roles'] ?? null) {
-                            $query->whereHas('roles', function ($roleQuery) use ($data) {
-                                $roleQuery->where('id', $data['roles']);
-                            });
-                        }
+                // 📌 FILTRO DE FECHAS
+                Tables\Filters\Filter::make('Filtro de Fechas')
+                    ->form([
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\DatePicker::make('fecha_inicio')
+                                    ->label('Fecha desde')
+                                    ->placeholder('Selecciona una fecha')
+                                    ->native(false),
 
-                        // Aplicar los límites de paginación aquí no es necesario
-                        // ya que Filament maneja la paginación automáticamente
-
-                        return $query;
+                                Forms\Components\DatePicker::make('fecha_fin')
+                                    ->label('Fecha hasta')
+                                    ->placeholder('Selecciona una fecha')
+                                    ->native(false),
+                            ]),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['fecha_inicio'] ?? null,
+                                fn($query, $value) =>
+                                $query->whereDate('created_at', '>=', $value)
+                            )
+                            ->when(
+                                $data['fecha_fin'] ?? null,
+                                fn($query, $value) =>
+                                $query->whereDate('created_at', '<=', $value)
+                            );
                     }),
             ])
             ->deferFilters()
             //fin filtros
 
-            ->actions([
-                Tables\Actions\EditAction::make()
-                ->iconButton()
-                ->tooltip('Editar usuario'),
-            ], position: ActionsPosition::BeforeCells)
+            ->actions([Tables\Actions\EditAction::make()->iconButton()->tooltip('Editar usuario')], position: ActionsPosition::BeforeCells)
             ->bulkActions([
                 /**
                  *  ASIGNACION MASIVA
@@ -287,14 +263,11 @@ class UserResource extends Resource
                     })
                     ->after(function () {
                         // NOTIFICAR QUE LA ASIGNACION FUE EXITOSA
-                        Notification::make()
-                            ->title('Asesor asignado con éxito')
-                            ->success()
-                            ->send();
+                        Notification::make()->title('Asesor asignado con éxito')->success()->send();
                     })
                     ->deselectRecordsAfterCompletion()
-                    ->visible(function(){
-                        if(Helpers::isSuperAdmin()){
+                    ->visible(function () {
+                        if (Helpers::isSuperAdmin()) {
                             return true;
                         }
                     }),
@@ -304,63 +277,48 @@ class UserResource extends Resource
                 BulkAction::make('Asignar nuevo estado')
                     ->color('info')
                     ->icon('heroicon-s-arrows-right-left')
-                    ->form([
-                        Select::make('estado_cliente')
-                        ->options(Helpers::getEstatusOptions())
-                        ->required()
-                        ])
+                    ->form([Select::make('estado_cliente')->options(Helpers::getEstatusOptions())->required()])
                     ->action(function (array $data, Collection $records) {
-                        $records->each(function($user)use($data){
-                            $user?->cliente->update(['estado_cliente'=> $data['estado_cliente']]);
+                        $records->each(function ($user) use ($data) {
+                            $user?->cliente->update(['estado_cliente' => $data['estado_cliente']]);
                         });
                     })
                     ->after(function () {
                         // NOTIFICAR QUE LA ASIGNACION FUE EXITOSA
-                        Notification::make()
-                            ->title('estado actualizado con éxito')
-                            ->success()
-                            ->send();
+                        Notification::make()->title('estado actualizado con éxito')->success()->send();
                     })
                     ->deselectRecordsAfterCompletion()
-                    ->visible(function(){
-                        if(Helpers::isSuperAdmin()){
+                    ->visible(function () {
+                        if (Helpers::isSuperAdmin()) {
                             return true;
                         }
                     }),
                 BulkAction::make('assignar nueva fase')
                     ->color('success')
                     ->icon('heroicon-s-arrow-path')
-                    ->form([
-                        Select::make('fase')
-                        ->label('Fase del cliente')
-                        ->options(Helpers::getFaseOptions())
-                        ->required(),
-                    ])
-                    ->action(function( array $data, Collection $records): void {
-                        $records->each(function ($user)use($data){
+                    ->form([Select::make('fase')->label('Fase del cliente')->options(Helpers::getFaseOptions())->required()])
+                    ->action(function (array $data, Collection $records): void {
+                        $records->each(function ($user) use ($data) {
                             $user->assingNewFase($data['fase']);
                         });
                     })
                     ->after(function () {
                         // NOTIFICAR QUE LA ASIGNACION FUE EXITOSA
-                        Notification::make()
-                            ->title('Fase actualizado con éxito')
-                            ->success()
-                            ->send();
+                        Notification::make()->title('Fase actualizado con éxito')->success()->send();
                     })
                     ->deselectRecordsAfterCompletion()
-                    ->visible(function(){
-                        if(Helpers::isSuperAdmin()){
+                    ->visible(function () {
+                        if (Helpers::isSuperAdmin()) {
                             return true;
                         }
                         return false;
                     }),
-                    BulkAction::make('Asignar nuevo origen')
+                BulkAction::make('Asignar nuevo origen')
                     ->color('warning')
                     ->icon('heroicon-s-globe-americas')
                     ->form([
                         Select::make('origenes')
-                        ->options([
+                            ->options([
                                 'RECOVERY' => 'RECOVERY',
                                 'AMZN' => 'AMZN',
                                 'AMZN200' => 'AMZN200',
@@ -379,47 +337,37 @@ class UserResource extends Resource
                                 'ENTEL' => 'ENTEL',
                                 'BIMBO' => 'BIMBO',
                             ])
-                            ->required()
-                        ])
+                            ->required(),
+                    ])
                     ->action(function (array $data, Collection $records) {
-                        $records->each(function($user)use($data){
-                            $user?->cliente->update(['origenes'=> $data['origenes']]);
+                        $records->each(function ($user) use ($data) {
+                            $user?->cliente->update(['origenes' => $data['origenes']]);
                         });
                     })
                     ->after(function () {
                         // NOTIFICAR QUE LA ASIGNACION FUE EXITOSA
-                        Notification::make()
-                            ->title('Origenes actualizados con éxito')
-                            ->success()
-                            ->send();
+                        Notification::make()->title('Origenes actualizados con éxito')->success()->send();
                     })
                     ->deselectRecordsAfterCompletion()
-                    ->visible(function(){
-                        if(Helpers::isSuperAdmin()){
+                    ->visible(function () {
+                        if (Helpers::isSuperAdmin()) {
                             return true;
                         }
                     }),
                 /**
                  *  ACCIONES DE ELIMINACION DE USUARIOS
                  */
-                 Tables\Actions\DeleteBulkAction::make('delete')
-                    ->visible(fn()=> Helpers::isSuperAdmin()),
-                ]);
+                Tables\Actions\DeleteBulkAction::make('delete')->visible(fn() => Helpers::isSuperAdmin()),
+            ]);
     }
 
     public static function getRelations(): array
     {
         return [
             // Cuentas y movimientos
-            RelationGroup::make('Cuentas y movimientos', [
-                UserMovimientosRelationManager::class,
-                CuentaClienteRelationManager::class,
-            ])->icon('heroicon-m-arrows-up-down'),
+            RelationGroup::make('Cuentas y movimientos', [UserMovimientosRelationManager::class, CuentaClienteRelationManager::class])->icon('heroicon-m-arrows-up-down'),
             // Asignaciones
-            RelationGroup::make('Asignaciones', [
-                AsignacionRelationManager::class,
-                SeguimientosRelationManager::class,
-            ])->icon('heroicon-m-arrows-right-left')
+            RelationGroup::make('Asignaciones', [AsignacionRelationManager::class, SeguimientosRelationManager::class])->icon('heroicon-m-arrows-right-left'),
         ];
     }
 
