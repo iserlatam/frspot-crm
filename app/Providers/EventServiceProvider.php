@@ -6,6 +6,9 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use Laravel\Fortify\Events\TwoFactorAuthenticationChallenged;
+use Laravel\Fortify\Events\TwoFactorAuthenticationEnabled;
+use Vormkracht10\TwoFactorAuth\Listeners\SendTwoFactorCodeListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -17,6 +20,12 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        TwoFactorAuthenticationChallenged::class => [
+            SendTwoFactorCodeListener::class,
+        ],
+        TwoFactorAuthenticationEnabled::class => [
+            SendTwoFactorCodeListener::class,
         ],
     ];
 

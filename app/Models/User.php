@@ -14,14 +14,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
+use Vormkracht10\TwoFactorAuth\Enums\TwoFactorType;
 
 class User extends Authenticatable implements FilamentUser, HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, TwoFactorAuthenticatable;
 
     /**
      * The attributes that should be cast.
@@ -66,6 +68,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'two_factor_type' => TwoFactorType::class,
     ];
 
     public static function getForm(): array
