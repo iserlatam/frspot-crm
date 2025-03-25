@@ -104,6 +104,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
                                         ->label('Contraseña')
                                         ->default('Aa123456')
                                         ->helperText('La contraseña debe tener más de 6 caracteres.')
+                                        ->revealable()
                                         ->password()
                                         ->dehydrated(fn($state) => filled($state))
                                         ->required(fn(string $context): bool => $context === 'create')
