@@ -121,22 +121,31 @@ class SeguimientosRelationManager extends RelationManager
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->iconButton()
+                    ->fillForm(fn($record) => [
+                        'estado' => $this->ownerRecord->cliente->estado_cliente ?? '',
+                        'fase' => $this->ownerRecord->cliente->fase_cliente ?? '',
+                        'descripcion' => $this->ownerRecord->seguimientos->where('id', $record->id)->first()?->descripcion ?? '',
+                        // 'origen' => $this->ownerRecord->cliente->origenes ?? '',
+                        // dd($this->ownerRecord->seguimientos->first),
+                    ])
                     ->tooltip('Ver comentario')
                     ->iconPosition('before')
                     ->icon('heroicon-o-eye')
                     ->color('success'),
                 Tables\Actions\EditAction::make()
-                    ->fillForm([
+                    ->fillForm(fn($record) => [
                         'estado' => $this->ownerRecord->cliente->estado_cliente ?? '',
-                        'origen' => $this->ownerRecord->cliente->origenes ?? '',
                         'fase' => $this->ownerRecord->cliente->fase_cliente ?? '',
+                        'descripcion' => $this->ownerRecord->seguimientos->where('id', $record->id)->first()?->descripcion ?? '',
+                        // 'origen' => $this->ownerRecord->cliente->origenes ?? '',
+                        // dd($this->ownerRecord->seguimientos->first),
                     ])
                     ->using(function(Model $record, array $data){
                         $cliente = Cliente::where('user_id', $data['user_id'])->first();
 
                         $cliente->update([
                             'estado_cliente' => $data['estado'],
-                            'origenes' => $data['origen'],
+                            // 'origenes' => $data['origen'],
                             'fase_cliente' => $data['fase'],
                         ]);
 
