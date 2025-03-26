@@ -53,6 +53,10 @@ class SeguimientosRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('descripcion')
                     ->html()
                     ->copyable()
+                    ->copyableState(function($state) {
+                        // Elimina las etiquetas HTML y limpia el texto
+                        return strip_tags(html_entity_decode($state));
+                    })
                     ->limit(300)
                     ->wrap() // Habilita el envolvimiento básico
                     ->extraAttributes([
