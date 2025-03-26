@@ -52,6 +52,7 @@ class SeguimientosRelationManager extends RelationManager
                     ->searchable(),
                 Tables\Columns\TextColumn::make('descripcion')
                     ->html()
+                    ->copyable()
                     ->limit(300)
                     ->wrap() // Habilita el envolvimiento básico
                     ->extraAttributes([

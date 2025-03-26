@@ -33,7 +33,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
         if ($panel->getId() === 'admin') {
-            return Helpers::isAsesor() || Helpers::isSuperAdmin();
+            return Helpers::canAccessPanel();
         }
 
         return true;

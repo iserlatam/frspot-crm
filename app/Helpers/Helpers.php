@@ -29,6 +29,10 @@ class Helpers extends NotificationHelpers
     {
         return auth()->user()->hasRole(['super_admin','master']);
     }
+    public static function canAccessPanel(): bool
+    {
+        return auth()->user()->hasRole(['super_admin','crm_master','crm_junior','team','asesor']);
+    }
 
     public static function getFaseOptions(){
         $faseOptions = [
