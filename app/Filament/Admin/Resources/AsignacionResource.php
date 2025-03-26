@@ -134,30 +134,26 @@ class AsignacionResource extends Resource
                     ->sortable()
                     ->date('M d/Y h:i A'),
                 Tables\Columns\TextColumn::make('created_at')
-                        ->label('fecha de creacion')
-                        ->date('M d/Y h:i A')
-                        ->sortable(),
-                        Tables\Columns\TextColumn::make('total_asignaciones')
-                        ->label('Cantidad de Asignaciones')
-                        ->getStateUsing(function ($record) {
-                            // Verifica si el registro tiene user_id y no es nulo
-                            if ($record->user_id) {
-                                return Asignacion::where('user_id', $record->user_id)->count();
-                            }
-                            return 0; // Devuelve 0 si no hay user_id
-                        })
-                        ->sortable(
-                            query: function (Builder $query, string $direction = 'asc') {
-                                return $query
-                                    ->select('asignacions.*')
-                                    ->selectRaw('(SELECT COUNT(*) FROM asignacions AS a WHERE a.user_id = asignacions.user_id) AS total_asignaciones_count')
-                                    ->orderBy('total_asignaciones_count', $direction);
-                            }
-                        )
-                    
-                    
-                        
-                   
+                    ->label('fecha de creacion')
+                    ->date('M d/Y h:i A')
+                    ->sortable(),
+                // Tables\Columns\TextColumn::make('total_asignaciones')
+                //     ->label('Cantidad de Asignaciones')
+                //     ->getStateUsing(function ($record) {
+                //         // Verifica si el registro tiene user_id y no es nulo
+                //         if ($record->user_id) {
+                //             return Asignacion::where('user_id', $record->user_id)->count();
+                //         }
+                //         return 0; // Devuelve 0 si no hay user_id
+                //     })
+                //     ->sortable(
+                //         query: function (Builder $query, string $direction = 'asc') {
+                //             return $query
+                //                 ->select('asignacions.*')
+                //                 ->selectRaw('(SELECT COUNT(*) FROM asignacions AS a WHERE a.user_id = asignacions.user_id) AS total_asignaciones_count')
+                //                 ->orderBy('total_asignaciones_count', $direction);
+                //         }
+                //     )
                 ])
             ->filters([
                 // 📌 Filtro por Asesor Asignado
