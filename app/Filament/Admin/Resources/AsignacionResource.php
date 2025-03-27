@@ -74,7 +74,7 @@ class AsignacionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('total_asignaciones','asc')
+            ->defaultSort('user.cliente.updated_at','desc')
             ->query(
                 function () {
                     $query = Asignacion::query();
