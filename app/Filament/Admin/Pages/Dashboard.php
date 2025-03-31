@@ -19,7 +19,7 @@ class Dashboard extends \Filament\Pages\Dashboard
 
     public static function canAccess(): bool
     {
-        return Helpers::isOwner();
+        return Helpers::isSuperAdmin();
     }
 
     public function getHeaderWidgets(): array
@@ -38,11 +38,11 @@ class Dashboard extends \Filament\Pages\Dashboard
         return [
             Action::make('Gestionar movimientos')
                 ->color('primary')
-                ->visible(fn() => Helpers::isOwner())
+                ->visible(fn() => Helpers::isSuperAdmin())
                 ->url(route('filament.admin.resources.movimientos.index')),
             Action::make('Gestionar clientes')
                 ->color('secondary')
-                ->visible(fn() => Helpers::isOwner())
+                ->visible(fn() => Helpers::isSuperAdmin())
                 ->url(route('filament.admin.resources.users.index')),
             Action::make('Gestionar seguimientos')
                 ->color('info')

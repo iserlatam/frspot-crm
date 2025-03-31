@@ -19,7 +19,7 @@ class AccountsTable extends BaseWidget
 
     public static function canView(): bool
     {
-        return Helpers::isOwner();
+        return Helpers::isSuperAdmin();
     }
 
     public function table(Table $table): Table

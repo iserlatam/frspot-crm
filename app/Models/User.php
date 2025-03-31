@@ -86,7 +86,9 @@ class User extends Authenticatable implements FilamentUser, HasMedia
                              */
                             Forms\Components\Select::make('roles')
                                 ->label('Asignar rol')
-                                ->relationship('roles', 'name')
+                                ->relationship('roles', 'name', function($query){
+                                    Helpers::isCrmManager() ? $query->where('name', 'cliente') : $query;
+                                })
                                 ->preload()
                                 ->searchable(),
                             Forms\Components\Grid::make()
@@ -112,7 +114,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
                                 ]),
                         ])
                         ->visible(function(){
-                            if(Helpers::isSuperAdmin()){
+                            if(Helpers::isCrmManager() || Helpers::isSuperAdmin()){
                                 return true;
                             }
                         }),

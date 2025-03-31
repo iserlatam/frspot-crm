@@ -13,7 +13,7 @@ class MonthlyIncomeChart extends ChartWidget
 
     public static function canView(): bool
     {
-        return Helpers::isOwner();
+        return Helpers::isSuperAdmin();
     }
 
     protected function getData(): array

@@ -30,7 +30,7 @@ class AsignacionRelationManager extends RelationManager
                 function () {
                     
                     $query = Asignacion::query();
-                    if (!Helpers::isSuperAdmin()) {
+                    if (!Helpers::isCrmManager() || !Helpers::isSuperAdmin()) {
 
                         $query->whereHas('asesor.user', function ($query) {
                             $query->where('id', auth()->user()->id);

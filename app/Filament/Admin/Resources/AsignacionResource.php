@@ -162,7 +162,7 @@ class AsignacionResource extends Resource
                 ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
                 ->preload()
                 ->searchable()
-                ->visible(fn()=>Helpers::isSuperAdmin())
+                ->visible(fn()=>Helpers::isCrmManager() || Helpers::isSuperAdmin())
                 ->label('Asesor asignado'),
                 
                 Filter::make('asignacion_filtros')

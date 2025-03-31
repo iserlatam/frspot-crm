@@ -21,7 +21,7 @@ class AsignacionsRelationManager extends RelationManager
 
     public function isReadOnly(): bool
     {
-        return Helpers::isOwner() ? false : true;
+        return Helpers::isSuperAdmin() ? false : true;
     }
 
     public function form(Form $form): Form

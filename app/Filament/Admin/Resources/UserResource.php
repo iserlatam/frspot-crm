@@ -77,7 +77,8 @@ class UserResource extends Resource
                             'created_at',
                             'updated_at',
                         ]
-                    );
+                        )
+                    ->where('email', 'NOT LIKE', '%@frspot.com'); // Excluir emails que terminan en @frspot.com
 
                 // ESTO NO ES NECESARIO YA QUE EL SUPER ADMIN SIEMPRE PUEDE VER A TODOS SUS USUARIOS
                 // REDUCE LOS TIEMPOS DE CARGA AL INICIAR EL MODULO @USERS
@@ -111,7 +112,6 @@ class UserResource extends Resource
                         return $record->name;
                     }),
                 Tables\Columns\TextColumn::make('email')
-                    // ->limit(10)
                     ->formatStateUsing(fn($record) => Helpers::isSuperAdmin() ? $record->email : '*****@*****.***')
                     ->copyable()
                     ->copyableState(fn($record) => $record->email)
@@ -267,7 +267,7 @@ class UserResource extends Resource
                     })
                     ->deselectRecordsAfterCompletion()
                     ->visible(function () {
-                        if (Helpers::isSuperAdmin()) {
+                        if (Helpers::isSuperAdmin() || Helpers::isCrmManager()) {
                             return true;
                         }
                     }),
@@ -289,7 +289,7 @@ class UserResource extends Resource
                     })
                     ->deselectRecordsAfterCompletion()
                     ->visible(function () {
-                        if (Helpers::isSuperAdmin()) {
+                        if (Helpers::isCrmManager() || Helpers::isCrmManager()) {
                             return true;
                         }
                     }),
@@ -308,7 +308,7 @@ class UserResource extends Resource
                     })
                     ->deselectRecordsAfterCompletion()
                     ->visible(function () {
-                        if (Helpers::isSuperAdmin()) {
+                        if (Helpers::isSuperAdmin() || Helpers::isCrmManager()) {
                             return true;
                         }
                         return false;
@@ -350,7 +350,7 @@ class UserResource extends Resource
                     })
                     ->deselectRecordsAfterCompletion()
                     ->visible(function () {
-                        if (Helpers::isSuperAdmin()) {
+                        if (Helpers::isSuperAdmin() || Helpers::isCrmManager()) {
                             return true;
                         }
                     }),

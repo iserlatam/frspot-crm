@@ -25,9 +25,9 @@ class Helpers extends NotificationHelpers
         return auth()->user()->hasRole('asesor');
     }
 
-    public static function isOwner(): bool
+    public static function isCrmManager(): bool
     {
-        return auth()->user()->hasRole(['super_admin','master']);
+        return auth()->user()->hasRole(['crm junior','crm master']);
     }
     public static function canAccessPanel(): bool
     {
@@ -75,7 +75,5 @@ class Helpers extends NotificationHelpers
 
         return $faseOptions;
     }
-
-
 
 }

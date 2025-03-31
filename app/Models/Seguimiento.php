@@ -113,18 +113,18 @@ class Seguimiento extends Model
                 ->default(fn ($livewire) => $livewire instanceof SeguimientosRelationManager ? $livewire->ownerRecord->id : null),                         
             Forms\Components\TextInput::make('asesor_id')
                 ->visible(function () {
-                    return !Helpers::isOwner();
+                    return Helpers::isAsesor();
                 })
                 ->label('Asesor')
                 ->default(function () {
                     if (Helpers::isAsesor()) {
-                        return auth()->user()->asesor->id;
+                        return auth()->user()->asesor->name;
                     }
                 })
                 ->readOnly(),
             Forms\Components\Select::make('asesor_id')
                 ->visible(function () {
-                    return Helpers::isOwner();
+                    return Helpers::isSuperAdmin();
                 })
                 ->relationship("asesor", 'id', function($query){
                     if(Helpers::isAsesor())
