@@ -107,7 +107,6 @@ class Seguimiento extends Model
                 })
                 ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->name)
                 ->label('Cliente')
-                ->preload()
                 ->searchable()
                 ->required()
                 ->default(fn ($livewire) => $livewire instanceof SeguimientosRelationManager ? $livewire->ownerRecord->id : null),                         
@@ -118,7 +117,7 @@ class Seguimiento extends Model
                 ->label('Asesor')
                 ->default(function () {
                     if (Helpers::isAsesor()) {
-                        return auth()->user()->asesor->name;
+                        return auth()->user()->asesor->id;
                     }
                 })
                 ->readOnly(),
