@@ -65,10 +65,12 @@ class SeguimientoResource extends Resource
                     ->label('Cliente')
                     ->sortable()
                     ->copyable()
-                    ->tooltip('Nombre del cliente')
+                    ->tooltip(function($record){
+                        return $record->user->name;
+                    })
                     ->limit('20')
-                    // ->extraAttributes(['style' => 'max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;'])
                     ->searchable(),
+                    // ->extraAttributes(['style' => 'max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;'])
                 Tables\Columns\TextColumn::make('asesor.user.name')
                     ->label('Asesor')
                     ->searchable(),
@@ -81,16 +83,12 @@ class SeguimientoResource extends Resource
                         'style' => 'white-space: pre-wrap; word-break: break-word; max-width: 400px; text-wrap: true; word-break: break-all; overflow-wrap: break-word;', // Control adicional con CSS
                     ]),
                 Tables\Columns\TextColumn::make('user.cliente.estado_cliente')
-                    ->label('Estado actual')
-                    ->searchable(),
+                    ->label('Estado actual'),
                 Tables\Columns\TextColumn::make('user.cliente.fase_cliente')
-                    ->label('Fase Actual')
-                    ->searchable(),
+                    ->label('Fase Actual'),
                 Tables\Columns\TextColumn::make('user.asignacion.asesor.user.name')
-                    ->label('Asesor asignado')
-                    ->searchable(),
+                    ->label('Asesor asignado'),
                 Tables\Columns\TextColumn::make('etiqueta')
-                    ->searchable()
                     ->visible(false),
                 Tables\Columns\TextColumn::make('created_at')
                     ->date('M d/Y h:i A')
