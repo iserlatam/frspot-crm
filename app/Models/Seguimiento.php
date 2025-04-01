@@ -107,21 +107,9 @@ class Seguimiento extends Model
                 })
                 ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->name)
                 ->label('Cliente')
-                ->preload()
                 ->searchable()
                 ->required()
-                ->default(fn ($livewire) => $livewire instanceof SeguimientosRelationManager ? $livewire->ownerRecord->id : null),                         
-            Forms\Components\TextInput::make('asesor_id')
-                ->visible(function () {
-                    return Helpers::isAsesor();
-                })
-                ->label('Asesor')
-                ->default(function () {
-                    if (Helpers::isAsesor()) {
-                        return auth()->user()->asesor->name;
-                    }
-                })
-                ->readOnly(),
+                ->default(fn ($livewire) => $livewire instanceof SeguimientosRelationManager ? $livewire->ownerRecord->id : null),             
             Forms\Components\Select::make('asesor_id')
                 ->visible(function () {
                     return Helpers::isSuperAdmin();
