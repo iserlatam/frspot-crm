@@ -289,7 +289,7 @@ class UserResource extends Resource
                     })
                     ->deselectRecordsAfterCompletion()
                     ->visible(function () {
-                        if (Helpers::isCrmManager() || Helpers::isCrmManager()) {
+                        if (Helpers::isCrmManager() || Helpers::isSuperAdmin()) {
                             return true;
                         }
                     }),
