@@ -87,7 +87,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
                             Forms\Components\Select::make('roles')
                                 ->label('Asignar rol')
                                 ->relationship('roles', 'name', function($query){
-                                    Helpers::isCrmManager() ? $query->where('name', 'cliente') : $query;
+                                    Helpers::isCrmManager() || auth()->user()->hasRole('leads') ? $query->where('name', 'cliente') : $query;
                                 })
                                 ->preload()
                                 ->searchable(),
@@ -114,7 +114,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
                                 ]),
                         ])
                         ->visible(function(){
-                            if(Helpers::isCrmManager() || Helpers::isSuperAdmin()){
+                            if(Helpers::isCrmManager() || Helpers::isSuperAdmin() || auth()->user()->hasRole('leads')){
                                 return true;
                             }
                         }),
