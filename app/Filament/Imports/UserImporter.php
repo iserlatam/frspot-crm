@@ -46,6 +46,8 @@ class UserImporter extends Importer
                 'fase_cliente' => $this->data['fase'],
                 'origenes' => $this->data['origen'],
                 'pais' => $this->data['pais'],
+                'infoeeuu' => $this->data['infoeeuu'],
+                'caso' => $this->data['caso'],
             ]);
 
             // Abrir nueva cuenta

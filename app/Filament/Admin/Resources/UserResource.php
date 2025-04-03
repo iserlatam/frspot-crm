@@ -97,7 +97,8 @@ class UserResource extends Resource
 
                 return $query;
             })
-            ->defaultSort('cliente.updated_at')
+            ->defaultSort(Helpers::isSuperAdmin() ? 'created_at' : 'cliente.updated_at', Helpers::isSuperAdmin() ? 'desc' : 'asc')
+
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('usuario')
@@ -313,6 +314,7 @@ class UserResource extends Resource
                         }
                         return false;
                     }),
+
                 BulkAction::make('Asignar nuevo origen')
                     ->color('warning')
                     ->icon('heroicon-s-globe-americas')
