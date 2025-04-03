@@ -314,68 +314,48 @@ class UserResource extends Resource
                         }
                         return false;
                     }),
-                BulkAction::make('Actualizar infoeeuu y caso')
-                    ->color('danger')
-                    ->icon('heroicon-s-pencil-square')
-                    ->action(function (Collection $records) {
-                        $records->each(function ($user) {
-                            $user?->cliente->update([
-                                'infoeeuu' => 0,
-                                'caso' => 'b',
-                            ]);
+
+                BulkAction::make('Asignar nuevo origen')
+                    ->color('warning')
+                    ->icon('heroicon-s-globe-americas')
+                    ->form([
+                        Select::make('origenes')
+                            ->options([
+                                'RECOVERY' => 'RECOVERY',
+                                'AMZN' => 'AMZN',
+                                'AMZN200' => 'AMZN200',
+                                'AMZN280' => 'AMZN280',
+                                'BTC' => 'BTC',
+                                'PETROLEO' => 'PETROLEO',
+                                'APPLE' => 'APPLE',
+                                'CURSOS' => 'CURSOS',
+                                'PETROBLAS' => 'PETROBLAS',
+                                'XAUUSD' => 'XAUUSD',
+                                'TESLA' => 'TESLA',
+                                'INGRESOS_EXTRAS' => 'INGRESOS EXTRAS',
+                                'FRSPOT' => 'FRSPOT',
+                                'Conferencia_Musk' => 'Conferencia Musk',
+                                'COCA-COLA' => 'COCA-COLA',
+                                'ENTEL' => 'ENTEL',
+                                'BIMBO' => 'BIMBO',
+                            ])
+                            ->required(),
+                    ])
+                    ->action(function (array $data, Collection $records) {
+                        $records->each(function ($user) use ($data) {
+                            $user?->cliente->update(['origenes' => $data['origenes']]);
                         });
                     })
                     ->after(function () {
-                        Notification::make()
-                            ->title('Clientes actualizados con éxito')
-                            ->success()
-                            ->send();
+                        // NOTIFICAR QUE LA ASIGNACION FUE EXITOSA
+                        Notification::make()->title('Origenes actualizados con éxito')->success()->send();
                     })
                     ->deselectRecordsAfterCompletion()
                     ->visible(function () {
-                        return Helpers::isSuperAdmin() || Helpers::isCrmManager();
+                        if (Helpers::isSuperAdmin() || Helpers::isCrmManager()) {
+                            return true;
+                        }
                     }),
-                // BulkAction::make('Asignar nuevo origen')
-                //     ->color('warning')
-                //     ->icon('heroicon-s-globe-americas')
-                //     ->form([
-                //         Select::make('origenes')
-                //             ->options([
-                //                 'RECOVERY' => 'RECOVERY',
-                //                 'AMZN' => 'AMZN',
-                //                 'AMZN200' => 'AMZN200',
-                //                 'AMZN280' => 'AMZN280',
-                //                 'BTC' => 'BTC',
-                //                 'PETROLEO' => 'PETROLEO',
-                //                 'APPLE' => 'APPLE',
-                //                 'CURSOS' => 'CURSOS',
-                //                 'PETROBLAS' => 'PETROBLAS',
-                //                 'XAUUSD' => 'XAUUSD',
-                //                 'TESLA' => 'TESLA',
-                //                 'INGRESOS_EXTRAS' => 'INGRESOS EXTRAS',
-                //                 'FRSPOT' => 'FRSPOT',
-                //                 'Conferencia_Musk' => 'Conferencia Musk',
-                //                 'COCA-COLA' => 'COCA-COLA',
-                //                 'ENTEL' => 'ENTEL',
-                //                 'BIMBO' => 'BIMBO',
-                //             ])
-                //             ->required(),
-                //     ])
-                //     ->action(function (array $data, Collection $records) {
-                //         $records->each(function ($user) use ($data) {
-                //             $user?->cliente->update(['origenes' => $data['origenes']]);
-                //         });
-                //     })
-                //     ->after(function () {
-                //         // NOTIFICAR QUE LA ASIGNACION FUE EXITOSA
-                //         Notification::make()->title('Origenes actualizados con éxito')->success()->send();
-                //     })
-                //     ->deselectRecordsAfterCompletion()
-                //     ->visible(function () {
-                //         if (Helpers::isSuperAdmin() || Helpers::isCrmManager()) {
-                //             return true;
-                //         }
-                //     }),
                 /**
                  *  ACCIONES DE ELIMINACION DE USUARIOS
                  */
