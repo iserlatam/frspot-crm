@@ -15,14 +15,18 @@ class Helpers extends NotificationHelpers
         return auth()->user()->hasRole('super_admin');
     }
 
-    public static function isMaster(): bool
-    {
-        return auth()->user()->hasRole('master');
-    }
-
     public static function isAsesor(): bool
     {
         return auth()->user()->hasRole('asesor');
+    }
+
+    public static function isTeamFTD(): bool
+    {
+        return auth()->user()->hasRole('team ftd');
+    }
+    public static function isTeamRTCN(): bool
+    {
+        return auth()->user()->hasRole('team retencion');
     }
 
     public static function isCrmManager(): bool
@@ -31,7 +35,7 @@ class Helpers extends NotificationHelpers
     }
     public static function canAccessPanel(): bool
     {
-        return auth()->user()->hasRole(['super_admin','crm master','crm junior','team','asesor','leads']);
+        return auth()->user()->hasRole(['super_admin','crm master','crm junior','team ftd','team retencion','asesor','leads']);
     }
 
     public static function getFaseOptions(){

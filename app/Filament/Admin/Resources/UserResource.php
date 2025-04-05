@@ -11,6 +11,7 @@ use App\Filament\Admin\Resources\UserResource\RelationManagers\UserMovimientosRe
 use App\Helpers\Helpers;
 use App\Models\User;
 use Attribute;
+use BaconQrCode\Renderer\Color\Gray;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -95,6 +96,23 @@ class UserResource extends Resource
                     });
                 }
 
+                /*
+                ##
+                ##  Logica para separar los clientes por oficinas segun el tipo de asesor asignado al cliente
+                ##
+                */
+
+                if(Helpers::isTeamFTD()) {
+                    $query->whereHas('asignacion.asesor.user', function ($query) {
+                        $query->where('tipo_asesor','=','ftd')->lazy();
+                    });
+                }
+                elseif(Helpers::isTeamRTCN()) {
+                    $query->whereHas('asignacion.asesor.user', function ($query) {
+                        $query->where('tipo_asesor','=','retencion')->lazy();
+                    });
+                }
+
                 return $query;
             })
             ->defaultSort(Helpers::isSuperAdmin() ? 'created_at' : 'cliente.updated_at', Helpers::isSuperAdmin() ? 'desc' : 'asc')
@@ -130,12 +148,38 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.estado_cliente')
                     ->label('Estado cliente')
+                    ->badge()
+                    ->color(fn($state) => match ($state) {
+                        'Active' => 'success',
+                        'Deposit' => 'success',
+                        'Potential' => 'danger',
+                        'Declined' => 'warning',
+                        default => 'gray',
+                    }),
+                Tables\Columns\TextColumn::make('cliente.fase_cliente')
+                    ->label('Fase actual')
+                    ->badge()
+                    ->color(fn($state) => match ($state) {
+                        'Active' => 'success',
+                        'Deposit' => 'success',
+                        'Potential' => 'danger',
+                        'Declined' => 'warning',
+                        default => 'gray',
+                    })
                     ->searchable(),
-                Tables\Columns\TextColumn::make('cliente.fase_cliente')->label('Fase actual')->searchable(),
-                Tables\Columns\TextColumn::make('asignacion.asesor.user.name')->label('Asesor asignado')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('cliente.origenes')->label('Origen cliente')->searchable(),
-                Tables\Columns\TextColumn::make('cliente.updated_at')->date('M d/Y h:i A')->label('ultima actualización')->sortable(),
-                Tables\Columns\TextColumn::make('created_at')->date('M d/y h:i A')->label('Fecha de creacion')->sortable(),
+                Tables\Columns\TextColumn::make('asignacion.asesor.user.name')
+                    ->label('Asesor asignado'),
+                Tables\Columns\TextColumn::make('cliente.origenes')
+                    ->label('Origen cliente')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('cliente.updated_at')
+                    ->date('M d/Y h:i A')
+                    ->label('ultima actualización')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->date('M d/y h:i A')
+                    ->label('Fecha de creacion')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('asignacion.estado_asignacion')
                     ->label('Estado asignacion')
                     ->badge()
@@ -149,8 +193,8 @@ class UserResource extends Resource
                     ->formatStateUsing(function ($state) {
                         return $state ? 'Activa' : 'Inactiva';
                     }),
-                Tables\Columns\TextColumn::make('roles.name')->label('Rol asignado')->searchable(),
-                Tables\Columns\TextColumn::make('asignacion.id')->label('asignacion id')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('roles.name')->label('Rol asignado'),
+                Tables\Columns\TextColumn::make('asignacion.id')->label('asignacion id'),
             ])
             //inicio filtros
             ->filters([

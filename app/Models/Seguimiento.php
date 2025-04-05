@@ -52,7 +52,7 @@ class Seguimiento extends Model
                                 if($owner->cliente->contador_ediciones > 0)
                                 return true;
                             }
-                            
+
                             return null;
                         })
                         ->default(function ($livewire) {
@@ -60,7 +60,7 @@ class Seguimiento extends Model
                                 $owner = $livewire->getOwnerRecord();
                                 return $owner->cliente?->estado_cliente;
                             }
-                            
+
                             return null;
                         }),
                     Forms\Components\Select::make('fase')
@@ -69,13 +69,13 @@ class Seguimiento extends Model
                         ->required()
                         ->helperText(function ($livewire){
                             if ($livewire instanceof SeguimientosRelationManager) {
-                                $owner = $livewire->getOwnerRecord();   
+                                $owner = $livewire->getOwnerRecord();
 
                                 return 'fase actual: '.$owner->cliente->fase_cliente;
                             }
                             return null;
-                        })                           
-                        ->default(null),  
+                        })
+                        ->default(null),
                     Forms\Components\TextInput::make('contador_ediciones')
                         ->disabled()
                         ->default(fn($livewire) => $livewire->ownerRecord->cliente?->contador_ediciones ?? 0)
@@ -87,18 +87,18 @@ class Seguimiento extends Model
                             }
                             return false;
                         })
-                        ->label('Contador de ediciones'),           
+                        ->label('Contador de ediciones'),
                 ]),
             Forms\Components\RichEditor::make('descripcion')
                 ->columnSpanFull()
                 ->required(),
             Forms\Components\Select::make('user_id')
                 ->relationship('userWithRoleCliente', 'name', modifyQueryUsing: function ($query, $livewire) {
-                    
+
                     if ($livewire instanceof SeguimientosRelationManager) {
                         $query->where('id', $livewire->ownerRecord->id);
                     }
-                                        
+
                     if (Helpers::isAsesor()) {
                         $query->whereHas('asignacion', function ($query) {
                             $query->where('asesor_id', auth()->user()->asesor->id);
@@ -109,26 +109,19 @@ class Seguimiento extends Model
                 ->label('Cliente')
                 ->searchable()
                 ->required()
-                ->default(fn ($livewire) => $livewire instanceof SeguimientosRelationManager ? $livewire->ownerRecord->id : null),                         
+                ->default(fn ($livewire) => $livewire instanceof SeguimientosRelationManager ? $livewire->ownerRecord->id : null),
             Forms\Components\TextInput::make('asesor_id')
                 ->visible(function () {
-                    return Helpers::isAsesor();
+                    return !Helpers::isSuperAdmin();
                 })
                 ->label('Asesor')
-                ->default(function () {
-                    if (Helpers::isAsesor()) {
-                        return auth()->user()->asesor->id;
-                    }
-                })
+                ->default(auth()->user()?->asesor->id ?? null)
                 ->readOnly(),
             Forms\Components\Select::make('asesor_id')
                 ->visible(function () {
                     return Helpers::isSuperAdmin();
                 })
-                ->relationship("asesor", 'id', function($query){
-                    if(Helpers::isAsesor())
-                        $query->where('id',auth()->user()->asesor->id);
-                }) // Define la relación y la clave foránea
+                ->relationship("asesor", 'id') // Define la relación y la clave foránea
                 ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->user->name)
                 ->preload()
                 ->searchable()

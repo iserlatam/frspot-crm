@@ -83,9 +83,25 @@ class SeguimientoResource extends Resource
                         'style' => 'white-space: pre-wrap; word-break: break-word; max-width: 400px; text-wrap: true; word-break: break-all; overflow-wrap: break-word;', // Control adicional con CSS
                     ]),
                 Tables\Columns\TextColumn::make('user.cliente.estado_cliente')
-                    ->label('Estado actual'),
+                    ->label('Estado actual')
+                    ->badge()
+                    ->color(fn($state) => match ($state) {
+                        'Active' => 'success',
+                        'Deposit' => 'success',
+                        'Potential' => 'danger',
+                        'Declined' => 'warning',
+                        default => 'gray',
+                    }),
                 Tables\Columns\TextColumn::make('user.cliente.fase_cliente')
-                    ->label('Fase Actual'),
+                    ->label('Fase Actual')
+                    ->badge()
+                    ->color(fn($state) => match ($state) {
+                        'Active' => 'success',
+                        'Deposit' => 'success',
+                        'Potential' => 'danger',
+                        'Declined' => 'warning',
+                        default => 'gray',
+                    }),
                 Tables\Columns\TextColumn::make('user.asignacion.asesor.user.name')
                     ->label('Asesor asignado'),
                 Tables\Columns\TextColumn::make('etiqueta')
@@ -103,29 +119,27 @@ class SeguimientoResource extends Resource
                                 Forms\Components\DatePicker::make('created_at_day')
                                     ->label('Día específico')
                                     ->columnSpanFull()
-                                    ->displayFormat('d/m/Y'),  
+                                    ->displayFormat('d/m/Y'),
                                 // 📌 Filtro por Estado del Cliente
                                 Forms\Components\Select::make('estado_cliente')
                                     ->options(Helpers::getEstatusOptions())
                                     ->label('Estado cliente'),
-                            
                                 // 📌 Filtro por Fase del Cliente
                                 Forms\Components\Select::make('fase_cliente')
                                 ->options(Helpers::getFaseOptions())
-                                    ->label('Fase cliente'),      
+                                    ->label('Fase cliente'),
                                     Forms\Components\Select::make('asesor_name')
                                     ->label('Asesor asignado')
                                     ->options(fn() => \App\Models\User::whereHas('asesor')->pluck('name', 'name')) // Muestra solo asesores
                                     ->searchable()
                                     ->preload()
                                     ->columnSpanFull(),
-                                
-                                      
-                            ]),          
+
+                            ]),
                         ])
                         ->query(function (Builder $query, array $data): Builder {
                             return $query
-                                ->when($data['created_at_day'] ?? null, fn ($query, $date) => 
+                                ->when($data['created_at_day'] ?? null, fn ($query, $date) =>
                                     $query->whereDate('created_at', $date)
                                 )
                                 ->when($data['estado_cliente'] ?? null,fn ($query, $estado) => $query->whereHas('user.cliente', function ($query) use ($estado) {
@@ -134,7 +148,7 @@ class SeguimientoResource extends Resource
                                 ->when($data['fase_cliente'] ?? null,fn ($query, $fase) => $query->whereHas('user.cliente', function ($query) use ($fase) {
                                     $query->where('fase_cliente', $fase);
                                 }))
-                                ->when($data['asesor_name'] ?? null, fn ($query, $asesorNombre) => 
+                                ->when($data['asesor_name'] ?? null, fn ($query, $asesorNombre) =>
                                 $query->whereHas('asesor.user', function ($query) use ($asesorNombre) {
                                     $query->where('name', $asesorNombre);
                                 }));
@@ -157,7 +171,7 @@ class SeguimientoResource extends Resource
                     ->tooltip('Editar comentario')
                     ->visible(fn () => helpers::isSuperAdmin())
             ], position: ActionsPosition::BeforeCells)
-            ->bulkActions([               
+            ->bulkActions([
                 BulkAction::make('asignar nuevo estado')
                     ->color('warning')
                     ->icon('heroicon-s-identification')
@@ -187,16 +201,16 @@ class SeguimientoResource extends Resource
                         if (!isset($data['estado_cliente']) || empty($data['estado_cliente'])) {
                             throw new Exception('El campo estado_cliente no tiene valor.');
                         }
-            
+
                         // Actualizar fase de cada cliente
                         $records->each(function ($seguimiento) use ($data) {
                             // Obtener el cliente a través del usuario
                             $cliente = $seguimiento->user?->cliente;
-            
+
                             if (!$cliente) {
                                 throw new Exception('No se encontró un cliente asociado a este seguimiento.');
                             }
-            
+
                             // Actualizar la fase del cliente
                             $cliente->update(['estado_cliente' => $data['estado_cliente']]);
                         });
@@ -239,16 +253,16 @@ class SeguimientoResource extends Resource
                         if (!isset($data['fase_cliente']) || empty($data['fase_cliente'])) {
                             throw new Exception('El campo fase_cliente no tiene valor.');
                         }
-            
+
                         // Actualizar fase de cada cliente
                         $records->each(function ($seguimiento) use ($data) {
                             // Obtener el cliente a través del usuario
                             $cliente = $seguimiento->user?->cliente;
-            
+
                             if (!$cliente) {
                                 throw new Exception('No se encontró un cliente asociado a este seguimiento.');
                             }
-            
+
                             // Actualizar la fase del cliente
                             $cliente->update(['fase_cliente' => $data['fase_cliente']]);
                         });
