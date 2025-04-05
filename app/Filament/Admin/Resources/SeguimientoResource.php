@@ -57,6 +57,17 @@ class SeguimientoResource extends Resource
                         });
                     }
 
+                    if(Helpers::isTeamFTD()) {
+                        $query->whereHas('asesor.user', function ($query) {
+                            $query->where('tipo_asesor','=','ftd')->lazy();
+                        });
+                    }
+                    elseif(Helpers::isTeamRTCN()) {
+                        $query->whereHas('asesor.user', function ($query) {
+                            $query->where('tipo_asesor','=','retencion')->lazy();
+                        });
+                    }
+
                     return $query; // Siempre debe retornar una consulta válida
                 }
             )

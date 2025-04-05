@@ -109,6 +109,7 @@ class Seguimiento extends Model
                 ->label('Cliente')
                 ->searchable()
                 ->required()
+                ->preload()
                 ->default(fn ($livewire) => $livewire instanceof SeguimientosRelationManager ? $livewire->ownerRecord->id : null),
             Forms\Components\TextInput::make('asesor_id')
                 ->visible(function () {
