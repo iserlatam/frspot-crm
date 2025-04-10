@@ -171,6 +171,7 @@ class UserResource extends Resource
                     ->label('Asesor asignado'),
                 Tables\Columns\TextColumn::make('cliente.origenes')
                     ->label('Origen cliente')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.updated_at')
                     ->date('M d/Y h:i A')
@@ -374,6 +375,7 @@ class UserResource extends Resource
                                 'APPLE' => 'APPLE',
                                 'CURSOS' => 'CURSOS',
                                 'PETROBLAS' => 'PETROBLAS',
+                                'SUPRIMIR' => 'SUPRIMIR',
                                 'XAUUSD' => 'XAUUSD',
                                 'TESLA' => 'TESLA',
                                 'INGRESOS_EXTRAS' => 'INGRESOS EXTRAS',
