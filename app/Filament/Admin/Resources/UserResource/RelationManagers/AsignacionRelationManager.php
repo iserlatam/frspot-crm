@@ -71,6 +71,9 @@ class AsignacionRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Fecha de actualizacion')
                     ->date('M d/Y h:i A'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Fecha de creacion')
+                    ->date('M d/Y h:i A'),
             ])
             ->filters([
                 //
