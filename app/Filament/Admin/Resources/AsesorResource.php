@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\AsesorResource\Pages;
 use App\Filament\Admin\Resources\AsesorResource\RelationManagers;
 use App\Filament\Admin\Resources\AsesorResource\RelationManagers\AsignacionsRelationManager;
 use App\Filament\Admin\Resources\AsesorResource\RelationManagers\UserRelationManager;
+use App\Helpers\Helpers;
 use App\Models\Asesor;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -69,9 +70,11 @@ class AsesorResource extends Resource
                     ->tooltip('Haga click para copiar')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.email')
-                    ->label('Email del usuario')
+                    ->formatStateUsing(fn($record) => Helpers::isSuperAdmin() ? $record->email : '*****@*****.***')
                     ->copyable()
+                    ->copyableState(fn($record) => $record->email)
                     ->tooltip('Haga click para copiar')
+                    ->limit(fn() => Helpers::isSuperAdmin() ? 6 : 15)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.roles.name')
                     ->label('Rol asignado')

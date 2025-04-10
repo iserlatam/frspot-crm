@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use ParagonIE\ConstantTime\Hex;
 
 class AsignacionRelationManager extends RelationManager
 {
@@ -28,9 +29,9 @@ class AsignacionRelationManager extends RelationManager
             ->recordTitleAttribute('id')
             ->query(
                 function () {
-                    
+
                     $query = Asignacion::query();
-                    if (!Helpers::isCrmManager() || !Helpers::isSuperAdmin()) {
+                    if (Helpers::isAsesor()) {
 
                         $query->whereHas('asesor.user', function ($query) {
                             $query->where('id', auth()->user()->id);
@@ -38,7 +39,8 @@ class AsignacionRelationManager extends RelationManager
                         $query->whereHas('user', function ($query) {
                             $query->where('name', $this->ownerRecord->name);
                         });
-                    }else{  
+                    }
+                    elseif(Helpers::isCrmManager()|| Helpers::isSuperAdmin()) {
                         $query->whereHas('user', function ($query) {
                             $query->where('name', $this->ownerRecord->name);
                         });
@@ -68,21 +70,24 @@ class AsignacionRelationManager extends RelationManager
                     }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha de creacion')
-                    ->date('M d/Y h:i A'),                   
+                    ->date('M d/Y h:i A'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->visible(Helpers::isCrmManager() || Helpers::isSuperAdmin()),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->visible( Helpers::isSuperAdmin()),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->visible(Helpers::isSuperAdmin()),
                 ]),
             ]);
     }
