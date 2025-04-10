@@ -31,7 +31,7 @@ class AsignacionRelationManager extends RelationManager
                 function () {
 
                     $query = Asignacion::query();
-                    if (Helpers::isAsesor()) {
+                    if (Helpers::isAsesor() || Helpers::isTeamFTD() || Helpers::isTeamRTCN()) {
 
                         $query->whereHas('asesor.user', function ($query) {
                             $query->where('id', auth()->user()->id);
@@ -40,7 +40,7 @@ class AsignacionRelationManager extends RelationManager
                             $query->where('name', $this->ownerRecord->name);
                         });
                     }
-                    elseif(Helpers::isCrmManager()|| Helpers::isSuperAdmin()) {
+                    elseif(Helpers::isCrmManager() || Helpers::isSuperAdmin()) {
                         $query->whereHas('user', function ($query) {
                             $query->where('name', $this->ownerRecord->name);
                         });
