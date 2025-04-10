@@ -68,8 +68,8 @@ class AsignacionRelationManager extends RelationManager
                     ->formatStateUsing(function ($state) {
                         return $state ? 'Activa' : 'Inactiva';
                     }),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Fecha de creacion')
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Fecha de actualizacion')
                     ->date('M d/Y h:i A'),
             ])
             ->filters([
