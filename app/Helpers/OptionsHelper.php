@@ -18,7 +18,7 @@ class OptionsHelper
 
     public static function getOptions(string $campo):array
     {
-        $path = storage_path('\app\data\opciones_cliente.json');
+        $path = base_path('\app\Helpers\opciones_cliente.json');
         if (!file_exists($path)) {
             return [];
         }
@@ -36,7 +36,7 @@ class OptionsHelper
 
     public static function createOptions(string $campo, string $valor): void
     {
-        $path = storage_path('\app\data\opciones_cliente.json');
+        $path = base_path('\app\Helpers\opciones_cliente.json');
         $data = file_exists($path)
         ? json_decode(file_get_contents($path), true)
         : [];
