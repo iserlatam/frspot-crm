@@ -28,9 +28,7 @@ class OptionsHelper
 
         return collect($data[$campo] ?? [])
             ->mapWithKeys(
-                function ($item) {
-                    return $item;
-                }
+                fn($item) => [$item => $item]
             )
             ->toArray();
     }
