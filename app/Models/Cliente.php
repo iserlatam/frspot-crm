@@ -4,8 +4,10 @@ namespace App\Models;
 
 use App\Enums\RegisterCuestionaryOptions;
 use App\Helpers\Helpers;
+use App\Helpers\OptionsHelper;
 use Filament\Forms;
 use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Wizard;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -118,7 +120,7 @@ class Cliente extends Model implements HasMedia
                                     ->tel()
                                     ->maxLength(25)
                                     ->default(null),
-                                ]),                          
+                                ]),
                         Tabs\Tab::make('Informacion de Marketing')
                             ->schema([
                                 Forms\Components\Section::make('Informacion de seguimientos')
@@ -133,29 +135,47 @@ class Cliente extends Model implements HasMedia
                                             ->live()
                                             ->default(1),
                                         Forms\Components\Select::make('estado_cliente')
-                                            ->options(Helpers::getEstatusOptions()),
+                                            ->options(OptionsHelper::estadoOptions())
+                                            ->createOptionForm([
+                                                TextInput::make('estado_cliente')
+                                                    ->label('Nuevo estatus')
+                                                    ->required()
+                                                    ->placeholder('Escribe el nuevo estado')
+                                                    ->reactive()
+                                                ])
+                                            ->createOptionUsing(function (array $data) {
+                                                $nuevoValor = $data['estado_cliente'];
+                                                OptionsHelper::createOptions('estado_cliente', $nuevoValor);
+                                                return $nuevoValor;
+                                            }),
                                         Forms\Components\Select::make('fase_cliente')
-                                            ->options(Helpers::getFaseOptions()),
+                                            ->options(OptionsHelper::faseOptions())
+                                            ->createOptionForm([
+                                                TextInput::make('fase_cliente')
+                                                    ->label('Nueva fase')
+                                                    ->required()
+                                                    ->placeholder('Escribe la nueva fase')
+                                                    ->reactive()
+                                                ])
+                                            ->createOptionUsing(function (array $data) {
+                                                $nuevoValor = $data['fase_cliente'];
+                                                OptionsHelper::createOptions('fase_cliente', $nuevoValor);
+                                                return $nuevoValor;
+                                            }),
                                         Forms\Components\Select::make('origenes')
-                                            ->options([
-                                                'RECOVERY' => 'RECOVERY',
-                                                'AMZN' => 'AMZN',
-                                                'AMZN200' => 'AMZN200',
-                                                'AMZN280' => 'AMZN280',
-                                                'BTC' => 'BTC',
-                                                'PETROLEO' => 'PETROLEO',
-                                                'APPLE' => 'APPLE',
-                                                'CURSOS' => 'CURSOS',
-                                                'PETROBLAS' => 'PETROBLAS',
-                                                'XAUUSD' => 'XAUUSD',
-                                                'TESLA' => 'TESLA',
-                                                'INGRESOS_EXTRAS' => 'INGRESOS EXTRAS',
-                                                'FRSPOT' => 'FRSPOT',
-                                                'Conferencia_Musk' => 'Conferencia Musk',
-                                                'COCA-COLA' => 'COCA-COLA',
-                                                'ENTEL' => 'ENTEL',
-                                                'BIMBO' => 'BIMBO',
-                                            ]),
+                                            ->options(OptionsHelper::origenOptions())
+                                            ->createOptionForm([
+                                                TextInput::make('origenes')
+                                                    ->label('Nuevo origen')
+                                                    ->required()
+                                                    ->placeholder('Escribe el nuevo origen')
+                                                    ->reactive()
+                                                ])
+                                            ->createOptionUsing(function (array $data) {
+                                                $nuevoValor = $data['origenes'];
+                                                OptionsHelper::createOptions('origenes', $nuevoValor);
+                                                return $nuevoValor;
+                                            }),
                                     ]),
                             ]),
                         Tabs\Tab::make('Cuestionario')
@@ -165,7 +185,7 @@ class Cliente extends Model implements HasMedia
                                 ->label('¿Soy una persona de la que hay que informar en Estados Unidos?')
                                 ->boolean()
                                 ->inline()
-                                ->inlineLabel(false),                                
+                                ->inlineLabel(false),
                             Forms\Components\Radio::make('caso')
                                 ->label('Indica cual es tu caso:')
                                 ->inline()

@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\SeguimientoResource\Pages;
 use App\Filament\Admin\Resources\SeguimientoResource\RelationManagers;
 use App\Helpers\Helpers;
+use App\Helpers\OptionsHelper;
 use App\Models\Asesor;
 use App\Models\Seguimiento;
 use App\Models\User;
@@ -133,11 +134,11 @@ class SeguimientoResource extends Resource
                                     ->displayFormat('d/m/Y'),
                                 // 📌 Filtro por Estado del Cliente
                                 Forms\Components\Select::make('estado_cliente')
-                                    ->options(Helpers::getEstatusOptions())
+                                    ->options(OptionsHelper::estadoOptions())
                                     ->label('Estado cliente'),
                                 // 📌 Filtro por Fase del Cliente
                                 Forms\Components\Select::make('fase_cliente')
-                                ->options(Helpers::getFaseOptions())
+                                ->options(OptionsHelper::faseOptions())
                                     ->label('Fase cliente'),
                                     Forms\Components\Select::make('asesor_name')
                                     ->label('Asesor asignado')

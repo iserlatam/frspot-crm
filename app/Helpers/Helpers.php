@@ -37,47 +37,4 @@ class Helpers extends NotificationHelpers
     {
         return auth()->user()->hasRole(['super_admin','crm master','crm junior','team ftd','team retencion','asesor','leads']);
     }
-
-    public static function getFaseOptions(){
-        $faseOptions = [
-            'Call again' => 'Call Again',
-            'No answer' => 'No answer',
-            'Answer' => 'Answer',
-            'Interested'  => 'Interested',
-            'Declined' => 'Declined',
-            'Potential' => 'Potential',
-            'No interested' => 'No interested',
-            'Stateless'  => 'Stateless',
-            'Under age' => 'Under Age',
-            'Invalid number' => 'Invalid number',
-            'Low potential' => 'Low Potential',
-            // 'New' => 'New',
-            // 'Active' => 'Active',
-            // 'Recovery'  => 'Recovery',
-        ];
-
-        return $faseOptions;
-    }
-    public static function getEstatusOptions(){
-        $faseOptions = [
-            'New' => 'New',
-            'Answer' => 'Answer',
-            'No answer' => 'No answer',
-            'Call again' => 'Call Again',
-            'interested'  => 'interested',
-            'Deposit' => 'Deposit',
-            'Declined' => 'Declined',
-            'Potential' => 'Potential',
-            'Active' => 'Active',
-            'No interested' => 'No interested',
-            'Stateless'  => 'Stateless',
-            'Recovery'  => 'Recovery',
-            'Invalid number' => 'Invalid number',
-            'Under age' => 'Under Age',
-            'Low potential' => 'Low Potential',
-        ];
-
-        return $faseOptions;
-    }
-
 }

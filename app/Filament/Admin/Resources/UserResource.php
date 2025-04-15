@@ -9,6 +9,7 @@ use App\Filament\Admin\Resources\UserResource\RelationManagers\CuentaClienteRela
 use App\Filament\Admin\Resources\UserResource\RelationManagers\SeguimientosRelationManager;
 use App\Filament\Admin\Resources\UserResource\RelationManagers\UserMovimientosRelationManager;
 use App\Helpers\Helpers;
+use App\Helpers\OptionsHelper;
 use App\Models\User;
 use Attribute;
 use BaconQrCode\Renderer\Color\Gray;
@@ -222,12 +223,12 @@ class UserResource extends Resource
                             ->schema([
                                 Forms\Components\Select::make('estado_cliente')
                                     ->label('Estado cliente')
-                                    ->options(Helpers::getEstatusOptions())
+                                    ->options(OptionsHelper::estadoOptions())
                                     ->placeholder('Selecciona un estado'),
 
                                 Forms\Components\Select::make('fase_cliente')
                                     ->label('Fase cliente')
-                                    ->options(Helpers::getFaseOptions())
+                                    ->options(OptionsHelper::faseOptions())
                                     ->placeholder('Selecciona una fase'),
 
                                 Forms\Components\TextInput::make('pais')
@@ -323,7 +324,7 @@ class UserResource extends Resource
                 BulkAction::make('Asignar nuevo estado')
                     ->color('info')
                     ->icon('heroicon-s-arrows-right-left')
-                    ->form([Select::make('estado_cliente')->options(Helpers::getEstatusOptions())->required()])
+                    ->form([Select::make('estado_cliente')->options(OptionsHelper::estadoOptions())->required()])
                     ->action(function (array $data, Collection $records) {
                         $records->each(function ($user) use ($data) {
                             $user?->cliente->update(['estado_cliente' => $data['estado_cliente']]);
@@ -342,7 +343,7 @@ class UserResource extends Resource
                 BulkAction::make('assignar nueva fase')
                     ->color('success')
                     ->icon('heroicon-s-arrow-path')
-                    ->form([Select::make('fase')->label('Fase del cliente')->options(Helpers::getFaseOptions())->required()])
+                    ->form([Select::make('fase')->label('Fase del cliente')->options(OptionsHelper::faseOptions())->required()])
                     ->action(function (array $data, Collection $records): void {
                         $records->each(function ($user) use ($data) {
                             $user->assingNewFase($data['fase']);
@@ -365,26 +366,7 @@ class UserResource extends Resource
                     ->icon('heroicon-s-globe-americas')
                     ->form([
                         Select::make('origenes')
-                            ->options([
-                                'RECOVERY' => 'RECOVERY',
-                                'AMZN' => 'AMZN',
-                                'AMZN200' => 'AMZN200',
-                                'AMZN280' => 'AMZN280',
-                                'BTC' => 'BTC',
-                                'PETROLEO' => 'PETROLEO',
-                                'APPLE' => 'APPLE',
-                                'CURSOS' => 'CURSOS',
-                                'PETROBLAS' => 'PETROBLAS',
-                                'SUPRIMIR' => 'SUPRIMIR',
-                                'XAUUSD' => 'XAUUSD',
-                                'TESLA' => 'TESLA',
-                                'INGRESOS_EXTRAS' => 'INGRESOS EXTRAS',
-                                'FRSPOT' => 'FRSPOT',
-                                'Conferencia_Musk' => 'Conferencia Musk',
-                                'COCA-COLA' => 'COCA-COLA',
-                                'ENTEL' => 'ENTEL',
-                                'BIMBO' => 'BIMBO',
-                            ])
+                            ->options(OptionsHelper::getOptions('origenes'))
                             ->required(),
                     ])
                     ->action(function (array $data, Collection $records) {

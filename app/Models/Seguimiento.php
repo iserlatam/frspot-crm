@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Filament\Admin\Resources\UserResource\RelationManagers\SeguimientosRelationManager;
 use App\Helpers\Helpers;
+use App\Helpers\OptionsHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -44,7 +45,7 @@ class Seguimiento extends Model
                 ->schema([
                     Forms\Components\Select::make('estado')
                         ->label('Estado')
-                        ->options(Helpers::getEstatusOptions())
+                        ->options(OptionsHelper::estadoOptions())
                         ->required()
                         ->disabled(function ($livewire) {
                             if ($livewire instanceof SeguimientosRelationManager) {
@@ -65,7 +66,7 @@ class Seguimiento extends Model
                         }),
                     Forms\Components\Select::make('fase')
                         ->label('Fase')
-                        ->options(Helpers::getFaseOptions())
+                        ->options(OptionsHelper::faseOptions())
                         ->required()
                         ->helperText(function ($livewire){
                             if ($livewire instanceof SeguimientosRelationManager) {

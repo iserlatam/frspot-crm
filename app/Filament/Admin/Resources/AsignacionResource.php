@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\AsignacionResource\Pages;
 use App\Filament\Admin\Resources\AsignacionResource\RelationManagers;
 use App\Helpers\Helpers;
+use App\Helpers\OptionsHelper;
 use App\Models\Asignacion;
 use App\Models\CuentaCliente;
 use App\Models\User;
@@ -47,7 +48,7 @@ class AsignacionResource extends Resource
                     ->relationship('userWithRoleCliente', 'name')
                     ->label('Cliente a ser asignado')
                     ->searchable()
-                    ->default(fn ($livewire) => $livewire instanceof RelationManager ? $livewire->ownerRecord->id : null) 
+                    ->default(fn ($livewire) => $livewire instanceof RelationManager ? $livewire->ownerRecord->id : null)
                     ->disabled(fn($livewire) => $livewire instanceof RelationManager)
                     ->preload()
                     ->required(),
@@ -78,13 +79,13 @@ class AsignacionResource extends Resource
             ->query(
                 function () {
                     $query = Asignacion::query();
-            
+
                     if (Helpers::isAsesor()) {
                         $query->whereHas('asesor.user', function ($query) {
                             $query->where('id', auth()->user()->id);
                         });
                     }
-            
+
                     return $query; // Siempre debe retornar una consulta válida
                 }
             )
@@ -93,7 +94,7 @@ class AsignacionResource extends Resource
                     ->label('ID de asignacion')
                     ->copyable()
                     ->tooltip('haga click para copiar')
-                    ->sortable()                   
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Cliente asignado')
@@ -164,7 +165,7 @@ class AsignacionResource extends Resource
                 ->searchable()
                 ->visible(fn()=>Helpers::isCrmManager() || Helpers::isSuperAdmin())
                 ->label('Asesor asignado'),
-                
+
                 Filter::make('asignacion_filtros')
                     ->form([
                         Forms\Components\DatePicker::make('updated_at_day')
@@ -173,16 +174,16 @@ class AsignacionResource extends Resource
                             Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\Select::make('cliente_estado_cliente')
-                                    ->options(Helpers::getEstatusOptions())
+                                    ->options(OptionsHelper::estadoOptions())
                                     ->label('Estado cliente'),
                                 // 📌 Filtro por Fase del Cliente
                                 Forms\Components\Select::make('cliente_fase_cliente')
-                                    ->options(Helpers::getEstatusOptions())
-                                    ->label('Fase cliente'),                                                               
+                                    ->options(OptionsHelper::faseOptions())
+                                    ->label('Fase cliente'),
                             ])
                         ])
-                                                   
-                    ->query(function (Builder $query, array $data): Builder {                     
+
+                    ->query(function (Builder $query, array $data): Builder {
                         return $query
                             ->when($data['updated_at_day'] ?? null ,fn (Builder $query, $date): Builder => $query->whereDate('updated_at', $date)
                             )
@@ -191,7 +192,7 @@ class AsignacionResource extends Resource
                             })
                             ->when($data['cliente_fase_cliente'] ?? null , function ($query,$fase){
                                 $query->whereHas('user.cliente', fn($query) => $query->where('fase_cliente', $fase));
-                            });                       
+                            });
                     }),
             ])
             ->deferFilters()
