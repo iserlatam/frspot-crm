@@ -10,8 +10,7 @@
         "Stateless",
         "Under Age",
         "Invalid number",
-        "Low Potential",
-        "nueva fase"
+        "Low Potential"
     ],
     "estado_cliente": [
         "New",
@@ -28,9 +27,7 @@
         "Recovery",
         "Invalid number",
         "Under Age",
-        "Low Potential",
-        "nuevo esatdo cliente",
-        "nuevo"
+        "Low Potential"
     ],
     "origenes": [
         "RECOVERY",
@@ -50,7 +47,6 @@
         "Conferencia Musk",
         "COCA-COLA",
         "ENTEL",
-        "BIMBO",
-        "nuevo origen"
+        "BIMBO"
     ]
 }

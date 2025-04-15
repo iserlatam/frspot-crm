@@ -141,7 +141,6 @@ class Cliente extends Model implements HasMedia
                                                     ->label('Nuevo estatus')
                                                     ->required()
                                                     ->placeholder('Escribe el nuevo estado')
-                                                    ->reactive()
                                                 ])
                                             ->createOptionUsing(function (array $data) {
                                                 $nuevoValor = $data['estado_cliente'];
@@ -155,7 +154,6 @@ class Cliente extends Model implements HasMedia
                                                     ->label('Nueva fase')
                                                     ->required()
                                                     ->placeholder('Escribe la nueva fase')
-                                                    ->reactive()
                                                 ])
                                             ->createOptionUsing(function (array $data) {
                                                 $nuevoValor = $data['fase_cliente'];
@@ -169,7 +167,6 @@ class Cliente extends Model implements HasMedia
                                                     ->label('Nuevo origen')
                                                     ->required()
                                                     ->placeholder('Escribe el nuevo origen')
-                                                    ->reactive()
                                                 ])
                                             ->createOptionUsing(function (array $data) {
                                                 $nuevoValor = $data['origenes'];
