@@ -21,3 +21,4 @@ yarn-error.log
 /.blueprint
 /draft.yaml
 /.blueprint
+/app/Helpers/opciones_cliente.json
