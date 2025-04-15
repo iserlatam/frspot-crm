@@ -136,6 +136,7 @@ class Cliente extends Model implements HasMedia
                                             ->default(1),
                                         Forms\Components\Select::make('estado_cliente')
                                             ->options(OptionsHelper::estadoOptions())
+                                            ->preload()
                                             ->createOptionForm([
                                                 TextInput::make('estado_cliente')
                                                     ->label('Nuevo estatus')
@@ -149,6 +150,7 @@ class Cliente extends Model implements HasMedia
                                             }),
                                         Forms\Components\Select::make('fase_cliente')
                                             ->options(OptionsHelper::faseOptions())
+                                            ->preload()
                                             ->createOptionForm([
                                                 TextInput::make('fase_cliente')
                                                     ->label('Nueva fase')
@@ -162,6 +164,7 @@ class Cliente extends Model implements HasMedia
                                             }),
                                         Forms\Components\Select::make('origenes')
                                             ->options(OptionsHelper::origenOptions())
+                                            ->preload()
                                             ->createOptionForm([
                                                 TextInput::make('origenes')
                                                     ->label('Nuevo origen')
