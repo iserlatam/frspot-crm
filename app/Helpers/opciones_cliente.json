@@ -10,7 +10,8 @@
         "Stateless",
         "Under Age",
         "Invalid number",
-        "Low Potential"
+        "Low Potential",
+        "rem"
     ],
     "estado_cliente": [
         "New",
@@ -27,7 +28,8 @@
         "Recovery",
         "Invalid number",
         "Under Age",
-        "Low Potential"
+        "Low Potential",
+        "dormido"
     ],
     "origenes": [
         "RECOVERY",
@@ -47,6 +49,7 @@
         "Conferencia Musk",
         "COCA-COLA",
         "ENTEL",
-        "BIMBO"
+        "BIMBO",
+        "colombia"
     ]
 }
