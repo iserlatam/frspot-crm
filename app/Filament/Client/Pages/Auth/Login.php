@@ -18,10 +18,10 @@ class Login extends AuthLogin
             ->schema([
                 $this->getEmailFormComponent(),
                 $this->getPasswordFormComponent(),
-                TextInput::make('verification_code')
-                    ->required()
-                    ->label('Codigo de verificacion')
-                    ->maxLength(4),
+                // TextInput::make('verification_code')
+                //     ->required()
+                //     ->label('Codigo de verificacion')
+                //     ->maxLength(4),
                 $this->getRememberFormComponent(),
             ]);
     }
@@ -38,9 +38,9 @@ class Login extends AuthLogin
 
         $data = $this->form->getState();
 
-        if ($data['verification_code'] != env('VERIFICATION_CODE', '6759')) {
-            $this->throwFailureValidationException();
-        }
+        // if ($data['verification_code'] != env('VERIFICATION_CODE', '6759')) {
+        //     $this->throwFailureValidationException();
+        // }
 
         if (! Filament::auth()->attempt($this->getCredentialsFromFormData($data), $data['remember'] ?? false)) {
             $this->throwFailureValidationException();

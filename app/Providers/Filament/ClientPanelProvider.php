@@ -4,6 +4,8 @@ namespace App\Providers\Filament;
 
 use App\Filament\Client\Pages\Auth\Login;
 use App\Filament\Client\Pages\Auth\Registration;
+use App\Filament\Client\Pages\Dashboard;
+use App\Filament\Client\Resources\CuentaClienteResource\Widgets\AccountInfoWidget;
 use App\Filament\Client\Resources\UserResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -39,7 +41,7 @@ class ClientPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Client/Resources'), for: 'App\\Filament\\Client\\Resources')
             ->discoverPages(in: app_path('Filament/Client/Pages'), for: 'App\\Filament\\Client\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Client/Widgets'), for: 'App\\Filament\\Client\\Widgets')
             ->widgets([])
