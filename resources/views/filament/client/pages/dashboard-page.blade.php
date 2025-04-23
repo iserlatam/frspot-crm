@@ -39,7 +39,7 @@
             <h2 style="font-size: 1.2rem;">Operación</h2>
             <button onclick="toggleModal()" style="color: white; background: none; border: none; font-size: 1.2rem;">✖</button>
         </div>
-        <p>Aquí puedes colocar la información de compra o venta.</p>
+        <p>Dirigete a tu app de trading</p>
     </div>
 </div>
 
