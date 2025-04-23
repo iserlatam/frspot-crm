@@ -51,7 +51,7 @@
                     Buy
                 </button>
                 <input type="text" placeholder="Quantity"
-                    style="height: 100%; padding-inline: 7px; padding-block: 11px; border: 2px solid rgba(211, 211, 211, 0.86); color: white; background-color: transparent;width: 150px"
+                    style="height: 100%; padding-inline: 7px; padding-block: 11px; border: 2px solid rgba(211, 211, 211, 0.86); color: black; background-color: transparent;width: 150px"
                     onfocus="this.placeholder = ''" onblur="this.placeholder = 'Quantity'">
                 <button onclick="toggleModal()" style="padding: 10px 15px; background-color: red; color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); border: none; border-top-right-radius: 5px;">Sell</button>
             </div>
@@ -92,7 +92,7 @@
                     Buy
                 </button>
                 <input type="text" placeholder="Quantity"
-                    style="height: 100%; padding-inline: 7px; padding-block: 11px; border: 2px solid rgba(211, 211, 211, 0.86); color: white; background-color: transparent;width: 150px"
+                    style="height: 100%; padding-inline: 7px; padding-block: 11px; border: 2px solid rgba(211, 211, 211, 0.86); color: black; background-color: transparent;width: 150px"
                     onfocus="this.placeholder = ''" onblur="this.placeholder = 'Quantity'">
                 <button onclick="toggleModal()" style="padding: 10px 15px; background-color: red; color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); border: none; border-top-right-radius: 5px;">Sell</button>
             </div>
