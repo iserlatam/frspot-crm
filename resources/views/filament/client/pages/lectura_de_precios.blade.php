@@ -1,4 +1,7 @@
 <x-filament-panels::page>
+
+<div class="bg-gray-300 w-full h-full " style="padding-inline: 20px; border-radius: 20px; padding-bottom: 20px;">
+
     <!-- Seccion 1 -->
     <h2 class='mt-10 text-center text-4xl uppercase my-2 font-bold'>Aprende a leer e interpretar Gráficos de Forex paso a paso</h2>
 
@@ -39,14 +42,14 @@
                     <li class='font-bold'>Cómo interpretar el movimiento del activo en pips</li>
                     <li class='font-bold'>Interpretación de los gráficos en función del tipo</li>
                     <li class='font-bold'>Leer gráficos dependiendo del marco temporal</li>
-                    
-                </ul>   
+
+                </ul>
             </div>
 
             <img src="{{asset('client-imgs/grafc2.jpg')}}" alt="illustracion 2"  class='md:w-[40%] h-min my-auto'/>
         </div>
     </div>
-    
+
     <!-- seccion 3 -->
     <h2 class="mt-10 text-center text-4xl uppercase my-2 font-bold" >El eje de precio y tiempo en el gráfico de trading</h2>
 
@@ -63,7 +66,7 @@
     <p class="text-lg font-medium my-5 ">➤ Si desde el lado izquierdo al lado derecho del gráfico de trading el precio ha caído, podemos deducir que durante ese período de tiempo el mercado está en una tendencia bajista, o que los vendedores tienen el control.</p>
 
     <p class="text-lg font-medium my-5 ">➤ Si desde el lado izquierdo al lado derecho del gráfico el precio del activo ha aumentado, podemos deducir que durante ese período de tiempo el mercado está en una tendencia alcista, o que los compradores tienen el control. Esto puede sonar simple para algunos, pero en realidad es bastante importante. ¿Por qué? Porque una vez que se pone en marcha una tendencia del mercado, podría permanecer así durante un período prolongado de tiempo. Otra forma de interpretar los gráficos de Forex es calculando cuánto se mueve hacia arriba o hacia abajo un mercado. Para ello debemos analizar los precios del activo y tener claro qué son los "pips".</p>
-       
+
     <!-- Seccion 4  -->
     <h2 class="mt-10 text-center text-4xl uppercase my-2 font-bold">Analizar el movimiento de Pips en el gráfico</h2>
 
@@ -94,7 +97,7 @@
     <!-- Seccion 6 -->
     <h3 class="mt-10 text-center text-4xl uppercase my-2 font-bold">Cómo leer un gráfico de trading lineal</h3>
 
-    <p class="text-lg font-medium my-5 text-justify">Un gráfico de trading de líneas conecta los precios de cierre del activo en el marco temporal que estás viendo. Por ejemplo, en un gráfico diario, la línea conecta el precio de cierre de cada día de negociación.</p> 
+    <p class="text-lg font-medium my-5 text-justify">Un gráfico de trading de líneas conecta los precios de cierre del activo en el marco temporal que estás viendo. Por ejemplo, en un gráfico diario, la línea conecta el precio de cierre de cada día de negociación.</p>
 
     <p class="text-lg font-medium my-5 text-justify">Este es el tipo más básico de gráfico de trading utilizado por los traders. Se utiliza principalmente para identificar tendencias de imágenes más grandes, pero no ofrece muchos más datos para interpretar, a diferencia de los otros tipos de gráficos de MetaTrader.</p>
     <div class="">
@@ -157,7 +160,7 @@
 
     <p class='font-medium text-lg my-5 text-justify'>➤ Por ejemplo, en un gráfico de 5 minutos (M5), se formará una nueva barra o vela cada cinco minutos. Dentro de una hora de negociación, se habrán formado 12 barras o velas M5.</p>
 
-    
+
     <!-- Secicon 10 -->
     <h2 class='mt-10 text-center text-4xl uppercase my-2 font-bold '>Aprender a leer Gráficos de Forex - Conclusión</h2>
 
@@ -169,6 +172,7 @@
     <p class=" text-lg font-medium my-5 text-justify">▶ Los tres tipos de gráficos de trading tienen características únicas, siendo los gráficos de velas los más populares entre los traders de todo el mundo. Identificar los patrones de los gráficos de velas, como un harami bajista o el martillo, puede ayudar a los traders a identificar posibles puntos de inflexión y el comienzo o el final de los ciclos de mercado.</p>
 
     <p class=' text-lg font-medium my-5 text-justify'>Con la plataforma de trading más poderosa del mundo a tu alcance, nunca ha sido tan fácil interpretar gráficos de Forex de forma gratuita. Además también podrás operar sin riesgos con una cuenta demo de trading. Esto significa puedes evitar poner en riesgo tu capital, y elegir cuándo quieres dar el paso de apertura de cuenta real.</p>
+</div>
 
 
 </x-filament-panels::page>

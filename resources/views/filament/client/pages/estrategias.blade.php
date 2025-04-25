@@ -1,4 +1,7 @@
 <x-filament-panels::page>
+
+<div class="bg-gray-300 w-full h-full " style="padding-inline: 20px; border-radius: 20px; padding-bottom: 20px;">
+
     <!-- Seccion 1 -->
     <h2 class="mt-10 text-center text-4xl uppercase my-2 font-bold">
       ¿Qué es una estrategia de trading?
@@ -223,5 +226,6 @@
       el que cuentes. Esto te será de gran ayuda para saber qué tipo de
       estrategia funciona mejor para ti.
     </p>
+</div>
 
 </x-filament-panels::page>
