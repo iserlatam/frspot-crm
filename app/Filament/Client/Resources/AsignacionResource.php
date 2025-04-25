@@ -38,7 +38,7 @@ class AsignacionResource extends Resource
 
     public static function canAccess(): bool
     {
-        return false;
+        return auth()->check();
     }
 
     public static function table(Table $table): Table

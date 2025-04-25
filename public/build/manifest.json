@@ -4,13 +4,8 @@
     "src": "resources/css/app.css",
     "isEntry": true
   },
-  "resources/css/filament/client/login.css": {
-    "file": "assets/login-Chkdde_X.css",
-    "src": "resources/css/filament/client/login.css",
-    "isEntry": true
-  },
   "resources/css/filament/client/theme.css": {
-    "file": "assets/theme-CnNo_2qx.css",
+    "file": "assets/theme-hhv68fLw.css",
     "src": "resources/css/filament/client/theme.css",
     "isEntry": true
   },

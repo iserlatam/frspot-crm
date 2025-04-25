@@ -311,13 +311,13 @@
 
 <body>
     <div>
-        {{-- <a href="{{ route('filament.admin.auth.login') }}" class="button type--A">
+        <a href="{{ route('filament.admin.auth.login') }}" class="button type--A">
             <div class="button__line"></div>
             <div class="button__line"></div>
             <span class="button__text">ADMIN</span>
             <div class="button__drow1"></div>
             <div class="button__drow2"></div>
-        </a> --}}
+        </a>
 
         <a href="{{ route('filament.client.auth.login') }}" class="button type--A">
             <div class="button__line"></div>

@@ -10,7 +10,6 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -33,7 +32,6 @@ class AdminPanelProvider extends PanelProvider
             ->login(Login::class)
             ->registration()
             ->profile()
-            ->spa(false)
             ->colors(   [
                 # Make a color palette in base of Purple
                 'primary' => Color::hex('#7E60BF'),
@@ -60,15 +58,6 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->renderHook(
-                PanelsRenderHook::BODY_START,
-                fn () => view('filament.admin.pages.auth.login-extra')->render()
-            )
-            ->renderHook(
-                PanelsRenderHook::BODY_END,
-                fn () => view('filament.admin.pages.auth.login-custom-footer')->render()
-            )
-            ->viteTheme('resources/css/filament/client/theme.css')
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
                 TwoFactorAuthPlugin::make(),
