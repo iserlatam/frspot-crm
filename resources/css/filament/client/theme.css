@@ -14,3 +14,7 @@
 .fi-section {
     @apply dark:bg-transparent !important;
 }
+
+.fi-simple-main{
+    @apply  sm:max-w-2xl;
+}
