@@ -69,7 +69,7 @@ class MovimientoResource extends Resource
                             ->readOnly()
                             ->columnSpan(3)
                             ->default(function () {
-                                return auth()->user()->cuentaCliente->id;
+                                return auth()->user()?->cuentaCliente->id ?? null;
                             }),
                     ]),
                 Forms\Components\SpatieMediaLibraryFileUpload::make('comprobante_file')

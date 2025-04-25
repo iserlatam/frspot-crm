@@ -221,8 +221,11 @@ class Registration extends Register
                             Forms\Components\Select::make('tipo_doc_id')
                                 ->label('Tipo de documento de identificacion:')
                                 ->options([
-                                    'cedula' => 'Cedula',
-                                    'pasaporte' => 'Pasaporte',
+                                    'CEDULA DE CIUDADANIA' => 'CEDULA DE CIUDADANIA',
+                                    'DNI' => 'DNI',
+                                    'PASAPORTE' => 'PASAPORTE',
+                                    'IFE' => 'IFE',
+                                    'LICENCIA' => 'LICENCIA',
                                 ])
                                 ->required(),
                             Forms\Components\SpatieMediaLibraryFileUpload::make('file_id')
@@ -249,12 +252,12 @@ class Registration extends Register
                                 ')),
                             // Documento de soporte
                             Forms\Components\TextInput::make('tipo_doc_soporte')
-                                ->label('Tipo de documento de soporte:')
-                                ->required(),
+                                ->label('Tipo de documento de soporte:'),
+                                // ->required(),
                             Forms\Components\SpatieMediaLibraryFileUpload::make('file_soporte')
                                 ->label('Sube el documento de soporte:')
-                                ->collection('users_support_documents')
-                                ->required(),
+                                ->collection('users_support_documents'),
+                                // ->required(),
                         ]),
                     Wizard\Step::make('Depositar')
                         ->schema([
