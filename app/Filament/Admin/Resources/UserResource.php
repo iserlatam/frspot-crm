@@ -79,7 +79,7 @@ class UserResource extends Resource
                             'created_at',
                             'updated_at',
                         ]
-                        )
+                    )
                     ->where('email', 'NOT LIKE', '%@frspot.com'); // Excluir emails que terminan en @frspot.com
 
                 // ESTO NO ES NECESARIO YA QUE EL SUPER ADMIN SIEMPRE PUEDE VER A TODOS SUS USUARIOS
@@ -103,14 +103,13 @@ class UserResource extends Resource
                 ##
                 */
 
-                if(Helpers::isTeamFTD()) {
+                if (Helpers::isTeamFTD()) {
                     $query->whereHas('asignacion.asesor.user', function ($query) {
-                        $query->where('tipo_asesor','=','ftd')->lazy();
+                        $query->where('tipo_asesor', '=', 'ftd')->lazy();
                     });
-                }
-                elseif(Helpers::isTeamRTCN()) {
+                } elseif (Helpers::isTeamRTCN()) {
                     $query->whereHas('asignacion.asesor.user', function ($query) {
-                        $query->where('tipo_asesor','=','retencion')->lazy();
+                        $query->where('tipo_asesor', '=', 'retencion')->lazy();
                     });
                 }
 
@@ -340,6 +339,9 @@ class UserResource extends Resource
                             return true;
                         }
                     }),
+                /**
+                 *  ASIGNAR FASE
+                 */
                 BulkAction::make('assignar nueva fase')
                     ->color('success')
                     ->icon('heroicon-s-arrow-path')
@@ -361,6 +363,9 @@ class UserResource extends Resource
                         return false;
                     }),
 
+                /**
+                 *  ASIGNAR ORIGEN
+                 */
                 BulkAction::make('Asignar nuevo origen')
                     ->color('warning')
                     ->icon('heroicon-s-globe-americas')
@@ -388,6 +393,9 @@ class UserResource extends Resource
                  *  ACCIONES DE ELIMINACION DE USUARIOS
                  */
                 Tables\Actions\DeleteBulkAction::make('delete')->visible(fn() => Helpers::isSuperAdmin()),
+                /**
+             *  ENVIAR EMAIL DE BIENVENIDAD
+             */
             ]);
     }
 

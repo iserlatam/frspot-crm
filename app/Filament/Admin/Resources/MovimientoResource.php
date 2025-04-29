@@ -64,6 +64,8 @@ class MovimientoResource extends Resource
                                 'd' => 'Deposito',
                                 'r' => 'Retiro',
                                 'b' => 'Bono',
+                                'g' => 'Ganancia',
+                                'p' => 'Perdida',
                             ])
                             ->label('Tipo de solicitud')
                             ->required(),
@@ -116,6 +118,8 @@ class MovimientoResource extends Resource
                             'd' => 'Deposito',
                             'r' => 'Retiro',
                             'b' => 'Bono',
+                            'g' => 'Ganancia',
+                            'p' => 'Perdida',
                         };
                     })
                     ->label('Tipo de solicitud'),
@@ -185,7 +189,9 @@ class MovimientoResource extends Resource
                     ->options([
                         'd' => 'Deposito',
                         'r' => 'Retiro',
-                        'bn' => 'Bono',
+                        'b' => 'Bono',
+                        'g' => 'Ganancia',
+                        'p' => 'Perdida',
                     ]),
             ])
             ->headerActions([

@@ -59,8 +59,8 @@ class Movimiento extends Model implements HasMedia
         // Movimiento aprobado
         if ($case === 'a') {
             switch ($movimiento->tipo_st) {
-                    // Deposito
-                case 'd':
+                // Deposito
+                case 'd' || 'g':
                     try {
                         DB::beginTransaction();
 
@@ -102,7 +102,7 @@ class Movimiento extends Model implements HasMedia
                         return Helpers::sendErrorNotification($e->getMessage());
                     }
                     // Retiro
-                case 'r':
+                case 'r' || 'p':
                     try {
                         DB::beginTransaction();
 
@@ -140,7 +140,7 @@ class Movimiento extends Model implements HasMedia
                 if ($this->est_st = 'a') {
                     DB::beginTransaction();
                     switch ($movimiento->tipo_st) {
-                        case 'd':
+                        case 'd' || 'g':
                             // ACCIONES SI EL TIPO DE LA SOLICITUD ES DEPOSITO
                             $currentCuenta->sum_dep -= $movimiento->ingreso;
                             $currentCuenta->monto_total -= $movimiento->ingreso;
@@ -149,7 +149,7 @@ class Movimiento extends Model implements HasMedia
                         case 'b':
                             $currentCuenta->monto_total -= $movimiento->ingreso;
                             break;
-                        case 'r':
+                        case 'r' || 'p':
                             // ACCIONES SI EL TIPO DE LA SOLICITUD ES RETIRO
                             if ($currentCuenta->monto_total < $movimiento->ingreso) {
                                 DB::rollBack();
@@ -186,14 +186,14 @@ class Movimiento extends Model implements HasMedia
             );
         }
     }
-    
-        public function cuentaCliente(): BelongsTo
-        {
-            return $this->belongsTo(CuentaCliente::class);
-        }
-    
-        public function cliente(): BelongsTo
-        {
-            return $this->belongsTo(Cliente::class);
-        }
+
+    public function cuentaCliente(): BelongsTo
+    {
+        return $this->belongsTo(CuentaCliente::class);
+    }
+
+    public function cliente(): BelongsTo
+    {
+        return $this->belongsTo(Cliente::class);
+    }
 }

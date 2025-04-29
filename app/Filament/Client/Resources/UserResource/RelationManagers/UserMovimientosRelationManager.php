@@ -89,6 +89,8 @@ class UserMovimientosRelationManager extends RelationManager
                             'd' => 'Deposito',
                             'r' => 'Retiro',
                             'b' => 'Bono',
+                            'g' => 'Ganancia',
+                            'p' => 'Perdida',
                         };
                     })
                     ->label('Tipo de solicitud'),
@@ -147,7 +149,9 @@ class UserMovimientosRelationManager extends RelationManager
                     ->options([
                         'd' => 'Deposito',
                         'r' => 'Retiro',
-                        'bn' => 'Bono',
+                        'b' => 'Bono',
+                        'g' => 'Ganancia',
+                        'p' => 'Perdida',
                     ]),
             ])
             ->headerActions([

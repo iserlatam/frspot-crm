@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\HeaderActionsPosition;
 use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -23,44 +24,44 @@ class MovimientosRelationManager extends RelationManager
     public function form(Form $form): Form
     {
         return $form
-        ->schema([
-            Forms\Components\Grid::make()
-                ->columns(8)
-                ->schema([
-                    Forms\Components\TextInput::make('no_radicado')
-                        ->columnSpan(1)
-                        ->required()
-                        ->default(str(Movimiento::generateRadicado())->upper())
-                        ->readOnly()
-                        ->maxLength(50)
-                        ->helperText('El número de radicado es generado automáticamente'),
-                    Forms\Components\Select::make('tipo_st')
-                        ->columnSpan(2)
-                        ->options([
-                            'd' => 'Deposito',
-                            'r' => 'Retiro',
-                            'b' => 'Bono',
-                        ])
-                        ->label('Tipo de solicitud')
-                        ->required(),
-                    Forms\Components\TextInput::make('ingreso')
-                        ->columnSpan(2)
-                        ->required()
-                        ->prefix('$')
-                        ->numeric(),
-                    Forms\Components\TextInput::make('cuenta_cliente_id')
-                        ->label('Número de cuenta del cliente')
-                        ->readOnly()
-                        ->columnSpan(3)
-                        ->default(function () {
-                            return $this->getOwnerRecord()->id;
-                        }),
-                ]),
-            Forms\Components\SpatieMediaLibraryFileUpload::make('comprobante_file')
-                ->columnSpanFull()
-                ->label('Comprobante')
-                ->collection('payment_cliente_validation'),
-        ]);
+            ->schema([
+                Forms\Components\Grid::make()
+                    ->columns(8)
+                    ->schema([
+                        Forms\Components\TextInput::make('no_radicado')
+                            ->columnSpan(1)
+                            ->required()
+                            ->default(str(Movimiento::generateRadicado())->upper())
+                            ->readOnly()
+                            ->maxLength(50)
+                            ->helperText('El número de radicado es generado automáticamente'),
+                        Forms\Components\Select::make('tipo_st')
+                            ->columnSpan(2)
+                            ->options([
+                                'd' => 'Deposito',
+                                'r' => 'Retiro',
+                                'b' => 'Bono',
+                            ])
+                            ->label('Tipo de solicitud')
+                            ->required(),
+                        Forms\Components\TextInput::make('ingreso')
+                            ->columnSpan(2)
+                            ->required()
+                            ->prefix('$')
+                            ->numeric(),
+                        Forms\Components\TextInput::make('cuenta_cliente_id')
+                            ->label('Número de cuenta del cliente')
+                            ->readOnly()
+                            ->columnSpan(3)
+                            ->default(function () {
+                                return $this->getOwnerRecord()->id;
+                            }),
+                    ]),
+                Forms\Components\SpatieMediaLibraryFileUpload::make('comprobante_file')
+                    ->columnSpanFull()
+                    ->label('Comprobante')
+                    ->collection('payment_cliente_validation'),
+            ]);
     }
 
     public function table(Table $table): Table
@@ -83,6 +84,8 @@ class MovimientosRelationManager extends RelationManager
                             'd' => 'Deposito',
                             'r' => 'Retiro',
                             'b' => 'Bono',
+                            'g' => 'Ganancia',
+                            'p' => 'Perdida',
                         };
                     })
                     ->label('Tipo de solicitud'),
@@ -141,11 +144,14 @@ class MovimientosRelationManager extends RelationManager
                     ->options([
                         'd' => 'Deposito',
                         'r' => 'Retiro',
-                        'bn' => 'Bono',
+                        'b' => 'Bono',
+                        'g' => 'Ganancia',
+                        'p' => 'Perdida',
                     ]),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
-            ]);
+                Helpers::renderReloadTableAction()
+            ], HeaderActionsPosition::Bottom);
     }
 }

@@ -51,6 +51,8 @@ class UserMovimientosRelationManager extends RelationManager
                                 'd' => 'Deposito',
                                 'r' => 'Retiro',
                                 'b' => 'Bono',
+                                'g' => 'Ganancia',
+                                'p' => 'Perdida',
                             ])
                             ->label('Tipo de solicitud')
                             ->required(),
@@ -63,7 +65,7 @@ class UserMovimientosRelationManager extends RelationManager
                             ->helperText(function (Get $get) {
                                 $ingreso = $get('ingreso');
                                 $tipo = $get('tipo_st');
-                                if ($tipo === 'r' && $ingreso > $this->getOwnerRecord()->cuentaCliente->monto_total) {
+                                if (($tipo === 'r' || $tipo === 'p') && $ingreso > $this->getOwnerRecord()->cuentaCliente->monto_total) {
                                     return 'Saldo insuficiente';
                                 } else {
                                     return 'Saldo disponible: ' . $this->getOwnerRecord()->cuentaCliente->monto_total;
@@ -103,6 +105,8 @@ class UserMovimientosRelationManager extends RelationManager
                             'd' => 'Deposito',
                             'r' => 'Retiro',
                             'b' => 'Bono',
+                            'g' => 'Ganancia',
+                            'p' => 'Perdida',
                         };
                     })
                     ->label('Tipo de solicitud'),
@@ -155,20 +159,20 @@ class UserMovimientosRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
-                    // ->using(function (array $data, string $model) {
-                    //     $cuenta = CuentaCliente::findOrFail($data['cuenta_cliente_id']);
+                // ->using(function (array $data, string $model) {
+                //     $cuenta = CuentaCliente::findOrFail($data['cuenta_cliente_id']);
 
-                    //     // Validar saldo antes de crear el registro
-                    //     if ($data['tipo_st'] == 'r' && $data['ingreso'] > $cuenta->monto_total) {
-                    //         // Lanza una excepción de validación con un mensaje personalizado
-                    //         Helpers::sendErrorNotification('No se puede realizar la solicitud, saldo insuficiente');
-                    //         throw ValidationException::withMessages([
-                    //             'ingreso' => 'Saldo insuficiente. No puedes realizar esta operación.',
-                    //         ]);
-                    //     }
-                    //     // Crear el modelo si la validación pasa
-                    //     return $model::create($data);
-                    // }),
+                //     // Validar saldo antes de crear el registro
+                //     if ($data['tipo_st'] == 'r' && $data['ingreso'] > $cuenta->monto_total) {
+                //         // Lanza una excepción de validación con un mensaje personalizado
+                //         Helpers::sendErrorNotification('No se puede realizar la solicitud, saldo insuficiente');
+                //         throw ValidationException::withMessages([
+                //             'ingreso' => 'Saldo insuficiente. No puedes realizar esta operación.',
+                //         ]);
+                //     }
+                //     // Crear el modelo si la validación pasa
+                //     return $model::create($data);
+                // }),
                 Helpers::renderReloadTableAction(),
             ])
             ->actions([
