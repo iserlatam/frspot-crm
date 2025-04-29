@@ -225,7 +225,7 @@ class Registration extends Register
                                     'DNI' => 'DNI',
                                     'PASAPORTE' => 'PASAPORTE',
                                     'IFE' => 'IFE',
-                                    'LICENCIA' => 'LICENCIA',
+                                    'LICENCIA DE CONDUCIR' => 'LICENCIA DE CONDUCIR',
                                 ])
                                 ->required(),
                             Forms\Components\SpatieMediaLibraryFileUpload::make('file_id')
