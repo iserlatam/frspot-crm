@@ -36,7 +36,9 @@ class AccountsTable extends BaseWidget
 
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('Número de cuenta'),
+                    ->label('Número de cuenta')
+                    ->copyable()
+                    ->tooltip('Copiar número de cuenta'),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Cliente')
                     ->searchable(),

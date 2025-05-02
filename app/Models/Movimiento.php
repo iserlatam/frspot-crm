@@ -153,9 +153,9 @@ class Movimiento extends Model implements HasMedia
                     try {
                         DB::beginTransaction();
 
-                        if ($currentCuenta->monto_total < $movimiento->ingreso) {
-                            return Helpers::sendErrorNotification('No se puede realizar el retiro, saldo insuficiente');
-                        }
+                        // if ($currentCuenta->monto_total < $movimiento->ingreso) {
+                        //     return Helpers::sendErrorNotification('No se puede realizar el retiro, saldo insuficiente');
+                        // }
 
                         $currentCuenta->monto_total -= $movimiento->ingreso;
                         // $currentCuenta->no_retiros += 1;
