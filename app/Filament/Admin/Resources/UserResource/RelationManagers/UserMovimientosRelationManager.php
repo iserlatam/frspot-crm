@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\UserResource\RelationManagers;
 
 use App\Filament\Admin\Resources\MovimientoResource;
 use App\Helpers\Helpers;
+use App\Helpers\NotificationHelpers;
 use App\Models\CuentaCliente;
 use App\Models\Movimiento;
 use Closure;
@@ -205,6 +206,7 @@ class UserMovimientosRelationManager extends RelationManager
                                 'movimiento' => $record,
                             ];
                             $record->chargeAccount($body);
+                            NotificationHelpers::notifyByTipoMovimiento($record->tipo_st);
                             $this->dispatch('refresh-account-table');
                         }),
                     /**
@@ -235,6 +237,7 @@ class UserMovimientosRelationManager extends RelationManager
                                 'movimiento' => $record,
                             ];
                             $record->chargeAccount($body);
+                            NotificationHelpers::notifyByTipoMovimiento($record->tipo_st);
                             $this->dispatch('refresh-account-table');
                         }),
                 ])

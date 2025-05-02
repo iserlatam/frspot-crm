@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\MovimientoResource;
 use App\Filament\Admin\Resources\MovimientoResource\Widgets\InfoAccountClient;
 use App\Filament\Admin\Widgets\AccountsTable;
 use App\Helpers\Helpers;
+use App\Helpers\NotificationHelpers;
 use App\Models\CuentaCliente;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
@@ -41,7 +42,7 @@ class CreateMovimiento extends CreateRecord
             $cuenta = CuentaCliente::findOrFail($this->data['cuenta_cliente_id']);
 
             // MODIFICACION DEL METODO PARA LA VALIDACION DEL SALDO TOTAL
-            if ($data['tipo_st'] == 'r') {
+            if ($data['tipo_st'] === 'r') {
                 if ($data['ingreso'] > $cuenta->monto_total) {
                     Helpers::sendErrorNotification('No se puede realizar la solicitud, saldo insuficiente');
                     $this->commitDatabaseTransaction();
@@ -56,6 +57,7 @@ class CreateMovimiento extends CreateRecord
             $this->callHook('beforeCreate');
 
             $this->record = $this->handleRecordCreation($data);
+            NotificationHelpers::notifyByTipoMovimiento($data['tipo_st']);
 
             $this->form->model($this->getRecord())->saveRelationships();
 

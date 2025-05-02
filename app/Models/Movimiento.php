@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\Helpers;
+use App\Helpers\NotificationHelpers;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -60,7 +61,7 @@ class Movimiento extends Model implements HasMedia
         if ($case === 'a') {
             switch ($movimiento->tipo_st) {
                 // Deposito
-                case 'd' || 'g':
+                case 'd':
                     try {
                         DB::beginTransaction();
 
@@ -75,8 +76,30 @@ class Movimiento extends Model implements HasMedia
                         $this->update();
 
                         DB::commit();
+                        NotificationHelpers::notifyByTipoMovimiento($movimiento->tipo_st);
+                        return;
+                    } catch (\Throwable $e) {
+                        DB::rollBack();
+                        return Helpers::sendErrorNotification($e->getMessage());
+                    }
+                    // GANANCIAS
+                case 'g':
+                    try {
+                        DB::beginTransaction();
 
-                        return Helpers::sendSuccessNotification('Este movimiento fue aprobado. Saldo actualizado correctamente');
+                        // Transacciones correspondientes al deposito
+                        $currentCuenta->monto_total += $movimiento->ingreso;
+                        // $currentCuenta->no_dep += 1;
+                        $currentCuenta->sum_dep += $movimiento->ingreso;
+                        $currentCuenta->ultimo_movimiento_id = $movimiento->id;
+                        $currentCuenta->update();
+
+                        $this->est_st = 'a';
+                        $this->update();
+
+                        DB::commit();
+                        NotificationHelpers::notifyByTipoMovimiento($movimiento->tipo_st);
+                        return;
                     } catch (\Throwable $e) {
                         DB::rollBack();
                         return Helpers::sendErrorNotification($e->getMessage());
@@ -95,14 +118,14 @@ class Movimiento extends Model implements HasMedia
                         $this->update();
 
                         DB::commit();
-
-                        return Helpers::sendSuccessNotification('Este movimiento fue aprobado. Saldo actualizado correctamente');
+                        NotificationHelpers::notifyByTipoMovimiento($movimiento->tipo_st);
+                        return;
                     } catch (\Throwable $e) {
                         DB::rollBack();
                         return Helpers::sendErrorNotification($e->getMessage());
                     }
                     // Retiro
-                case 'r' || 'p':
+                case 'r':
                     try {
                         DB::beginTransaction();
 
@@ -120,8 +143,32 @@ class Movimiento extends Model implements HasMedia
                         $this->update();
 
                         DB::commit();
+                        NotificationHelpers::notifyByTipoMovimiento($movimiento->tipo_st);
+                        return;
+                    } catch (\Throwable $e) {
+                        DB::rollback();
+                        return Helpers::sendErrorNotification($e->getMessage());
+                    }
+                case 'p':
+                    try {
+                        DB::beginTransaction();
 
-                        return Helpers::sendSuccessNotification('Este movimiento fue aprobado. Saldo actualizado correctamente');
+                        if ($currentCuenta->monto_total < $movimiento->ingreso) {
+                            return Helpers::sendErrorNotification('No se puede realizar el retiro, saldo insuficiente');
+                        }
+
+                        $currentCuenta->monto_total -= $movimiento->ingreso;
+                        // $currentCuenta->no_retiros += 1;
+                        $currentCuenta->sum_retiros += $movimiento->ingreso;
+                        $currentCuenta->ultimo_movimiento_id = $movimiento->id;
+                        $currentCuenta->update();
+
+                        $this->est_st = 'a';
+                        $this->update();
+
+                        DB::commit();
+                        NotificationHelpers::notifyByTipoMovimiento($movimiento->tipo_st);
+                        return;
                     } catch (\Throwable $e) {
                         DB::rollback();
                         return Helpers::sendErrorNotification($e->getMessage());
@@ -137,10 +184,11 @@ class Movimiento extends Model implements HasMedia
             // Comparar si la fecha de actualizacion es mayor a la fecha de creacion
             if ($updatedDate->greaterThan($creationDate)) {
                 // Validar el estado y de acuerdo a eso, restar o aumentar
-                if ($this->est_st = 'a') {
+                if ($this->est_st === 'a') {
                     DB::beginTransaction();
                     switch ($movimiento->tipo_st) {
-                        case 'd' || 'g':
+                        case 'd':
+                        case 'g':
                             // ACCIONES SI EL TIPO DE LA SOLICITUD ES DEPOSITO
                             $currentCuenta->sum_dep -= $movimiento->ingreso;
                             $currentCuenta->monto_total -= $movimiento->ingreso;
@@ -149,7 +197,8 @@ class Movimiento extends Model implements HasMedia
                         case 'b':
                             $currentCuenta->monto_total -= $movimiento->ingreso;
                             break;
-                        case 'r' || 'p':
+                        case 'r':
+                        case 'p':
                             // ACCIONES SI EL TIPO DE LA SOLICITUD ES RETIRO
                             if ($currentCuenta->monto_total < $movimiento->ingreso) {
                                 DB::rollBack();

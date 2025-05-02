@@ -53,7 +53,7 @@ class MovimientoResource extends Resource
                             ->options([
                                 'd' => 'Deposito',
                                 'r' => 'Retiro',
-                                'b' => 'Bono',
+                                // 'b' => 'Bono',
                             ])
                             ->label('Tipo de solicitud')
                             ->required(),
