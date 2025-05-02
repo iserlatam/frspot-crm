@@ -194,7 +194,9 @@ class UserResource extends Resource
                     ->formatStateUsing(function ($state) {
                         return $state ? 'Activa' : 'Inactiva';
                     }),
-                Tables\Columns\TextColumn::make('roles.name')->label('Rol asignado'),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->label('Rol asignado')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('asignacion.id')->label('asignacion id'),
             ])
             //inicio filtros
