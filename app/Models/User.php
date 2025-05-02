@@ -90,6 +90,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
                                     Helpers::isCrmManager() || auth()->user()->hasRole('leads') ? $query->where('name', 'cliente') : $query;
                                 })
                                 ->preload()
+                                ->required()
                                 ->searchable(),
                             Forms\Components\Grid::make()
                                 ->columns(3)
