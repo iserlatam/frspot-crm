@@ -206,7 +206,12 @@ class UserMovimientosRelationManager extends RelationManager
                                 'movimiento' => $record,
                             ];
                             $record->chargeAccount($body);
-                            NotificationHelpers::notifyByTipoMovimiento($record->tipo_st);
+                            /**
+                             * ACA NO DEBE IR ESA NOTIFICACION
+                             * LA VALIDACION SE HACE DESDE EL MODELO QUE ES EL QUE SE ENCARGA DE EMITIR LA NOTIFICACION
+                             * CORRESPONDIENTE AL ESTADO FINAL DEL MOVIMIENTO
+                             */
+                            // NotificationHelpers::notifyByTipoMovimiento($record->tipo_st);
                             $this->dispatch('refresh-account-table');
                         }),
                     /**
@@ -237,7 +242,12 @@ class UserMovimientosRelationManager extends RelationManager
                                 'movimiento' => $record,
                             ];
                             $record->chargeAccount($body);
-                            NotificationHelpers::notifyByTipoMovimiento($record->tipo_st);
+                            /**
+                             * ACA NO DEBE IR ESA NOTIFICACION
+                             * LA VALIDACION SE HACE DESDE EL MODELO QUE ES EL QUE SE ENCARGA DE EMITIR LA NOTIFICACION
+                             * CORRESPONDIENTE AL ESTADO FINAL DEL MOVIMIENTO
+                             */
+                            // NotificationHelpers::notifyByTipoMovimiento($record->tipo_st);
                             $this->dispatch('refresh-account-table');
                         }),
                 ])
