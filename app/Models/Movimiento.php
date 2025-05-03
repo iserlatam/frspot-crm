@@ -89,7 +89,7 @@ class Movimiento extends Model implements HasMedia
 
                         // Transacciones correspondientes al deposito
                         $currentCuenta->monto_total += $movimiento->ingreso;
-                        // $currentCuenta->no_dep += 1;
+                        $currentCuenta->no_dep += 1;
                         $currentCuenta->sum_dep += $movimiento->ingreso;
                         $currentCuenta->ultimo_movimiento_id = $movimiento->id;
                         $currentCuenta->update();
@@ -130,7 +130,9 @@ class Movimiento extends Model implements HasMedia
                         DB::beginTransaction();
 
                         if ($currentCuenta->monto_total < $movimiento->ingreso) {
-                            return Helpers::sendErrorNotification('No se puede realizar el retiro, saldo insuficiente');
+                            DB::commit();
+                            Helpers::sendErrorNotification('No se puede realizar el retiro, saldo insuficiente');
+                            return;
                         }
 
                         $currentCuenta->monto_total -= $movimiento->ingreso;
