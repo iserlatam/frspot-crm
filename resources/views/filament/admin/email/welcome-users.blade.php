@@ -92,12 +92,12 @@
 
                     <p>¡Gracias por acompañarnos en esta nueva etapa!</p>
                     <p>Saludos cordiales,</p>
-                    <p>El Equipo de Frspot</p>
+                    <p>El equipo de frspot</p>
             </div>
         </div>
         <div class="email-footer">
             <img src="{{ asset('login-imgs/logo4.png') }}" alt="Logo" style="height: 40px">
-            <p>&copy; {{ date('Y') }} Frspot. All rights reserved.</p>
+            <p>&copy; 2022 frspot. All rights reserved.</p>
         </div>
     </div>
 </body>
