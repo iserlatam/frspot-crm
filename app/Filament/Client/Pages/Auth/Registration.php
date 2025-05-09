@@ -166,20 +166,40 @@ class Registration extends Register
                             Forms\Components\TextInput::make('cod_postal')
                                 ->label('Codigo postal:')
                                 ->required(),
+                            // SELECT PAIS
+                            Country::make('pais')
+                                ->label('Pais:')
+                                ->searchable()
+                                ->required(),
                             // Ciudad
                             Forms\Components\TextInput::make('ciudad')
                                 ->label('Ciudad:')
                                 ->required(),
                             // Fecha de nacimiento
                             Forms\Components\DatePicker::make('fecha_nacimiento')
-                                ->label('Fecha de nacimiento:')
-                                ->native()
-                                ->required(),
+                                ->label('Fecha de nacimiento')
+                                ->required()
+                                ->native(false) // Mejor UI personalizada
+                                ->displayFormat('d/m/Y')
+                                ->placeholder('DD/MM/AAAA')
+                                ->maxDate(now()->subYears(18))
+                                ->closeOnDateSelection()
+                                ->default(now()->setYear(1950))
+                                ->helperText('Seleciona el dia de tu nacimiento')
+                                ->columnSpanFull()
+                                ->extraInputAttributes([
+                                    'class' => 'custom-datepicker', // Clase CSS personalizada
+                                    'style' => 'cursor: pointer; font-weight: 500;', // Estilos inline
+                                    'x-data' => '', // Para integración con Alpine.js
+                                    'x-on:click' => '$event.target.showPicker()', // Mejor interacción
+                                     // Autocompletado estándar
+                                    // Evita teclado en móviles
+                                    'data-testid' => 'datepicker-nacimiento', // Para testing
+                                    'aria-label' => 'Seleccionador de fecha de nacimiento', // Accesibilidad
+                                ])
+                                ->prefixIcon('heroicon-o-calendar') // Icono adicional
+                                ->suffixIcon('heroicon-o-chevron-down'), // Icono de despliegue
                             // Pais
-                            Country::make('pais')
-                                ->label('Pais:')
-                                ->searchable()
-                                ->required(),
                         ]),
                     Wizard\Step::make('Cuestionario')
                         ->afterValidation(function (Get $get) {
