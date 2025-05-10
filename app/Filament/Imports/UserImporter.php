@@ -2,6 +2,7 @@
 
 namespace App\Filament\Imports;
 
+use App\Helpers\NotificationHelpers;
 use App\Models\User;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
@@ -32,6 +33,16 @@ class UserImporter extends Importer
 
     public function resolveRecord(): ?User
     {
+        if (User::where('email', $this->data['email'])->exists()) {
+            // Enviar notificación de error visible inmediatamente
+            NotificationHelpers::sendErrorNotification(
+                "Correo duplicado: {$this->data['email']}",
+                'Error en importación'
+            );
+
+            return null;
+        }
+
         return DB::transaction(function () {
             $user = User::create([
                 'name' => substr($this->data['name'], 4) .  random_int(0000, 9999),
@@ -40,14 +51,14 @@ class UserImporter extends Importer
             ])->assignRole('cliente');
 
             $user->cliente()->create([
-                'nombre_completo' => $this->data['name'],
-                'celular' => $this->data['celular'],
-                'estado_cliente' => $this->data['estado'],
-                'fase_cliente' => $this->data['fase'],
-                'origenes' => $this->data['origen'],
-                'pais' => $this->data['pais'],
-                'infoeeuu' => $this->data['infoeeuu'],
-                'caso' => $this->data['caso'],
+                'nombre_completo' => $this->data['name']?? '',
+                'celular' => $this->data['celular']?? '',
+                'estado_cliente' => $this->data['estado']?? '',
+                'fase_cliente' => $this->data['fase']?? '',
+                'origenes' => $this->data['origenes']?? '',
+                'pais' => $this->data['pais']?? '',
+                'infoeeuu' => $this->data['infoeeuu']?? '',
+                'caso' => $this->data['caso'] ?? '',
             ]);
 
             // Abrir nueva cuenta
