@@ -142,6 +142,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('cliente.celular')->label('Celular')
                     ->formatStateUsing(fn($record) => Helpers::isSuperAdmin() ? $record->cliente?->celular : '********')
                     ->tooltip('Haga click para copiar')
+                    ->sortable()
                     ->copyable()
                     ->copyableState(fn($record) => $record->cliente?->celular)
                     ->searchable(),
