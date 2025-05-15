@@ -7,13 +7,15 @@ use Filament\Notifications\Notification;
 class NotificationHelpers extends ActionsHelpers
 {
     // Add your methods and properties here
-    public static function sendErrorNotification(string $message, string $title = 'Operacion fallida',): Notification
+    public static function sendErrorNotification(string $message, string $title = 'Operacion fallida', array $data): Notification
     {
         return Notification::make($title)
             ->danger()
             ->title($title)
             ->body(__($message))
-            ->send();
+            ->send()
+            ->list($data)
+            ->duration(10);
     }
 
     public static function sendSuccessNotification(string $message, string $title = 'Operacion exitosa'): Notification
@@ -24,6 +26,64 @@ class NotificationHelpers extends ActionsHelpers
             ->body(__($message))
             ->send();
     }
+
+    public static function sendFailedImportNotification( $message, string $title = 'Error de importacion'): Notification
+    {
+        return Notification::make($title)
+            ->danger()
+            ->title($title)
+            ->body(__($message))
+            ->send();
+    }
+
+    public static function sendNotificationlogic($message, string $title = 'Advertencia'): Notification
+    {
+        return self::buildNotification($message, $title, 'warning');
+    }
+
+    /**
+     * Método interno para construir notificaciones consistentes
+     */
+    protected static function buildNotification($content, string $title, string $type): Notification
+    {
+        $notification = Notification::make()
+            ->title($title)
+            ->{$type}()
+            ->persistent();
+
+        if (is_array($content)) {
+            $notification->body(self::formatArrayContent($content));
+        } else {
+            $notification->body(__($content));
+        }
+
+        return $notification->send();
+    }
+
+    /**
+     * Formatea el contenido de un array para mostrarlo en la notificación
+     */
+    protected static function formatArrayContent(array $data): string
+    {
+        $html = '<div class="space-y-1">';
+
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $value = json_encode($value, JSON_PRETTY_PRINT);
+            }
+
+            $html .= sprintf(
+                '<div><span class="font-medium">%s:</span> <span>%s</span></div>',
+                is_int($key) ? '•' : $key,
+                e($value)
+            );
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
 
     public static function sendWarningNotification(string $message, string $title = 'Operacion exitosa'): Notification
     {
