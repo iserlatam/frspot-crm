@@ -140,7 +140,7 @@ class UserResource extends Resource
                     ->limit(fn() => Helpers::isSuperAdmin() ? 6 : 15)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.celular')->label('Celular')
-                    ->formatStateUsing(fn($record) => Helpers::isSuperAdmin() || Helpers::isCrmManager() ? $record->cliente?->celular : '********')
+                    ->formatStateUsing(fn($record) => Helpers::isSuperAdmin() ? $record->cliente?->celular : '********')
                     ->tooltip('Haga click para copiar')
                     ->sortable()
                     ->copyable()
