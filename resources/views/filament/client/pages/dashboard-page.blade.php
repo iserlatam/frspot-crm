@@ -1,5 +1,5 @@
 <x-filament-panels::page>
-
+<link rel="preload" as="image" href="{{ asset('client-imgs/BACK.jpg') }}">
 <style>
     .modal-overlay {
         position: fixed;
@@ -13,6 +13,12 @@
         justify-content: center;
         z-index: 9999;
     }
+    .backgroundModal{
+       background-image: url({{asset('client-imgs/BACK.jpg') }});
+         background-size: cover;
+        background-position: center;
+    }
+
 
     .modal-card {
         background-color: #1e1e1e;
@@ -37,15 +43,73 @@
     <div class="modal-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
             <h2 style="font-size: 1.2rem;">Operación</h2>
-            <button onclick="toggleModal()" style="color: white; background: none; border: none; font-size: 1.2rem;">✖</button>
+            <button onclick="toggleModal1()" style="color: white; background: none; border: none; font-size: 1.2rem;">✖</button>
         </div>
         <p>Dirigete a tu app de trading</p>
     </div>
 </div>
 
+    <!-- Modal -->
+<dialog id="myModal" class="fixed top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center z-50 hidden">
+    <div class="py-4 backgroundModal px-6 bg-slate-900 text-white rounded-lg w-[90%] max-w-2xl relative border-2 border-black">
+        <hr class="border-2 border-fuchsia-500 w-full">
+
+        <div class="flex flex-col items-center py-3">
+            <p class="text-xl text-black uppercase font-bold">Cartera de Pago Frspot</p>
+
+            <div class="text-black flex w-full my-4">
+                <div class="w-full">
+                    <label for="walled-address" class="font-semibold bg-slate-300 border-2 rounded-md border-fuchsia-500 py-2 px-2 ">Billetera FR</label>
+                    <input
+                        type="text"
+                        id="wallet-address"
+                        value="TLVSLdp1H192PPEeqqHuokqDQEy4GqJdfF"
+                        class="border-2 border-fuchsia-500 bg-slate-300 rounded-md w-[80%] text-center py-2"
+                        readonly
+                    >
+                </div>
+                <div
+                    id="copy-button"
+                    class="border-2 border-fuchsia-500 rounded-md bg-slate-300 px-2 py-2 ml-4 cursor-pointer"
+                    onclick="copyToClipboard()"
+                >
+                    📋
+                </div>
+            </div>
+            <div class="py-2 px-3 bg-slate-300 rounded-md border-2 mb-4 border-fuchsia-500">
+                <p class="text-black font-bold ">USDT: Thether(USDT-Trc20)</p>
+            </div>
+
+            <div class="bg-slate-300 border-4 border-fuchsia-500 rounded-lg text-black py-4 px-3">
+                <p class="text-center font-medium">
+                    Con el código dirígete a una de estas páginas de pago y con tu comprobante de pago continua el depósito
+                </p>
+                <div class="flex justify-between px-2 md:px-[100px]">
+                    <a class="text-sky-500 hover:text-sky-800 font-semibold" target="_blank" href="https://buy.simplex.com/">
+                        Enlace a Simplex
+                    </a>
+                    <a class="text-sky-500 hover:text-sky-800 font-semibold" target="_blank" href="https://openocean.banxa.com/">
+                        Enlace a Banxa
+                    </a>
+                </div>
+            </div>
+            <div class="">
+                <button onclick="toggleModal2()" class="py2 px-3 mt-1 font-semibold bg-fuchsia-500 border-2 border-black rounded-md">salir</button>
+            </div>
+        </div>
+
+        <!-- Botón para cerrar -->
+        <button onclick="toggleModal2()" class="absolute text-3xl top-2 right-2 text-black font-bold">
+            x
+        </button>
+
+        <hr class="border-2 border-fuchsia-500 w-full mt-1">
+    </div>
+</dialog>
+
     {{-- TRADING VIEW GENERAL CHART --}}
-    <div style="display: flex; flex-direction: column; min-min-height: 500px;">
-        <div style="flex: 1;">
+    <div style="display: flex; flex-direction: column; min-min-height: 500px; ">
+        <div class="flex justify-between  w-full mb-4">
             <div style="display: flex; align-items: start">
                 <button onclick="toggleModal()" style="padding: 10px 15px; background-color: green; color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); border: none; border-top-left-radius: 5px;">
                     Buy
@@ -55,6 +119,11 @@
                     onfocus="this.placeholder = ''" onblur="this.placeholder = '0.00'">
                 <button onclick="toggleModal()" style="padding: 10px 15px; background-color: red; color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); border: none; border-top-right-radius: 5px;">Sell</button>
             </div>
+            {{-- boton de modal --}}
+            <!-- Botón para abrir el modal (puedes colocarlo donde necesites) -->
+            <button onclick="toggleModal2()" class="bg-fuchsia-500 text-white px-4 py-2 rounded">
+               Cartera depósito
+            </button>
         </div>
         <div style="flex: 1; min-height: 500px; width: 100%;">
             <!-- TradingView Widget BEGIN -->
@@ -86,7 +155,7 @@
 
     {{-- TRADING VIEW CRYPTO --}}
     <div style="display: flex; flex-direction: column; min-min-height: 500px;">
-        <div style="flex: 1;">
+        <div class="flex justify-between  w-full mb-4">
             <div style="display: flex; align-items: start">
                 <button onclick="toggleModal()" style="padding: 10px 15px; background-color: green; color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); border: none; border-top-left-radius: 5px;">
                     Buy
@@ -96,6 +165,11 @@
                     onfocus="this.placeholder = ''" onblur="this.placeholder = '0.00'">
                 <button onclick="toggleModal()" style="padding: 10px 15px; background-color: red; color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); border: none; border-top-right-radius: 5px;">Sell</button>
             </div>
+            {{-- boton de modal --}}
+            <!-- Botón para abrir el modal (puedes colocarlo donde necesites) -->
+            <button onclick="toggleModal2()" class="bg-fuchsia-500 text-white px-4 py-2 rounded">
+               Cartera depósito
+            </button>
         </div>
 
         <div style="flex: 1; min-min-height: 500px; width: 100%;">
@@ -131,7 +205,7 @@
     </div>
 
     <script>
-        function toggleModal() {
+        function toggleModal1() {
             const modal = document.getElementById('modal');
             const isHidden = modal.classList.contains('hidden');
 
@@ -142,6 +216,30 @@
                 modal.classList.add('hidden');
                 document.body.classList.remove('modal-open');
             }
+        }
+    </script>
+    <script>
+        function toggleModal2() {
+            const modal = document.getElementById('myModal');
+            const isOpen = !modal.classList.contains('hidden');
+
+            if (isOpen) {
+                modal.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            } else {
+                modal.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            }
+        }
+
+        function copyToClipboard() {
+            const input = document.getElementById('wallet-address');
+            input.select();
+            input.setSelectionRange(0, 99999); // Para móviles
+
+            document.execCommand("copy");
+
+            alert("Dirección copiada: " + input.value);
         }
     </script>
 
