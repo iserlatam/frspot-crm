@@ -113,7 +113,7 @@
                 </div>
             </div>
             <div class="">
-                <button onclick="toggleModal2()" class="py2 px-3 mt-1 font-semibold bg-fuchsia-500 border-2 border-slate-300 rounded-md">salir</button>
+                <button onclick="toggleModal2()" class="py2 px-3 mt-1 font-semibold bg-slate-800 hover:bg-slate-600 border-2 border-slate-300 rounded-md">salir</button>
             </div>
         </div>
 
