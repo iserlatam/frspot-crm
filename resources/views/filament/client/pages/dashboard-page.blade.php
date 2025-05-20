@@ -37,6 +37,25 @@
     body.modal-open {
         overflow: hidden;
     }
+
+    @keyframes modalFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .modal-animation {
+        animation: modalFadeIn 0.3s ease-out;
+    }
+
+    .modal-shadow {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    }
 </style>
 
 <div id="modal" class="modal-overlay hidden">
@@ -51,36 +70,36 @@
 
     <!-- Modal -->
 <dialog id="myModal" class="fixed top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center z-50 hidden">
-    <div class="py-4 backgroundModal px-6 bg-slate-900 text-white rounded-lg w-[90%] max-w-2xl relative border-2 border-black">
-        <hr class="border-2 border-fuchsia-500 w-full">
+    <div class="py-4  px-6 bg-slate-900 text-white rounded-lg w-[90%] max-w-2xl relative border-2 border-white modal-animation modal-shadow">
+        <hr class="border-2 border-slate-300 w-full">
 
         <div class="flex flex-col items-center py-3">
-            <p class="text-xl text-black uppercase font-bold">Cartera de Pago Frspot</p>
+            <p class="text-xl text-slate-300 uppercase font-bold">TU CARTERA RECEPTORA</p>
 
             <div class="text-black flex w-full my-4">
                 <div class="w-full">
-                    <label for="walled-address" class="font-semibold bg-slate-300 border-2 rounded-md border-fuchsia-500 py-2 px-2 ">Billetera FR</label>
+                    <label for="walled-address" class="font-semibold bg-slate-300 border-2 rounded-md border-slate-300 py-2 px-2 ">Billetera FR</label>
                     <input
                         type="text"
                         id="wallet-address"
                         value="TLVSLdp1H192PPEeqqHuokqDQEy4GqJdfF"
-                        class="border-2 border-fuchsia-500 bg-slate-300 rounded-md w-[80%] text-center py-2"
+                        class="border-2 border-slate-300 bg-slate-300 rounded-md w-[80%] text-center py-2"
                         readonly
                     >
                 </div>
                 <div
                     id="copy-button"
-                    class="border-2 border-fuchsia-500 rounded-md bg-slate-300 px-2 py-2 ml-4 cursor-pointer"
+                    class="border-2 border-slate-300 rounded-md bg-slate-300 px-2 py-2 ml-4 cursor-pointer"
                     onclick="copyToClipboard()"
                 >
                     📋
                 </div>
             </div>
-            <div class="py-2 px-3 bg-slate-300 rounded-md border-2 mb-4 border-fuchsia-500">
+            <div class="py-2 px-3 bg-slate-300 rounded-md border-2 mb-4 border-slate-300">
                 <p class="text-black font-bold ">USDT: Thether(USDT-Trc20)</p>
             </div>
 
-            <div class="bg-slate-300 border-4 border-fuchsia-500 rounded-lg text-black py-4 px-3">
+            <div class="bg-slate-300 border-4 border-slate-300 rounded-lg text-black py-4 px-3">
                 <p class="text-center font-medium">
                     Con el código dirígete a una de estas páginas de pago y con tu comprobante de pago continua el depósito
                 </p>
@@ -94,16 +113,16 @@
                 </div>
             </div>
             <div class="">
-                <button onclick="toggleModal2()" class="py2 px-3 mt-1 font-semibold bg-fuchsia-500 border-2 border-black rounded-md">salir</button>
+                <button onclick="toggleModal2()" class="py2 px-3 mt-1 font-semibold bg-fuchsia-500 border-2 border-slate-300 rounded-md">salir</button>
             </div>
         </div>
 
         <!-- Botón para cerrar -->
-        <button onclick="toggleModal2()" class="absolute text-3xl top-2 right-2 text-black font-bold">
+        <button onclick="toggleModal2()" class="absolute text-3xl top-2 right-2 text-white font-bold">
             x
         </button>
 
-        <hr class="border-2 border-fuchsia-500 w-full mt-1">
+        <hr class="border-2 border-slate-300 w-full mt-1">
     </div>
 </dialog>
 
@@ -121,8 +140,8 @@
             </div>
             {{-- boton de modal --}}
             <!-- Botón para abrir el modal (puedes colocarlo donde necesites) -->
-            <button onclick="toggleModal2()" class="bg-fuchsia-500 text-white px-4 py-2 rounded">
-               Cartera depósito
+            <button onclick="toggleModal2()" class="bg-slate-900 border-2 border-slate-300 text-white px-4 py-2 rounded">
+               Cartera receptora
             </button>
         </div>
         <div style="flex: 1; min-height: 500px; width: 100%;">
@@ -167,8 +186,8 @@
             </div>
             {{-- boton de modal --}}
             <!-- Botón para abrir el modal (puedes colocarlo donde necesites) -->
-            <button onclick="toggleModal2()" class="bg-fuchsia-500 text-white px-4 py-2 rounded">
-               Cartera depósito
+            <button onclick="toggleModal2()" class="bg-slate-900 border-2 border-slate-300 text-white px-4 py-2 rounded">
+               Cartera receptora
             </button>
         </div>
 
