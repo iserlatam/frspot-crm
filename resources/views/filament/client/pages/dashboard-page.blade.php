@@ -74,7 +74,7 @@
         <hr class="border-2 border-slate-300 w-full">
 
         <div class="flex flex-col items-center py-3">
-            <p class="text-xl text-slate-300 uppercase font-bold">TU CARTERA RECEPTORA</p>
+            <p class="text-xl text-slate-300 uppercase font-bold">CARTERA RECEPTORA</p>
 
             <div class="text-black flex w-full my-4">
                 <div class="w-full">
@@ -141,7 +141,7 @@
             {{-- boton de modal --}}
             <!-- Botón para abrir el modal (puedes colocarlo donde necesites) -->
             <button onclick="toggleModal2()" class="bg-slate-900 border-2 border-slate-300 text-white px-4 py-2 rounded">
-               Cartera receptora
+               Depósito
             </button>
         </div>
         <div style="flex: 1; min-height: 500px; width: 100%;">
@@ -187,7 +187,7 @@
             {{-- boton de modal --}}
             <!-- Botón para abrir el modal (puedes colocarlo donde necesites) -->
             <button onclick="toggleModal2()" class="bg-slate-900 border-2 border-slate-300 text-white px-4 py-2 rounded">
-               Cartera receptora
+               Depósito
             </button>
         </div>
 
