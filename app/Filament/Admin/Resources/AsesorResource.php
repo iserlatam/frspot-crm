@@ -70,11 +70,17 @@ class AsesorResource extends Resource
                     ->tooltip('Haga click para copiar')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.email')
-                    ->formatStateUsing(fn($record) => Helpers::isSuperAdmin() ? $record->email : '*****@*****.***')
+                    ->label('Correo electrónico')
+                    ->formatStateUsing(function ($state) {
+                        if (Helpers::isSuperAdmin()) {
+                            return $state; // Superadmin ve el email real
+                        }
+
+                        return '****@*****.***'; // No superadmin ve enmascarado
+                    })
                     ->copyable()
                     ->copyableState(fn($record) => $record->email)
                     ->tooltip('Haga click para copiar')
-                    ->limit(fn() => Helpers::isSuperAdmin() ? 6 : 15)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.roles.name')
                     ->label('Rol asignado')

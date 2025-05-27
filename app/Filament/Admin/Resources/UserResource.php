@@ -436,7 +436,7 @@ class UserResource extends Resource
             // Cuentas y movimientos
             RelationGroup::make('Cuentas y movimientos', [UserMovimientosRelationManager::class, CuentaClienteRelationManager::class])->icon('heroicon-m-arrows-up-down'),
             // Asignaciones
-            RelationGroup::make('Asignaciones', [AsignacionRelationManager::class, SeguimientosRelationManager::class])->icon('heroicon-m-arrows-right-left'),
+            RelationGroup::make('Comentarios', [AsignacionRelationManager::class, SeguimientosRelationManager::class])->icon('heroicon-m-arrows-right-left'),
         ];
     }
 
