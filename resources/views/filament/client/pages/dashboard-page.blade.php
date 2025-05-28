@@ -130,9 +130,6 @@
     <div style="display: flex; flex-direction: column; min-min-height: 500px; ">
         <div class="flex justify-between  w-full mb-4">
             <div style="display: flex; align-items: start ; gap: 10px;">
-                <a href="https://crm.frspot.com/client/movimientos/create" style="padding: 10px 15px; border: 2px solid rgba(211, 211, 211, 0.86); background-color: red; color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);  border-top-left-radius: 5px;">
-                    Retiro
-                </a>
                 <div class="">
                     <button onclick="toggleModal1()" style="padding: 10px 15px; background-color: green; border: 2px solid rgba(211, 211, 211, 0.86); color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);  border-top-left-radius: 5px;">
                         Buy
@@ -142,15 +139,17 @@
                         onfocus="this.placeholder = ''" onblur="this.placeholder = '0.00'">
                     <button onclick="toggleModal1()" style="padding: 10px 15px; background-color: red; border: 2px solid rgba(211, 211, 211, 0.86); color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);  border-top-right-radius: 5px;">Sell</button>
                 </div>
-                <a href="https://crm.frspot.com/client/movimientos/create" style="padding: 10px 15px; background-color: green; border: 2px solid rgba(211, 211, 211, 0.86); color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);  border-top-right-radius: 5px;">
-                    Depósito
-                </a>
             </div>
             {{-- boton de modal --}}
             <!-- Botón para abrir el modal (puedes colocarlo donde necesites) -->
-            <button onclick="toggleModal2()" class="bg-slate-900 border-2 border-slate-300 text-white px-4 py-2 rounded">
-               Cartera
-            </button>
+            <div>
+                <a  href="https://crm.frspot.com/client/movimientos/create" style="padding: 12px 15px; background-color: #0F172A ; border: 2px solid rgba(211, 211, 211, 0.86); color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;">
+                    Retiro
+                </a>
+                <button onclick="toggleModal2()" style="padding: 10px 15px; background-color: green; border: 2px solid rgba(211, 211, 211, 0.86); color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); margin-left: 10px; border-radius: 5px;">
+                    Deposito
+                </button>
+            </div>
         </div>
         <div style="flex: 1; min-height: 500px; width: 100%;">
             <!-- TradingView Widget BEGIN -->
@@ -184,9 +183,6 @@
     <div style="display: flex; flex-direction: column; min-min-height: 500px;">
         <div class="flex justify-between  w-full mb-4">
             <div style="display: flex; align-items: start ; gap: 10px;">
-                <a href="https://crm.frspot.com/client/movimientos/create" style="padding: 10px 15px; border: 2px solid rgba(211, 211, 211, 0.86); background-color: red; color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);  border-top-left-radius: 5px;">
-                    Retiro
-                </a>
                 <div class="">
                     <button onclick="toggleModal1()" style="padding: 10px 15px; background-color: green; border: 2px solid rgba(211, 211, 211, 0.86); color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);  border-top-left-radius: 5px;">
                         Buy
@@ -196,15 +192,17 @@
                         onfocus="this.placeholder = ''" onblur="this.placeholder = '0.00'">
                     <button onclick="toggleModal1()" style="padding: 10px 15px; background-color: red; border: 2px solid rgba(211, 211, 211, 0.86); color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);  border-top-right-radius: 5px;">Sell</button>
                 </div>
-                <a href="https://crm.frspot.com/client/movimientos/create" style="padding: 10px 15px; background-color: green; border: 2px solid rgba(211, 211, 211, 0.86); color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);  border-top-right-radius: 5px;">
-                    Depósito
-                </a>
             </div>
             {{-- boton de modal --}}
             <!-- Botón para abrir el modal (puedes colocarlo donde necesites) -->
-            <button onclick="toggleModal2()" class="bg-slate-900 border-2 border-slate-300 text-white px-4 py-2 rounded">
-               Cartera
-            </button>
+            <div>
+                <a  href="https://crm.frspot.com/client/movimientos/create" style="padding: 12px 15px; background-color: #0F172A ; border: 2px solid rgba(211, 211, 211, 0.86); color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;">
+                    Retiro
+                </a>
+                <button onclick="toggleModal2()" style="padding: 10px 15px; background-color: green; border: 2px solid rgba(211, 211, 211, 0.86); color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); margin-left: 10px; border-radius: 5px;">
+                    Deposito
+                </button>
+            </div>
         </div>
 
         <div style="flex: 1; min-min-height: 500px; width: 100%;">
