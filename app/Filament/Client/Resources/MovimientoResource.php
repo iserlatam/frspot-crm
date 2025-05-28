@@ -9,6 +9,7 @@ use App\Models\CuentaCliente;
 use App\Models\Movimiento;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\RawJs;
@@ -20,6 +21,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Image\Enums\AlignPosition;
 
 class MovimientoResource extends Resource
@@ -63,7 +65,27 @@ class MovimientoResource extends Resource
                             ->prefix('$')
                             ->mask(RawJs::make('$money($input)'))
                             ->stripCharacters(',')
-                            ->numeric(),
+                            ->numeric()
+                            ->live()
+                            ->helperText(function (Get $get) {
+                                $ingreso = (float) $get('ingreso'); // Es buena práctica convertir a float para comparaciones numéricas
+                                $tipo = $get('tipo_st');
+                                $usuarioActual = Auth::user(); // Obtener el usuario en sesión
+
+                                // Verificar si el usuario está autenticado y tiene la cuenta de cliente
+                                if ($usuarioActual && isset($usuarioActual->cuentaCliente)) {
+                                    $montoTotalCuentaCliente = (float) $usuarioActual->cuentaCliente->monto_total; // Convertir a float
+
+                                    if (($tipo === 'r') && ($ingreso > $montoTotalCuentaCliente || $montoTotalCuentaCliente == 0)) {
+                                        return 'Saldo insuficiente';
+                                    } else {
+                                        // Muestra el monto formateado para mejor lectura
+                                        return 'Saldo disponible: $' . number_format($montoTotalCuentaCliente, 2, '.', ',');
+                                    }
+                                }
+                                // Mensaje por defecto si no se puede acceder a la información del usuario/cuenta
+                                return 'No se pudo verificar el saldo.';
+                            }),
                         Forms\Components\TextInput::make('cuenta_cliente_id')
                             ->label('Número de cuenta del cliente')
                             ->readOnly()

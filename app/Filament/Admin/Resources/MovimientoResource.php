@@ -10,6 +10,7 @@ use App\Models\Cliente;
 use App\Models\Movimiento;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -73,7 +74,17 @@ class MovimientoResource extends Resource
                             ->columnSpan(2)
                             ->required()
                             ->prefix('$')
-                            ->numeric(),
+                            ->numeric()
+                            ->live()
+                            ->helperText(function (Get $get) {
+                                $ingreso = $get('ingreso');
+                                $tipo = $get('tipo_st');
+                                if (($tipo === 'r') && ($ingreso > $this->getOwnerRecord()->cuentaCliente->monto_total || $this->getOwnerRecord()->cuentaCliente->monto_total == 0)) {
+                                    return 'Saldo insuficiente';
+                                } else {
+                                    return 'Saldo disponible: ' . $this->getOwnerRecord()->cuentaCliente->monto_total;
+                                }
+                            }),
                         Forms\Components\Select::make('cuenta_cliente_id')
                             ->columnSpan(3)
                             ->relationship('cuentaCliente', 'id', function (Builder $query) {

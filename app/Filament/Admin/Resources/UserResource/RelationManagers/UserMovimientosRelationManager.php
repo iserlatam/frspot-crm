@@ -66,7 +66,7 @@ class UserMovimientosRelationManager extends RelationManager
                             ->helperText(function (Get $get) {
                                 $ingreso = $get('ingreso');
                                 $tipo = $get('tipo_st');
-                                if (($tipo === 'r') && $ingreso > $this->getOwnerRecord()->cuentaCliente->monto_total) {
+                                if (($tipo === 'r') && ($ingreso > $this->getOwnerRecord()->cuentaCliente->monto_total || $this->getOwnerRecord()->cuentaCliente->monto_total == 0)) {
                                     return 'Saldo insuficiente';
                                 } else {
                                     return 'Saldo disponible: ' . $this->getOwnerRecord()->cuentaCliente->monto_total;
