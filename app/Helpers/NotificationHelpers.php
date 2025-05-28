@@ -7,14 +7,13 @@ use Filament\Notifications\Notification;
 class NotificationHelpers extends ActionsHelpers
 {
     // Add your methods and properties here
-    public static function sendErrorNotification(string $message, string $title = 'Operacion fallida', array $data): Notification
+    public static function sendErrorNotification(string $message, string $title = 'Operacion fallida'): Notification
     {
         return Notification::make($title)
             ->danger()
             ->title($title)
             ->body(__($message))
             ->send()
-            ->list($data)
             ->duration(10);
     }
 
