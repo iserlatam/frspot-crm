@@ -99,6 +99,12 @@ class UserResource extends Resource
                     });
                 }
 
+                if (Helpers::isCrmJunior()) {
+                    $query->whereDoesntHave('asignacion.asesor.user', function ($query) {
+                        $query->where('tipo_asesor', '=', 'retencion');
+                    });
+                }
+
                 /*
                 ##
                 ##  Logica para separar los clientes por oficinas segun el tipo de asesor asignado al cliente
@@ -106,7 +112,7 @@ class UserResource extends Resource
                 ##
                 */
 
-                if (Helpers::isTeamFTD() || Helpers::isCrmJunior()) {
+                if (Helpers::isTeamFTD()) {
                     $query->whereHas('asignacion.asesor.user', function ($query) {
                         $query->where('tipo_asesor', '=', 'ftd')->lazy();
                     });
