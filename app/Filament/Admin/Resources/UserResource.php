@@ -102,10 +102,11 @@ class UserResource extends Resource
                 /*
                 ##
                 ##  Logica para separar los clientes por oficinas segun el tipo de asesor asignado al cliente
+                ## - se agrega que crm junior no pueda ver los clientes de retencion
                 ##
                 */
 
-                if (Helpers::isTeamFTD()) {
+                if (Helpers::isTeamFTD() || Helpers::isCrmJunior()) {
                     $query->whereHas('asignacion.asesor.user', function ($query) {
                         $query->where('tipo_asesor', '=', 'ftd')->lazy();
                     });

@@ -33,6 +33,10 @@ class Helpers extends NotificationHelpers
     {
         return auth()->user()->hasRole(['crm junior','crm master']);
     }
+    public static function isCrmJunior(): bool
+    {
+        return auth()->user()->hasRole('crm junior');
+    }
     public static function canAccessPanel(): bool
     {
         return auth()->user()->hasRole(['super_admin','crm master','crm junior','team ftd','team retencion','asesor','leads']);
