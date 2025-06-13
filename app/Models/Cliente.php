@@ -12,6 +12,7 @@ use Filament\Forms\Components\Wizard;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -96,10 +97,10 @@ class Cliente extends Model implements HasMedia
                                         'f' => 'Femenino',
                                     ])
                                     ->disabled(fn () => Helpers::isAsesor()),
-                                Forms\Components\TextInput::make('pais')
-                                    ->maxLength(50)
-                                    ->default(null)
-                                    ->readOnly(fn () => Helpers::isAsesor()),
+                                    Country::make('pais')
+                                    ->label('Pais:')
+                                    ->searchable()
+                                    ->required(),
                                 Forms\Components\TextInput::make('ciudad')
                                     ->maxLength(50)
                                     ->default(null)
