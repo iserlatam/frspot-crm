@@ -29,7 +29,7 @@ class WelcomeUserEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('notifications@frspot.com', 'Notificacione FrSpot'),
+            from: new Address('notifications@frspot.com', 'Notificaciones FrSpot'),
             subject: 'Bienvenido al equipo de FrSpot',
         );
     }
