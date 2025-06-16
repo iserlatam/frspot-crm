@@ -156,12 +156,6 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.pais')
                     ->label('País')
-                    ->sortable(fn (Builder $query) =>
-                        $query->orderByRaw(
-                            // Si LENGTH = 2 → 0, sino → 1; orden asc para que 0 (longitud=2) salga primero
-                            "CASE WHEN LENGTH(COALESCE(pais, '')) = 2 THEN 0 ELSE 1 END ASC"
-                        )
-                    )
                     ->searchable(),
                     // ->formatStateUsing(fn (?string $state) =>
                     //     // Si $state es “CO” devuelve “Colombia”, si ya es “Colombia” devuelve “Colombia”
@@ -222,6 +216,17 @@ class UserResource extends Resource
             ])
             //inicio filtros
             ->filters([
+
+                // Nuevo: sólo clientes cuyo campo 'pais' tiene exactamente 2 caracteres (códigos ISO)
+                Tables\Filters\Filter::make('iso_only')
+                    ->label('Sólo Países ISO')
+                    ->toggle()  // interruptor on/off
+                    ->query(function (Builder $query): Builder {
+                        return $query->whereHas('cliente', function (Builder $q) {
+                            $q->whereRaw("CHAR_LENGTH(COALESCE(pais, '')) = 2");
+                        });
+                    }),
+
                 // 📌 Filtro por Asesor Asignado
                 // OK
                 SelectFilter::make('asignacion.asesor.user.name')
