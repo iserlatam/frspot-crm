@@ -13,7 +13,6 @@ use App\Helpers\OptionsHelper;
 use App\Mail\WelcomeUserEmail;
 use App\Models\User;
 use Attribute;
-use BaconQrCode\Renderer\Color\Gray;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -64,25 +63,22 @@ class UserResource extends Resource
                 // UTILIZAR LAZY HACE QUE NO SE BUSQUEN TODOS LOS REGISTROS SINO UN LOTE DE 1000
                 // "WITH" PRECARGA LAS RELACIONES QUESE VAN A UTILIZAR REPETIDAMENTE
                 $query = User::query()
+                     // Sólo los campos de users que vas a necesitar
+                    ->select(['id', 'name', 'email', 'created_at', 'updated_at'])
+                    // Eager load “cliente” con sus columnas clave
                     ->with([
-                        // Campos de la relación cliente
-                        'cliente',
-                        // Campos de la relación asignacion
-                        'asignacion.asesor.user',
-                        'asignacion',
-                        // Campos de la relacion roles
+                        // user_id es la FK de cliente
+                        'cliente:id,user_id,pais,celular,estado_cliente,fase_cliente',
+
+                        // asignacion pivot: id, user_id (FK), asesor_actual_id, estado_asignacion
+                        'asignacion:id,user_id,asesor_actual_id,estado_asignacion',
+
+                        // para la relación inversa “asesor.user” sólo necesitas name
+                        'asignacion.asesor:user_id,name',
+
+                        // para roles, sólo id + name (y la tabla pivot lo une internamente)
                         'roles:id,name',
                     ])
-                    ->select(
-                        [
-                            // Campos del modelo
-                            'id',
-                            'name',
-                            'email',
-                            'created_at',
-                            'updated_at',
-                        ]
-                    )
                     ->where('email', 'NOT LIKE', '%@frspot.com'); // Excluir emails que terminan en @frspot.com
 
                 // ESTO NO ES NECESARIO YA QUE EL SUPER ADMIN SIEMPRE PUEDE VER A TODOS SUS USUARIOS
@@ -126,7 +122,9 @@ class UserResource extends Resource
                 return $query;
             })
             ->defaultSort(Helpers::isSuperAdmin() ? 'created_at' : 'cliente.updated_at', Helpers::isSuperAdmin() ? 'desc' : 'asc')
-
+            // paginacion de la tabla
+            ->paginated([25, 50, 100])
+            ->defaultPaginationPageOption(25)
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('usuario')
@@ -156,7 +154,6 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.pais')
                     ->label('País')
-                    ->sortable()
                     ->searchable(),
                     // ->formatStateUsing(fn (?string $state) =>
                     // Si $state es “CO” devuelve “Colombia”, si ya es “Colombia” devuelve “Colombia”
