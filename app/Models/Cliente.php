@@ -12,7 +12,7 @@ use Filament\Forms\Components\Wizard;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
+use Parfaitementweb\FilamentCountryField\Forms\Components\Country as CountryField;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -97,10 +97,22 @@ class Cliente extends Model implements HasMedia
                                         'f' => 'Femenino',
                                     ])
                                     ->disabled(fn () => Helpers::isAsesor()),
-                                    Country::make('pais')
-                                    ->label('Pais:')
-                                    ->searchable()
-                                    ->required(),
+                                CountryField::make('pais')
+                                        ->label('País')
+                                        ->searchable()
+                                        ->required()
+                                        ->options(fn () => collect((new CountryField('pais'))->getCountriesList())
+                                            // Volteamos el array para que clave = nombre, valor = nombre
+                                            ->mapWithKeys(fn (string $name) => [ $name => $name ])
+                                            ->toArray()
+                                        )
+                                        ->afterStateHydrated(function (CountryField $component, ?string $state) {
+                                            // Si el estado actual es un ISO (CO, MX…), lo convertimos a nombre
+                                            $map = (new CountryField('pais'))->getCountriesList(); // ['CO'=>'Colombia', …]
+                                            if ($state && isset($map[$state])) {
+                                                $component->state($map[$state]);
+                                            }
+                                        }),
                                 Forms\Components\TextInput::make('ciudad')
                                     ->maxLength(50)
                                     ->default(null)

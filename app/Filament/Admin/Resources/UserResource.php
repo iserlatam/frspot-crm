@@ -156,7 +156,9 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.pais')
                     ->label('País')
-                    ->sortable()
+                    ->sortable(fn (Builder $query) =>
+                        $query->orderByRaw("CHAR_LENGTH(pais) = 2 DESC")
+                    )
                     ->searchable(),
                     // ->formatStateUsing(fn (?string $state) =>
                     //     // Si $state es “CO” devuelve “Colombia”, si ya es “Colombia” devuelve “Colombia”

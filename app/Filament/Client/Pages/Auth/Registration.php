@@ -7,7 +7,7 @@ use Filament\Forms\Form;
 use Filament\Forms;
 use Filament\Pages\Auth\Register;
 use Illuminate\Support\HtmlString;
-use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
+use Parfaitementweb\FilamentCountryField\Forms\Components\Country as CountryField;
 use App\Enums\RegisterCuestionaryOptions as CuestionaryOption;
 use App\Helpers\Helpers;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
@@ -167,10 +167,15 @@ class Registration extends Register
                                 ->label('Codigo postal:')
                                 ->required(),
                             // SELECT PAIS
-                            Country::make('pais')
-                                ->label('Pais:')
+                            CountryField::make('pais')
+                                ->label('País')
                                 ->searchable()
-                                ->required(),
+                                ->required()
+                                ->options(fn () => collect((new CountryField('pais'))->getCountriesList())
+                                    // Volteamos el array para que clave = nombre, valor = nombre
+                                    ->mapWithKeys(fn (string $name) => [ $name => $name ])
+                                    ->toArray()
+                                ),
                             // Ciudad
                             Forms\Components\TextInput::make('ciudad')
                                 ->label('Ciudad:')
