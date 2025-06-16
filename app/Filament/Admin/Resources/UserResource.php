@@ -156,9 +156,10 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.pais')
                     ->label('País')
+                    ->sortable()
                     ->searchable(),
                     // ->formatStateUsing(fn (?string $state) =>
-                    //     // Si $state es “CO” devuelve “Colombia”, si ya es “Colombia” devuelve “Colombia”
+                    // Si $state es “CO” devuelve “Colombia”, si ya es “Colombia” devuelve “Colombia”
                     //     (new CountryField('pais'))->getCountriesList()[$state] ?? $state
                     // ),
                 Tables\Columns\TextColumn::make('cliente.estado_cliente')
