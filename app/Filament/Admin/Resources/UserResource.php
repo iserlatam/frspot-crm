@@ -157,7 +157,11 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('cliente.pais')
                     ->label('País')
                     ->sortable(fn (Builder $query) =>
-                        $query->orderByRaw("CHAR_LENGTH(pais) = 2 DESC")
+                        $query
+                            // ISO codes (CHAR_LENGTH = 2) primero
+                            ->orderByRaw("CHAR_LENGTH(pais) = 2 DESC")
+                            // luego orden alfabético ascendente de pais
+                            ->orderBy('pais', 'asc')
                     )
                     ->searchable(),
                     // ->formatStateUsing(fn (?string $state) =>
