@@ -68,7 +68,7 @@ class UserResource extends Resource
                     // Eager load “cliente” con sus columnas clave
                     ->with([
                         // user_id es la FK de cliente
-                        'cliente:id,user_id,pais,celular,estado_cliente,fase_cliente',
+                        'cliente:id,user_id,pais,celular,estado_cliente,fase_cliente,origenes,created_at,updated_at',
 
                         // asignacion pivot: id, user_id (FK), asesor_actual_id, estado_asignacion
                         'asignacion:id,user_id,asesor_actual_id,estado_asignacion',
