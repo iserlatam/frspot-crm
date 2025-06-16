@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Parfaitementweb\FilamentCountryField\Forms\Components\Country as CountryField;
 use NunoMaduro\Collision\Adapters\Phpunit\State;
 
 use function Laravel\Prompts\search;
@@ -154,8 +155,13 @@ class UserResource extends Resource
                     ->copyableState(fn($record) => $record->cliente?->celular)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cliente.pais')
-                    ->label('pais')
+                    ->label('País')
+                    ->sortable()
                     ->searchable(),
+                    // ->formatStateUsing(fn (?string $state) =>
+                    //     // Si $state es “CO” devuelve “Colombia”, si ya es “Colombia” devuelve “Colombia”
+                    //     (new CountryField('pais'))->getCountriesList()[$state] ?? $state
+                    // ),
                 Tables\Columns\TextColumn::make('cliente.estado_cliente')
                     ->label('Estado cliente')
                     ->badge()
