@@ -312,6 +312,7 @@ class UserResource extends Resource
                     }),
             ])
             ->deferFilters()
+            ->persistFiltersInSession()
             //fin filtros
 
             ->actions([Tables\Actions\EditAction::make()->iconButton()->tooltip('Editar usuario')], position: ActionsPosition::BeforeCells)
