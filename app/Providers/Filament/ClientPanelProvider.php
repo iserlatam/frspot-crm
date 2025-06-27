@@ -62,15 +62,6 @@ class ClientPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->navigationItems([
-                // NavigationItem::make('Mi perfil')
-                //     ->icon('heroicon-s-user')
-                //     ->url(fn() => UserResource::getUrl('edit', ['record' => auth()->user()]))
-                //     ->group('Sobre Mi')
-                //     ->isActiveWhen(
-                //         fn(): bool => request()->is("client/users/*")
-                //     ),
-            ])
             ->renderHook(
                 PanelsRenderHook::BODY_START,
                 fn () => view('filament.client.pages.auth.login-extra')->render()
