@@ -29,7 +29,7 @@ class CuentaClienteResource extends Resource
 
     protected static ?string $navigationGroup = 'Sobre Mi';
 
-    protected static ?string $breadcrumb = 'Mi cuenta';
+    protected static ?string $breadcrumb = 'Mi Cuenta';
 
     protected static ?string $modelLabel = 'Cuenta';
 
