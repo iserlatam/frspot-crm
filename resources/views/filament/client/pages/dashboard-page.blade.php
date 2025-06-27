@@ -82,7 +82,7 @@
                     <input
                         type="text"
                         id="wallet-address"
-                        value="TLVSLdp1H192PPEeqqHuokqDQEy4GqJdfF"
+                        value="TAGAEYogs4ZiAc1Fu5Bf3Mjbjjz2TYFj1i"
                         class="border-2 border-slate-300 bg-slate-300 rounded-md w-[80%] text-center py-2"
                         readonly
                     >

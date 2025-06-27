@@ -63,7 +63,7 @@ class ClientPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->navigationItems([
-                NavigationItem::make('Mi Cuenta')
+                NavigationItem::make('Mi perfil')
                     ->icon('heroicon-s-user')
                     ->url(fn() => UserResource::getUrl('edit', ['record' => auth()->user()]))
                     ->group('Sobre Mi')

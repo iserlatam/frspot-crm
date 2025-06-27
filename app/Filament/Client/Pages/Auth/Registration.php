@@ -303,7 +303,7 @@ class Registration extends Register
                                         <div style="text-align: center; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 4px;  background-color: #f0f0f0">
                                             <b>Cartera para el pago</b>
                                             <p>
-                                                TLVSLdp1H192PPEeqqHuokqDQEy4GqJdfF
+                                                TAGAEYogs4ZiAc1Fu5Bf3Mjbjjz2TYFj1i
                                             </p>
                                             <b>USDT: Thether(USDT-Trc20)</b>
                                             <b>Con el codigo dirigete a una de estas paginas de pago Y con tu comprobante de pago continua al registro</b>
