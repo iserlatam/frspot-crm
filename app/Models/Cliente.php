@@ -190,7 +190,8 @@ class Cliente extends Model implements HasMedia
                                                 return $nuevoValor;
                                             }),
                                     ]),
-                            ]),
+                            ])
+                            ->visible(fn () => auth()->user()->hasRole('cliente') === false),
                         Tabs\Tab::make('Cuestionario')
                             ->columns(2)
                             ->schema([
@@ -241,11 +242,7 @@ class Cliente extends Model implements HasMedia
                                 Forms\Components\SpatieMediaLibraryFileUpload::make('comprobante_pag')
                                     ->collection('clientes_payment_files'),
                             ])
-                            ->visible(function(){
-                                if(Helpers::isSuperAdmin()){
-                                    return true;
-                                }
-                            }),
+                            ->visible(function () { return Helpers::isSuperAdmin() || auth()->user()->hasRole('cliente'); })
                     ])
             ];
     }
