@@ -34,7 +34,9 @@ class MovimientoResource extends Resource
 
     protected static ?string $navigationLabel = 'Mis Movimientos';
 
-    protected static ?string $navigationGroup = 'Sobre Mi';
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $navigationGroup = 'CUENTAS';
 
     public static function form(Form $form): Form
     {

@@ -27,7 +27,9 @@ class CuentaClienteResource extends Resource
 
     protected static ?string $navigationLabel = 'Mi Cuenta cliente';
 
-    protected static ?string $navigationGroup = 'Sobre Mi';
+    protected static ?string $navigationGroup = 'CUENTAS';
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $breadcrumb = 'Mi Cuenta';
 
