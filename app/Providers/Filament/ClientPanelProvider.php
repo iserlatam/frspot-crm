@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Client\Pages\Auth\Login;
 use App\Filament\Client\Pages\Auth\Registration;
 use App\Filament\Client\Pages\Dashboard;
+use App\Filament\Client\Resources\CuentaClienteResource;
 use App\Filament\Client\Resources\CuentaClienteResource\Widgets\AccountInfoWidget;
 use App\Filament\Client\Resources\UserResource;
 use Filament\Http\Middleware\Authenticate;
@@ -70,7 +71,14 @@ class ClientPanelProvider extends PanelProvider
                     ->isActiveWhen(
                         fn(): bool => request()->is("client/users/*")
                     ),
+                NavigationItem::make('Mi Wallet')
+                    ->url(fn() => CuentaClienteResource::getUrl('edit', ['record' => auth()->user()->cuentaCliente->id]))
+                    ->group('CUENTAS'),
+                    // ->isActiveWhen(
+                    //     fn(): bool => request()->is("client/users/*")
+                    // ),
             ])
+
             ->renderHook(
                 PanelsRenderHook::BODY_START,
                 fn () => view('filament.client.pages.auth.login-extra')->render()
