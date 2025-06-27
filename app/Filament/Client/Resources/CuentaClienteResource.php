@@ -25,7 +25,7 @@ class CuentaClienteResource extends Resource
 
     protected static ?string $activeNavigationIcon = 'heroicon-s-currency-dollar';
 
-    protected static ?string $navigationLabel = 'Mi Cuenta';
+    protected static ?string $navigationLabel = 'Mi Cuenta cliente';
 
     protected static ?string $navigationGroup = 'Sobre Mi';
 
