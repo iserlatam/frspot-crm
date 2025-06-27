@@ -221,12 +221,15 @@ class Cliente extends Model implements HasMedia
                                 Forms\Components\Grid::make()
                                     ->columns(2)
                                     ->schema([
-                                        Forms\Components\TextInput::make('tipo_doc_id')
-                                            ->datalist([
-                                                'DNI',
-                                                'PASAPORTE'
-                                            ])
-                                            ->default(null),
+                                        Forms\Components\Select::make('tipo_doc_id')
+                                            ->label('Tipo de documento de identificacion:')
+                                            ->options([
+                                                'CEDULA DE CIUDADANIA' => 'CEDULA DE CIUDADANIA',
+                                                'DNI' => 'DNI',
+                                                'PASAPORTE' => 'PASAPORTE',
+                                                'IFE' => 'IFE',
+                                                'LICENCIA DE CONDUCIR' => 'LICENCIA DE CONDUCIR',
+                                            ]),
                                         Forms\Components\SpatieMediaLibraryFileUpload::make('file_id')
                                             ->collection('users_id_documents')
                                             ->default(null),
