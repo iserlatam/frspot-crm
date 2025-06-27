@@ -63,13 +63,13 @@ class ClientPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->navigationItems([
-                NavigationItem::make('Mi perfil')
-                    ->icon('heroicon-s-user')
-                    ->url(fn() => UserResource::getUrl('edit', ['record' => auth()->user()]))
-                    ->group('Sobre Mi')
-                    ->isActiveWhen(
-                        fn(): bool => request()->is("client/users/*")
-                    ),
+                // NavigationItem::make('Mi perfil')
+                //     ->icon('heroicon-s-user')
+                //     ->url(fn() => UserResource::getUrl('edit', ['record' => auth()->user()]))
+                //     ->group('Sobre Mi')
+                //     ->isActiveWhen(
+                //         fn(): bool => request()->is("client/users/*")
+                //     ),
             ])
             ->renderHook(
                 PanelsRenderHook::BODY_START,

@@ -69,62 +69,62 @@
 </div>
 
     <!-- Modal -->
-<dialog id="myModal" class="fixed top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center z-50 hidden">
-    <div class="py-4  px-6 bg-slate-900 text-white rounded-lg w-[90%] max-w-2xl relative border-2 border-white modal-animation modal-shadow">
-        <hr class="border-2 border-slate-300 w-full">
+    <dialog id="myModal" class="fixed top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="py-4  px-6 bg-slate-900 text-white rounded-lg w-[90%] max-w-2xl relative border-2 border-white modal-animation modal-shadow">
+            <hr class="border-2 border-slate-300 w-full">
 
-        <div class="flex flex-col items-center py-3">
-            <p class="text-xl text-slate-300 uppercase font-bold">CARTERA RECEPTORA</p>
+            <div class="flex flex-col items-center py-3">
+                <p class="text-xl text-slate-300 uppercase font-bold">CARTERA RECEPTORA</p>
 
-            <div class="text-black flex w-full my-4">
-                <div class="w-full">
-                    <label for="walled-address" class="font-semibold bg-slate-300 border-2 rounded-md border-slate-300 py-2 px-2 ">Billetera FR</label>
-                    <input
-                        type="text"
-                        id="wallet-address"
-                        value="TAGAEYogs4ZiAc1Fu5Bf3Mjbjjz2TYFj1i"
-                        class="border-2 border-slate-300 bg-slate-300 rounded-md w-[80%] text-center py-2"
-                        readonly
+                <div class="text-black flex w-full my-4">
+                    <div class="w-full">
+                        <label for="walled-address" class="font-semibold bg-slate-300 border-2 rounded-md border-slate-300 py-2 px-2 ">Billetera FR</label>
+                        <input
+                            type="text"
+                            id="wallet-address"
+                            value="TAGAEYogs4ZiAc1Fu5Bf3Mjbjjz2TYFj1i"
+                            class="border-2 border-slate-300 bg-slate-300 rounded-md w-[80%] text-center py-2"
+                            readonly
+                        >
+                    </div>
+                    <div
+                        id="copy-button"
+                        class="border-2 border-slate-300 rounded-md bg-slate-300 px-2 py-2 ml-4 cursor-pointer"
+                        onclick="copyToClipboard()"
                     >
+                        📋
+                    </div>
                 </div>
-                <div
-                    id="copy-button"
-                    class="border-2 border-slate-300 rounded-md bg-slate-300 px-2 py-2 ml-4 cursor-pointer"
-                    onclick="copyToClipboard()"
-                >
-                    📋
+                <div class="py-2 px-3 bg-slate-300 rounded-md border-2 mb-4 border-slate-300">
+                    <p class="text-black font-bold ">USDT: Thether(USDT-Trc20)</p>
                 </div>
-            </div>
-            <div class="py-2 px-3 bg-slate-300 rounded-md border-2 mb-4 border-slate-300">
-                <p class="text-black font-bold ">USDT: Thether(USDT-Trc20)</p>
+
+                <div class="bg-slate-300 border-4 border-slate-300 rounded-lg text-black py-4 px-3">
+                    <p class="text-center font-medium">
+                        Con el código dirígete a una de estas páginas de pago y con tu comprobante de pago continua el depósito
+                    </p>
+                    <div class="flex justify-between px-2 md:px-[100px]">
+                        <a class="text-sky-500 hover:text-sky-800 font-semibold" target="_blank" href="https://buy.simplex.com/">
+                            Enlace a Simplex
+                        </a>
+                        <a class="text-sky-500 hover:text-sky-800 font-semibold" target="_blank" href="https://openocean.banxa.com/">
+                            Enlace a Banxa
+                        </a>
+                    </div>
+                </div>
+                <div class="">
+                    <button onclick="toggleModal2()" class="py2 px-3 mt-1 font-semibold bg-slate-800 hover:bg-slate-600 border-2 border-slate-300 rounded-md">salir</button>
+                </div>
             </div>
 
-            <div class="bg-slate-300 border-4 border-slate-300 rounded-lg text-black py-4 px-3">
-                <p class="text-center font-medium">
-                    Con el código dirígete a una de estas páginas de pago y con tu comprobante de pago continua el depósito
-                </p>
-                <div class="flex justify-between px-2 md:px-[100px]">
-                    <a class="text-sky-500 hover:text-sky-800 font-semibold" target="_blank" href="https://buy.simplex.com/">
-                        Enlace a Simplex
-                    </a>
-                    <a class="text-sky-500 hover:text-sky-800 font-semibold" target="_blank" href="https://openocean.banxa.com/">
-                        Enlace a Banxa
-                    </a>
-                </div>
-            </div>
-            <div class="">
-                <button onclick="toggleModal2()" class="py2 px-3 mt-1 font-semibold bg-slate-800 hover:bg-slate-600 border-2 border-slate-300 rounded-md">salir</button>
-            </div>
+            <!-- Botón para cerrar -->
+            <button onclick="toggleModal2()" class="absolute text-3xl top-2 right-2 text-white font-bold">
+                x
+            </button>
+
+            <hr class="border-2 border-slate-300 w-full mt-1">
         </div>
-
-        <!-- Botón para cerrar -->
-        <button onclick="toggleModal2()" class="absolute text-3xl top-2 right-2 text-white font-bold">
-            x
-        </button>
-
-        <hr class="border-2 border-slate-300 w-full mt-1">
-    </div>
-</dialog>
+    </dialog>
 
     {{-- TRADING VIEW GENERAL CHART --}}
     <div style="display: flex; flex-direction: column; min-min-height: 500px; ">
@@ -237,6 +237,7 @@
         </div>
     </div>
 
+    {{-- Modal 1 --}}
     <script>
         function toggleModal1() {
             const modal = document.getElementById('modal');
@@ -251,6 +252,8 @@
             }
         }
     </script>
+
+    {{-- Modal 2 --}}
     <script>
         function toggleModal2() {
             const modal = document.getElementById('myModal');
