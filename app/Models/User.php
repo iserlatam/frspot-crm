@@ -144,11 +144,8 @@ class User extends Authenticatable implements FilamentUser, HasMedia
                                 ->relationship('cuentaCliente')
                                 ->label('La cuenta, el lugar donde se almacena el deposito y los movimientos')
                                 ->schema(CuentaCliente::getForm()),
-                        ])->visible(function(){
-                            if(Helpers::isSuperAdmin()){
-                                return true;
-                            }
-                        }),
+                        ])
+                        ->visible(true),
                 ])
         ];
     }
