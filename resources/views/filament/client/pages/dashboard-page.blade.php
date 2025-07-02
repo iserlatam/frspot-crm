@@ -56,6 +56,88 @@
     .modal-shadow {
         box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
     }
+    .x-button {
+        font-size: 30px !important;
+    }
+</style>
+
+<style>
+    /* Responsive styles for mobile (max-width: 767px) */
+    @media (max-width: 767px) {
+        /* Buy/Sell buttons and input number */
+        .buy-sell-group button {
+            padding: 6px 10px !important;
+            font-size: 13px !important;
+            min-width: 60px !important;
+        }
+        .buy-sell-group input[type="number"] {
+            width: 90px !important;
+            padding: 4px 6px !important;
+            font-size: 13px !important;
+        }
+        /* Retiro y Deposito buttons */
+        .action-buttons {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+            align-items: stretch !important;
+        }
+        .action-buttons a,
+        .action-buttons button {
+            padding: 7px 10px !important;
+            font-size: 13px !important;
+            min-width: 60px !important;
+            margin-left: 0 !important;
+            width: 100% !important;
+            text-align: center !important;
+        }
+        /* Modal dialog texts */
+        dialog .modal-title,
+        dialog .modal-title h2,
+        dialog .modal-title p,
+        dialog .modal-title span,
+        dialog .modal-title label,
+        dialog .modal-title div,
+        dialog .modal-title {
+            font-size: 15px !important;
+        }
+        dialog .modal-title .x-button{
+            font-size: 30px !important;
+        }
+
+        dialog .modal-title p,
+        dialog .modal-title .modal-text,
+        dialog .modal-title, {
+            font-size: 13px !important;
+        }
+        dialog .modal-title {
+            padding: 10px !important;
+        }
+        /* Cartera en modal */
+        .cartera {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        .cartera .cartera-form {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 6px !important;
+        }
+        .cartera .cartera-form label {
+            display: block !important;
+            text-align: center !important;
+            margin-bottom: 4px !important;
+        }
+        .cartera #copy-button {
+            margin-left: 0 !important;
+        }
+    }
+</style>
 </style>
 
 <div id="modal" class="modal-overlay hidden">
@@ -70,14 +152,14 @@
 
     <!-- Modal -->
     <dialog id="myModal" class="fixed top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center z-50 hidden">
-        <div class="py-4  px-6 bg-slate-900 text-white rounded-lg w-[90%] max-w-2xl relative border-2 border-white modal-animation modal-shadow">
+        <div class="modal-title py-4  px-6 bg-slate-900 text-white rounded-lg w-[90%] max-w-2xl relative border-2 border-white modal-animation modal-shadow">
             <hr class="border-2 border-slate-300 w-full">
 
             <div class="flex flex-col items-center py-3">
                 <p class="text-xl text-slate-300 uppercase font-bold">CARTERA RECEPTORA</p>
 
-                <div class="text-black flex w-full my-4">
-                    <div class="w-full">
+                <div class="text-black flex w-full my-4 cartera">
+                    <div class="w-full cartera-form">
                         <label for="walled-address" class="font-semibold bg-slate-300 border-2 rounded-md border-slate-300 py-2 px-2 ">Billetera FR</label>
                         <input
                             type="text"
@@ -89,7 +171,7 @@
                     </div>
                     <div
                         id="copy-button"
-                        class="border-2 border-slate-300 rounded-md bg-slate-300 px-2 py-2 ml-4 cursor-pointer"
+                        class="border-2 w-fit border-slate-300 rounded-md bg-slate-300 px-2 py-2 ml-4 cursor-pointer"
                         onclick="copyToClipboard()"
                     >
                         📋
@@ -118,7 +200,7 @@
             </div>
 
             <!-- Botón para cerrar -->
-            <button onclick="toggleModal2()" class="absolute text-3xl top-2 right-2 text-white font-bold">
+            <button onclick="toggleModal2()" class="absolute text-3xl top-2 right-2 text-white font-bold x-button">
                 x
             </button>
 
@@ -129,7 +211,7 @@
     {{-- TRADING VIEW GENERAL CHART --}}
     <div style="display: flex; flex-direction: column; min-min-height: 500px; ">
         <div class="flex justify-between  w-full mb-4">
-            <div style="display: flex; align-items: start ; gap: 10px;">
+            <div class="buy-sell-group" style="display: flex; align-items: start ; gap: 10px;">
                 <div class="">
                     <button onclick="toggleModal1()" style="padding: 10px 15px; background-color: green; border: 2px solid rgba(211, 211, 211, 0.86); color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);  border-top-left-radius: 5px;">
                         Buy
@@ -140,9 +222,7 @@
                     <button onclick="toggleModal1()" style="padding: 10px 15px; background-color: red; border: 2px solid rgba(211, 211, 211, 0.86); color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);  border-top-right-radius: 5px;">Sell</button>
                 </div>
             </div>
-            {{-- boton de modal --}}
-            <!-- Botón para abrir el modal (puedes colocarlo donde necesites) -->
-            <div>
+            <div class="action-buttons">
                 <a  href="https://crm.frspot.com/client/movimientos/create" style="padding: 12px 15px; background-color: #0F172A ; border: 2px solid rgba(211, 211, 211, 0.86); color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;">
                     Retiro
                 </a>
@@ -182,7 +262,7 @@
     {{-- TRADING VIEW CRYPTO --}}
     <div style="display: flex; flex-direction: column; min-min-height: 500px;">
         <div class="flex justify-between  w-full mb-4">
-            <div style="display: flex; align-items: start ; gap: 10px;">
+            <div class="buy-sell-group" style="display: flex; align-items: start ; gap: 10px;">
                 <div class="">
                     <button onclick="toggleModal1()" style="padding: 10px 15px; background-color: green; border: 2px solid rgba(211, 211, 211, 0.86); color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);  border-top-left-radius: 5px;">
                         Buy
@@ -193,9 +273,7 @@
                     <button onclick="toggleModal1()" style="padding: 10px 15px; background-color: red; border: 2px solid rgba(211, 211, 211, 0.86); color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);  border-top-right-radius: 5px;">Sell</button>
                 </div>
             </div>
-            {{-- boton de modal --}}
-            <!-- Botón para abrir el modal (puedes colocarlo donde necesites) -->
-            <div>
+            <div class="action-buttons">
                 <a  href="https://crm.frspot.com/client/movimientos/create" style="padding: 12px 15px; background-color: #0F172A ; border: 2px solid rgba(211, 211, 211, 0.86); color: white; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;">
                     Retiro
                 </a>
