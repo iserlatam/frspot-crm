@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Widgets;
 
+use App\Helpers\Helpers;
 use App\Models\Asesor;
 use Filament\Tables;
 use Filament\Tables\Actions\BulkAction;
@@ -123,6 +124,9 @@ class SeguimientosTable extends BaseWidget
                     ->searchable()
                     ->preload()
                     ->multiple(),
+            ])
+            ->headerActions([
+                Helpers::renderReloadTableAction(),
             ])
             ->Actions([
                 Tables\Actions\ActionGroup::make([
