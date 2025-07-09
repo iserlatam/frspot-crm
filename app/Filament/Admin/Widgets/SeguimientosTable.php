@@ -78,7 +78,7 @@ class SeguimientosTable extends BaseWidget
                         ->searchable()
                         ->sortable()
                         ->html()
-                        ->lineClamp(3)
+                        // ->lineClamp(3)
                         ->limit(300)
                         ->wrap(),
                         
