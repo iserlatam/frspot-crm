@@ -43,6 +43,7 @@ class DailySeguimientosKpiChart extends ChartWidget
                 (aunque no tengan actividad, saldrán con valor 0) */
         $asesores = Asesor::query()
             ->whereIn('tipo_asesor', ['ftd', 'retencion', 'recovery'])
+            ->whereIn('user.roles.name',['asesor'])
             ->with('user:id,name')     // para obtener el nombre a mostrar
             ->get();
 
