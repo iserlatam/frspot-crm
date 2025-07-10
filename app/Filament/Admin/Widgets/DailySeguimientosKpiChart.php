@@ -139,6 +139,6 @@ class DailySeguimientosKpiChart extends ChartWidget
     public static function canView(): bool
     {
         // (ajusta a tus roles reales)
-        return Helpers::isSuperAdmin();
+        return Helpers::isSuperAdmin() || Helpers::isCrmJunior();
     }
 }
