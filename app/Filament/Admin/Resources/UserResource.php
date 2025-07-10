@@ -219,15 +219,14 @@ class UserResource extends Resource
             ->filters([
 
                 // Nuevo: sólo clientes cuyo campo 'pais' tiene exactamente 2 caracteres (códigos ISO)
-                Tables\Filters\Filter::make('iso_only')
-                    ->label('Sólo Países ISO')
-                    ->toggle()  // interruptor on/off
-                    ->query(function (Builder $query): Builder {
-                        return $query->whereHas('cliente', function (Builder $q) {
-                            $q->whereRaw("CHAR_LENGTH(COALESCE(pais, '')) = 2");
-                        });
-                    }),
-
+                // Tables\Filters\Filter::make('iso_only')
+                //     ->label('Sólo Países ISO')
+                //     ->toggle()  // interruptor on/off
+                //     ->query(function (Builder $query): Builder {
+                //         return $query->whereHas('cliente', function (Builder $q) {
+                //             $q->whereRaw("CHAR_LENGTH(COALESCE(pais, '')) = 2");
+                //         });
+                //     }),
                 // 📌 Filtro por Asesor Asignado
                 // OK
                 SelectFilter::make('asignacion.asesor.user.name')
