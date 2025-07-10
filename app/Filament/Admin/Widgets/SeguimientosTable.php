@@ -46,6 +46,12 @@ class SeguimientosTable extends BaseWidget
             ->query(
                 Seguimiento::query()
                     ->whereDate('created_at', today())
+                    ->whereHas('asesor',function ($q){
+                        $q->where('tipo_asesor','ftd')
+                          ->whereHas('user.roles', function($q2){
+                                $q2->whereIn('name',['asesor','team ftd']);
+                          });
+                    })
                     ->with([
                         // 1️⃣  Asesor con el campo tipo_asesor
                         'asesor:id,user_id,tipo_asesor',
@@ -119,8 +125,16 @@ class SeguimientosTable extends BaseWidget
                 ])
             ->filters([
                 Tables\Filters\SelectFilter::make('asesor_id')
-                    ->label('Asesor')
-                    ->relationship('asesor.user', '.name')
+                    ->label('Asesor (FTD)')
+                    ->options(function(){
+                        return Asesor::query()
+                            ->where('tipo_asesor','ftd')
+                            ->whereHas('user.roles', fn($q)=>$q->wherein('name',['asesor', 'team ftd']))
+                            ->with('user:id,name')
+                            ->get()
+                            ->pluck('user.name', 'id')
+                            ->toArray();
+                        })
                     ->searchable()
                     ->preload()
                     ->multiple(),
