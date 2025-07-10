@@ -16,6 +16,11 @@ class Dashboard extends \Filament\Pages\Dashboard
     protected static ?string $activeNavigationIcon = 'heroicon-s-home';
 
     protected static string $view = 'filament.admin.pages.dashboard';
+    
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Helpers::isSuperAdmin();
+    }
 
     public static function canAccess(): bool
     {
