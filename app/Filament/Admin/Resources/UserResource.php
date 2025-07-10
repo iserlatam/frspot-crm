@@ -305,12 +305,12 @@ class UserResource extends Resource
                             ->when(
                                 $data['fecha_inicio'] ?? null,
                                 fn($query, $value) =>
-                                $query->whereDate('created_at', '>=', $value)
+                                $query->whereDate('updated_at', '>=', $value)
                             )
                             ->when(
                                 $data['fecha_fin'] ?? null,
                                 fn($query, $value) =>
-                                $query->whereDate('created_at', '<=', $value)
+                                $query->whereDate('updated_at', '<=', $value)
                             );
                     }),
             ])
