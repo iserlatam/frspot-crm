@@ -13,11 +13,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 
-use function Laravel\Prompts\table;
-
-class SeguimientosTable extends BaseWidget
+class SeguimientosTableRetencion extends BaseWidget
 {
-    public static ?string $heading = 'Seguimientos del día';
+     public static ?string $heading = 'Seguimientos del día';
 
     protected int|string|array $columnSpan = 'full';
 
@@ -36,7 +34,6 @@ class SeguimientosTable extends BaseWidget
 
         return $paginator;
     }
-
     public function table(Table $table): Table
     {
         return $table
@@ -44,23 +41,19 @@ class SeguimientosTable extends BaseWidget
                 Seguimiento::query()
                     ->whereDate('created_at', today())
                     ->whereHas('asesor',function ($q){
-                        $q->where('tipo_asesor','ftd')
+                        $q->where('tipo_asesor','retencion')
                           ->whereHas('user.roles', function($q2){
-                                $q2->whereIn('name',['asesor','team ftd']);
+                                $q2->whereIn('name',['asesor','team retencion']);
                           });
                     })
                     ->with([
-                        // 1️⃣  Asesor con el campo tipo_asesor
                         'asesor:id,user_id,tipo_asesor',
-                        // 2️⃣  El usuario del asesor (solo id y name)
                         'asesor.user:id,name',
-                        // 3️⃣  El cliente y sus columnas
                         'user:id,name',
-                        // 3️⃣  El cliente y sus columnas
                         'user.cliente:id,user_id,estado_cliente,fase_cliente',
                     ])
             )
-            ->paginationPageOptions([10, 20, 30, 50])
+           ->paginationPageOptions([10, 20, 30, 50])
             ->defaultPaginationPageOption(10)
             ->defaultSort('created_at', 'desc')
             ->columns([
@@ -82,7 +75,6 @@ class SeguimientosTable extends BaseWidget
                         ->searchable()
                         ->sortable()
                         ->html()
-                        // ->lineClamp(3)
                         ->limit(300)
                         ->wrap(),
                         
@@ -122,11 +114,11 @@ class SeguimientosTable extends BaseWidget
                 ])
             ->filters([
                 Tables\Filters\SelectFilter::make('asesor_id')
-                    ->label('Asesor (FTD)')
+                    ->label('Asesor (Retencion)')
                     ->options(function(){
                         return Asesor::query()
-                            ->where('tipo_asesor','ftd')
-                            ->whereHas('user.roles', fn($q)=>$q->wherein('name',['asesor', 'team ftd']))
+                            ->where('tipo_asesor','retencion')
+                            ->whereHas('user.roles', fn($q)=>$q->wherein('name',['asesor', 'team retencion']))
                             ->with('user:id,name')
                             ->get()
                             ->pluck('user.name', 'id')
@@ -148,7 +140,5 @@ class SeguimientosTable extends BaseWidget
                         ->icon('heroicon-o-eye'),
                     ])
                 ], ActionsPosition::BeforeCells);
-
     }
-
 }

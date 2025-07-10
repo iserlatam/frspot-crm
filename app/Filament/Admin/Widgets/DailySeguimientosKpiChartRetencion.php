@@ -1,24 +1,16 @@
 <?php
-/**
- *  APP/Filament/Widgets/DailySeguimientosKpiChart.php
- *
- *  Muestra, para **hoy**, cuántos clientes distintos ha contactado cada asesor
- *  ( tipo FTD / Retención / Recovery ).  Si un asesor hizo 3 comentarios al mismo
- *  cliente cuenta solo 1.  Barra **verde** si llegó a 130, roja si no.
- */
 
 namespace App\Filament\Admin\Widgets;
 
 use App\Helpers\Helpers;
-use Filament\Widgets\ChartWidget;
-use App\Models\Seguimiento;
 use App\Models\Asesor;
-use Illuminate\Support\Carbon;
+use App\Models\Seguimiento;
+use Filament\Support\RawJs;
+use Filament\Widgets\ChartWidget;
 
-class DailySeguimientosKpiChart extends ChartWidget
+class DailySeguimientosKpiChartRetencion extends ChartWidget
 {
-    /* Texto que aparece encima del gráfico */
-    protected static ?string $heading = 'Seguimientos diarios por asesor FTD';
+    protected static ?string $heading = 'Seguimientos diarios por asesor Retencion';
 
     /* Refresca cada 60 000 ms (1 min) sin recargar la página */
     protected static ?string $pollingInterval = '60s';
@@ -31,65 +23,61 @@ class DailySeguimientosKpiChart extends ChartWidget
         // ‘bar’ + indexAxis='y'  →  barras horizontales
         return 'bar';
     }
-
-    /* ---------- 2. Datos que alimentan Chart.js ---------- */
     protected function getData(): array
     {
-        /* 2-a) Rango de hoy según la TZ de la app */
-        $start = now()->startOfDay();   // 00:00
-        $end   = now()->endOfDay();     // 23:59:59
-
-        /* 2-b) Traemos TODOS los asesores FTD, Retención, Recovery
-                (aunque no tengan actividad, saldrán con valor 0) */
+        $start = now()->startOfDay();
+        $end = now()->endOfDay();
+        
+        // llamar asesores tipo asesor Retencion
         $asesores = Asesor::query()
-            ->whereIn('tipo_asesor', ['ftd'])
-            ->whereHas('user.roles', fn ($q) => $q->whereIn('name', ['asesor','team ftd']))
-            ->with('user:id,name')     // para obtener el nombre a mostrar
+            ->where('tipo_asesor','retencion')
+            ->whereHas('user.roles', fn ($q) => $q->whereIn('name', ['asesor','team retencion']))
+            ->with('user:id,name')
             ->get();
 
-        /* 2-c) Preparamos arrays para Chart.js */
-        $labels = [];   // nombres en el eje Y
-        $data   = [];   // nº de clientes contactados
-        $colors = [];   // verde o rojo según KPI
+        // preparar lso datos para la grafica
+        $labels =[];
+        $data = [];
+        $colors =[];    
 
-        foreach ($asesores as $asesor) {
-            /* Contamos clientes distintos (user_id) tocados HOY */
+        foreach($asesores as $asesor){
+            // se realiza un contedo del total de total de clientes se realcia un conteo por cada cliente distinto contactado
             $totalClientes = Seguimiento::query()
-                ->where('asesor_id', $asesor->id)
-                ->whereBetween('created_at', [$start, $end])
+                ->where('asesor_id',$asesor->id)
+                ->whereBetween('created_at',[$start, $end])
                 ->distinct('user_id')
                 ->count('user_id');
 
-            /* Rellenamos los arrays */
             $labels[] = $asesor->user->name ?? "Asesor {$asesor->id}";
             $data[]   = $totalClientes;
-            $colors[] = $totalClientes >= 130
+            $colors[] = $totalClientes >= 30
                 ? 'rgba(16,185,129,0.8)'   // verde Tailwind emerald-500
                 : 'rgba(239,68,68,0.8)';   // rojo Tailwind red-500
         }
 
-        /* 2-d) Devolvemos el formato exacto que espera Chart.js */
+        // se devuelve el formato que espera recibir Chart.js
+
         return [
-            'labels'   => $labels,
+            'labels' => $labels,
             'datasets' => [
                 [
-                    'label'           => 'Clientes distintos contactados hoy',
-                    'data'            => $data,
-                    'backgroundColor' => $colors,
+                    'labels' => 'Clientes distintos contactado hoy',
+                    'data'   => $data,
+                    'backgroundColor' => $colors 
                 ],
             ],
         ];
     }
 
-    /* ---------- 3. Opciones extra de Chart.js ---------- */
-    protected function getOptions(): array
+
+    protected function getOptions(): array|RawJs|null
     {
-        return [
+        return[
             'chart' => [
                 'type' => $this->getType(),
-                'data' => $this->getData(),
+                'data' => $this->getdata(),
 
-                /* Aquí van opciones nativas de Chart.js */
+                // aqui se ubican las opciones nativas de charts.js para que funcione
                 'options' => [
                     /* Barras horizontales */
                     'indexAxis' => 'y',
@@ -131,14 +119,14 @@ class DailySeguimientosKpiChart extends ChartWidget
                         ],
                     ],
                 ],
-            ],
+            ]
         ];
     }
 
-    /* ---------- 4. Quién puede ver el widget ---------- */
     public static function canView(): bool
     {
         // (ajusta a tus roles reales)
         return Helpers::isSuperAdmin();
     }
+
 }
