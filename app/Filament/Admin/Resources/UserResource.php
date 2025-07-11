@@ -277,41 +277,56 @@ class UserResource extends Resource
                                 $query->whereHas('cliente', fn($q) => $q->where('pais', 'like', "%$value%"))->lazy();
                             });
                     }),
-
+                    //  filtro por fecha de actualizacion de cl
+                    Tables\Filters\Filter::make('día_actualizacion')
+                         ->form([
+                             Forms\Components\DatePicker::make('fecha')
+                                 ->label('Día específico de actualizacion')
+                                 ->native(false),
+                         ])
+                         ->query(function (Builder $query, array $data): Builder {
+                             return $query
+                                 ->when(
+                                     $data['fecha'] ?? null,
+                                     fn($query, $value) =>
+                                         $query->whereHas('cliente', fn($q) =>
+                                             $q->whereDate('updated_at', $value)
+                                         )
+                                 );
+                         }),
                 // FILTRAR POR ROLE DE CLIENTE => SE USA UN SELECT CON RELATIONSHIP ROLES
-                SelectFilter::make('roles')
-                    ->relationship('roles', 'name')
-                    ->label('Rol asignado'),
+                // SelectFilter::make('roles')
+                //     ->relationship('roles', 'name')
+                //     ->label('Rol asignado'),
+                
+                // Tables\Filters\Filter::make('Filtro de Fechas')
+                //     ->form([
+                //         Forms\Components\Grid::make(2)
+                //             ->schema([
+                //                 Forms\Components\DatePicker::make('fecha_inicio')
+                //                     ->label('Fecha desde')
+                //                     ->placeholder('Selecciona una fecha')
+                //                     ->native(false),
 
-                // 📌 FILTRO DE FECHAS
-                Tables\Filters\Filter::make('Filtro de Fechas')
-                    ->form([
-                        Forms\Components\Grid::make(2)
-                            ->schema([
-                                Forms\Components\DatePicker::make('fecha_inicio')
-                                    ->label('Fecha desde')
-                                    ->placeholder('Selecciona una fecha')
-                                    ->native(false),
-
-                                Forms\Components\DatePicker::make('fecha_fin')
-                                    ->label('Fecha hasta')
-                                    ->placeholder('Selecciona una fecha')
-                                    ->native(false),
-                            ]),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['fecha_inicio'] ?? null,
-                                fn($query, $value) =>
-                                $query->whereDate('updated_at', '>=', $value)
-                            )
-                            ->when(
-                                $data['fecha_fin'] ?? null,
-                                fn($query, $value) =>
-                                $query->whereDate('updated_at', '<=', $value)
-                            );
-                    }),
+                //                 Forms\Components\DatePicker::make('fecha_fin')
+                //                     ->label('Fecha hasta')
+                //                     ->placeholder('Selecciona una fecha')
+                //                     ->native(false),
+                //             ]),
+                //     ])
+                //     ->query(function (Builder $query, array $data): Builder {
+                //         return $query
+                //             ->when(
+                //                 $data['fecha_inicio'] ?? null,
+                //                 fn($query, $value) =>
+                //                     $query->whereRelation('cliente', 'updated_at', '>=', $value)
+                //             )
+                //             ->when(
+                //                 $data['fecha_fin'] ?? null,
+                //                 fn($query, $value) =>
+                //                     $query->whereRelation('cliente', 'updated_at', '<=', $value)
+                //             );
+                //     }),
             ])
             ->deferFilters()
             ->persistFiltersInSession()
