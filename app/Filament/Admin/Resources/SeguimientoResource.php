@@ -129,7 +129,7 @@ class SeguimientoResource extends Resource
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\DatePicker::make('created_at_day')
-                                    ->label('Día específico')
+                                    ->label('Día de creación')
                                     ->columnSpanFull()
                                     ->displayFormat('d/m/Y'),
                                 // 📌 Filtro por Estado del Cliente
