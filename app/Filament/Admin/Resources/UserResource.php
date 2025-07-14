@@ -258,9 +258,16 @@ class UserResource extends Resource
                                     ->options(OptionsHelper::faseOptions())
                                     ->placeholder('Selecciona una fase'),
 
-                                Forms\Components\TextInput::make('pais')
-                                    ->label('Pais')
-                                    ->placeholder('Escribe el pais del cliente')
+                                // Aquí el select de país con nombres completos
+                                Forms\Components\Select::make('pais')
+                                    ->label('País')
+                                    ->options(
+                                        collect((new \Parfaitementweb\FilamentCountryField\Forms\Components\Country('pais'))->getCountriesList())
+                                            ->mapWithKeys(fn (string $name) => [$name => $name])
+                                            ->toArray()
+                                    )
+                                    ->searchable()
+                                    ->placeholder('Selecciona el país')
                                     ->columnSpanFull(),
                             ]),
                     ])
@@ -274,7 +281,7 @@ class UserResource extends Resource
                                 $query->whereHas('cliente', fn($q) => $q->where('fase_cliente', $value))->lazy();
                             })
                             ->when($data['pais'] ?? null, function ($query, $value) {
-                                $query->whereHas('cliente', fn($q) => $q->where('pais', 'like', "%$value%"))->lazy();
+                                $query->whereHas('cliente', fn($q) => $q->where('pais', $value))->lazy();
                             });
                     }),
                     //  filtro por fecha de actualizacion de cl
