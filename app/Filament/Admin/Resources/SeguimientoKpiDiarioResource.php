@@ -71,7 +71,8 @@ class SeguimientoKpiDiarioResource extends Resource
                 Tables\Columns\TextColumn::make('rol_asesor')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tipo_asesor')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\IconColumn::make('cumplio_meta')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('cantidad_clientes')
