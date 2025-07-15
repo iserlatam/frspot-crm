@@ -11,7 +11,7 @@ use Illuminate\Contracts\View\View;
 
 class Kpis extends Page
 {
-    protected static ?string $navigationIcon  = 'heroicon-o-chart-bar-square';
+    protected static ?string $navigationIcon  = 'heroicon-o-chart-bar';
     protected static ?string $navigationLabel = 'Kpi FTD';
     protected static ?string $navigationGroup = 'KPIs';
     protected static ?string $title = 'KPI ftd';

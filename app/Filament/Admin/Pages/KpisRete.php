@@ -10,7 +10,7 @@ use Illuminate\Contracts\View\View;
 
 class KpisRete extends Page
 {
-    protected static ?string $navigationIcon  = 'heroicon-o-chart-bar-square';
+    protected static ?string $navigationIcon  = 'heroicon-o-chart-bar';
     protected static ?string $navigationLabel = 'Kpi Retencion';
     protected static ?string $navigationGroup = 'KPIs';
     protected static ?string $title = 'KPI Retencion';
