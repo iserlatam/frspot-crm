@@ -13,6 +13,7 @@ use App\Helpers\Helpers;
 use Filament\Widgets\ChartWidget;
 use App\Models\Seguimiento;
 use App\Models\Asesor;
+use App\Models\SeguimientoKpiDiario;
 use Illuminate\Support\Carbon;
 
 class DailySeguimientosKpiChart extends ChartWidget
@@ -38,6 +39,7 @@ class DailySeguimientosKpiChart extends ChartWidget
         /* 2-a) Rango de hoy según la TZ de la app */
         $start = now()->startOfDay();   // 00:00
         $end   = now()->endOfDay();     // 23:59:59
+        $metaDiaria = 130;
 
         /* 2-b) Traemos TODOS los asesores FTD, Retención, Recovery
                 (aunque no tengan actividad, saldrán con valor 0) */
@@ -53,17 +55,51 @@ class DailySeguimientosKpiChart extends ChartWidget
         $colors = [];   // verde o rojo según KPI
 
         foreach ($asesores as $asesor) {
+
+            //obtener el tipo asesor 
+            $tipo_asesor = $asesor->tipo_asesor;
+
+            // realizamos un conteo de los seguimientos diarios realizados por el asesor
+            $cantidad_seguimientos = Seguimiento::query()
+                ->where('asesor_id',$asesor->id)
+                ->whereBetween('created_at',[$start, $end])
+                ->count('id');
+
+            
             /* Contamos clientes distintos (user_id) tocados HOY */
             $totalClientes = Seguimiento::query()
                 ->where('asesor_id', $asesor->id)
                 ->whereBetween('created_at', [$start, $end])
                 ->distinct('user_id')
                 ->count('user_id');
+            
+            //inicializamos variable y validamos que el total de clientes contactados sea mayor o igual a la meta diaria para FTD
+            $cumplio_meta = $totalClientes >= $metaDiaria ? true : false ;
+
+            //inicializamos una variable para contar cuantos clientes faltaron para cumplir la meta diaria del asesor ftd
+            $faltantes = max(0,$metaDiaria - $totalClientes);
+
+            // aqui iniciamos logica para cargar la informacion de lso kpi diarios al nuevo modelo de SeguimientoKpiDiario para mantener un historial de las metricas por asesor
+            SeguimientoKpiDiario::updateOrCreate(
+                [
+                    'asesor_id' => $asesor->id ?? null,
+                    'fecha_kpi' => $start->toDateString(),
+                ],
+                [
+                    'rol_asesor' => $asesor->user->roles->pluck('name')->first(), //guardamos el id del asesor que realizo los seguimientos
+                    'tipo_asesor' =>$tipo_asesor,                                 //guardamos el tipo del asesor relacionado Debe ser FTD
+                    'nombre_asesor' => $asesor->user->name ?? null,               //guardamos el nombre del asesor relacionado al usuariuo
+                    'cantidad_clientes' =>$totalClientes,                         //guardamos el total de los clientes distinstos contactados ese dia
+                    'cantidad_total' => $cantidad_seguimientos,                   //guardamos la cantidad todal de seguimientos realizados ese dia por el asesor
+                    'cumplio_meta' => $cumplio_meta,                              //verificamos si cumplio o no cumplio la meta minima diaria
+                    'faltantes' => $faltantes,                                    //siel asesor no completo la meta mostramos un conteo de clientes faltantes para la meta
+                ]
+            );
 
             /* Rellenamos los arrays */
             $labels[] = $asesor->user->name ?? "Asesor {$asesor->id}";
             $data[]   = $totalClientes;
-            $colors[] = $totalClientes >= 130
+            $colors[] = $totalClientes >= $metaDiaria
                 ? 'rgba(16,185,129,0.8)'   // verde Tailwind emerald-500
                 : 'rgba(239,68,68,0.8)';   // rojo Tailwind red-500
         }

@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Widgets;
 use App\Helpers\Helpers;
 use App\Models\Asesor;
 use App\Models\Seguimiento;
+use App\Models\SeguimientoKpiDiario;
 use Filament\Support\RawJs;
 use Filament\Widgets\ChartWidget;
 
@@ -27,6 +28,7 @@ class DailySeguimientosKpiChartRetencion extends ChartWidget
     {
         $start = now()->startOfDay();
         $end = now()->endOfDay();
+        $metaDiaria = 30;  // meta diaria de clientes distintos contactados para Retencion
         
         // llamar asesores tipo asesor Retencion
         $asesores = Asesor::query()
@@ -41,6 +43,17 @@ class DailySeguimientosKpiChartRetencion extends ChartWidget
         $colors =[];    
 
         foreach($asesores as $asesor){
+
+            // obtener el tipo asesor
+            $tipo_asesor = $asesor->tipo_asesor;
+
+            // se realiza un conteo de los seguimientos diarios realizados por el asesor
+            $cantidad_seguimientos = Seguimiento::query()
+                ->where('asesor_id',$asesor->id)
+                ->whereBetween('created_at',[$start, $end])
+                ->count('id');
+
+
             // se realiza un contedo del total de total de clientes se realcia un conteo por cada cliente distinto contactado
             $totalClientes = Seguimiento::query()
                 ->where('asesor_id',$asesor->id)
@@ -48,9 +61,28 @@ class DailySeguimientosKpiChartRetencion extends ChartWidget
                 ->distinct('user_id')
                 ->count('user_id');
 
+            $cumplioMeta = $totalClientes >= $metaDiaria ? true : false;
+
+            $faltantes = max(0, $metaDiaria - $totalClientes);
+
+            SeguimientoKpiDiario::updateOrCreate(
+                [
+                    'asesor_id' => $asesor->id,                     //obtenemos el id del asesor
+                    'fecha_kpi' => $start->toDateString(),          //obtenemos la fecha diaria del KPI del widget en formato fecha
+                ],[
+                    'nombre_asesor' => $asesor->user->name,         // obtenemos el nombre del asesor relaiconado al user
+                    'tipo_asesor' => $tipo_asesor,                  // obtenemos el tipo de asesor
+                    'rol_asesor'  => $asesor->user->roles->pluck('name')->first(), // obtenemos el rol del asesor
+                    'cantidad_clientes' => $totalClientes,          // cantidad de clientes distintos contactados
+                    'cantidad_total' => $cantidad_seguimientos,     // cantidad de seguimientos realizados por el asesor diarios
+                    'cumplio_meta' => $cumplioMeta,                 // si cumplio la meta diaria o no la cumplio
+                    'faltantes' => $faltantes,                      // cantidad de clientes faltantes para cumplir
+                ]);
+
+
             $labels[] = $asesor->user->name ?? "Asesor {$asesor->id}";
             $data[]   = $totalClientes;
-            $colors[] = $totalClientes >= 30
+            $colors[] = $totalClientes >= $metaDiaria
                 ? 'rgba(16,185,129,0.8)'   // verde Tailwind emerald-500
                 : 'rgba(239,68,68,0.8)';   // rojo Tailwind red-500
         }
