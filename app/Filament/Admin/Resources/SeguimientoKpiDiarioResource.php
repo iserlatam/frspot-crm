@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\SeguimientoKpiDiarioResource\Pages;
 use App\Filament\Admin\Resources\SeguimientoKpiDiarioResource\RelationManagers;
+use App\Helpers\Helpers;
 use App\Models\SeguimientoKpiDiario;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -20,6 +21,11 @@ class SeguimientoKpiDiarioResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'KPIs';
+
+    public static function canAccess(): bool
+    {
+        return Helpers::isSuperAdmin() || Helpers::isCrmManager();
+    }
 
     // public static function form(Form $form): Form
     // {
