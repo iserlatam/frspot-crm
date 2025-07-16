@@ -45,7 +45,7 @@ class WeeklyKpiAsesorsChart extends ChartWidget
         
         //inicializamos el dataset que se le pasara al widget
         $datasets = [];
-        // $index = 0; // Inicializamos el índice para la paleta de colores
+        $index = 0; // Inicializamos el índice para la paleta de colores
 
         $agrupado = $filas->groupBy('asesor_id')->sortKeys(); // Agrupamos por asesor
 
@@ -68,12 +68,12 @@ class WeeklyKpiAsesorsChart extends ChartWidget
                 'label' => $datosAsesor->first()->nombre_asesor, //nombre del asesor
                 'data' => $points,                         //datos de los puntos
                 'seguimientos' => $seguimientos,          // datos de seguimientos
-                'borderColor' => $palette[$asesorId % count($palette)], //color del borde
+                'borderColor' => $palette[$index], //color del borde
                 'backgroundColor' => 'transparent', //color de fondo transparente
                 'pointRadius' => 5, //radio de los puntos
                 'tension' => 0.2, //tension de la linea
             ];
-            // $index++; // Incrementamos el índice para el siguiente asesor
+            $index++; // Incrementamos el índice para el siguiente asesor
             // dd($agrupado->keys()->toArray());
         };
 
