@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\SeguimientoKpiDiarioResource\Widgets;
 
+use App\Helpers\Helpers;
 use App\Models\SeguimientoKpiDiario;
 use Carbon\CarbonPeriod;
 use Filament\Support\RawJs;
@@ -9,10 +10,26 @@ use Filament\Widgets\ChartWidget;
 
 class WeeklyKpiAsesorsChart extends ChartWidget
 {
-    protected static ?string $heading = 'grafico semanal de KPi para asesores FTD';
+    protected static ?string $heading = 'Grafico semanal de KPi para asesores FTD';
     protected function getType(): string
     {
         return 'line';
+    }
+
+    public function getColumnSpan(): int|string|array
+    {
+        // Si el usuario es CRM Junio, ocupa todo el ancho (por ejemplo, 2 columnas)
+        if (Helpers::isCrmJunior()) {
+            return 'full'; // O el número total de columnas, por ejemplo: 2, 3, etc.
+        }
+
+        // Valor por defecto
+        return 1;
+    }
+
+    public static function canView(): bool
+    {
+        return Helpers::isSuperAdmin() || Helpers::isCrmManager(); // You can implement your own logic to control visibility
     }
 
     protected function getData(): array
@@ -70,8 +87,8 @@ class WeeklyKpiAsesorsChart extends ChartWidget
                 'seguimientos' => $seguimientos,          // datos de seguimientos
                 'borderColor' => $palette[$index], //color del borde
                 'backgroundColor' => 'transparent', //color de fondo transparente
-                'pointRadius' => 5, //radio de los puntos
-                'tension' => 0.2, //tension de la linea
+                'pointRadius' => 3, //radio de los puntos
+                'tension' => 0.1, //tension de la linea
             ];
             $index++; // Incrementamos el índice para el siguiente asesor
             // dd($agrupado->keys()->toArray());

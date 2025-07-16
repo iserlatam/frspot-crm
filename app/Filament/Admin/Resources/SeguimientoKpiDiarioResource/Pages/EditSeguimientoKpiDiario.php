@@ -10,10 +10,20 @@ class EditSeguimientoKpiDiario extends EditRecord
 {
     protected static string $resource = SeguimientoKpiDiarioResource::class;
 
+    public static function canView(): bool
+    {
+        return false; // Disable access to this page
+    }
+    
+    public static function canEdit($record): bool
+    {
+        return false;
+    }
+
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            // Actions\DeleteAction::make(),
         ];
     }
 }

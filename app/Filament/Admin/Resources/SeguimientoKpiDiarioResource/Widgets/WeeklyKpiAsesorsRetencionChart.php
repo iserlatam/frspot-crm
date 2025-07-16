@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\SeguimientoKpiDiarioResource\Widgets;
 
+use App\Helpers\Helpers;
 use App\Models\SeguimientoKpiDiario;
 use Carbon\CarbonPeriod;
 use Filament\Support\RawJs;
@@ -9,10 +10,14 @@ use Filament\Widgets\ChartWidget;
 
 class WeeklyKpiAsesorsRetencionChart extends ChartWidget
 {
-    protected static ?string $heading = 'grafico semanal de KPi para asesores Retencion';
+    protected static ?string $heading = 'Grafico semanal de KPi para asesores Retencion';
     protected function getType(): string
     {
         return 'line';
+    }
+    public static function canView(): bool
+    {
+        return Helpers::isSuperAdmin(); // You can implement your own logic to control visibility
     }
 
     protected function getData(): array
@@ -69,8 +74,8 @@ class WeeklyKpiAsesorsRetencionChart extends ChartWidget
                 'seguimientos' => $seguimientos,          // datos de seguimientos
                 'borderColor' => $palette[$index], //color del borde
                 'backgroundColor' => 'transparent', //color de fondo transparente
-                'pointRadius' => 5, //radio de los puntos
-                'tension' => 0.2, //tension de la linea
+                'pointRadius' => 3, //radio de los puntos
+                'tension' => 0.1, //tension de la linea
             ];
             $index++; // Incrementamos el índice para el siguiente asesor
         };
