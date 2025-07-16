@@ -47,7 +47,7 @@ class WeeklyKpiAsesorsChart extends ChartWidget
         $datasets = [];
         // $index = 0; // Inicializamos el índice para la paleta de colores
 
-        $agrupado = $filas->groupBy('asesor_id'); // Agrupamos por asesor
+        $agrupado = $filas->groupBy('asesor_id')->sortKeys(); // Agrupamos por asesor
 
         //recorremos las filas obtenidas de la consulta
         foreach ($agrupado as $asesorId => $datosAsesor) {
