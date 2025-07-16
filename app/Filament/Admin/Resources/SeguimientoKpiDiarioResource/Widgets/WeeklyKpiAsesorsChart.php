@@ -9,7 +9,7 @@ use Filament\Widgets\ChartWidget;
 
 class WeeklyKpiAsesorsChart extends ChartWidget
 {
-    protected static ?string $heading = 'grafico semanal de KPi para asesores';
+    protected static ?string $heading = 'grafico semanal de KPi para asesores FTD';
     protected function getType(): string
     {
         return 'line';

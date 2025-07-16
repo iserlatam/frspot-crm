@@ -46,7 +46,7 @@ class WeeklyKpiAsesorsRetencionChart extends ChartWidget
         $datasets = [];
         $index = 0; // Inicializamos el índice para la paleta de colores
 
-        $agrupado = $filas->groupBy('asesor_id'); // Agrupamos por asesor
+        $agrupado = $filas->groupBy('asesor_id')->sortKeys(); // Agrupamos por asesor
 
         //recorremos las filas obtenidas de la consulta
         foreach ($agrupado as $asesorId => $datosAsesor) {
@@ -67,7 +67,7 @@ class WeeklyKpiAsesorsRetencionChart extends ChartWidget
                 'label' => $datosAsesor->first()->nombre_asesor, //nombre del asesor
                 'data' => $points,                         //datos de los puntos
                 'seguimientos' => $seguimientos,          // datos de seguimientos
-                'borderColor' => $palette[$index % count($palette)], //color del borde
+                'borderColor' => $palette[$index], //color del borde
                 'backgroundColor' => 'transparent', //color de fondo transparente
                 'pointRadius' => 5, //radio de los puntos
                 'tension' => 0.2, //tension de la linea
