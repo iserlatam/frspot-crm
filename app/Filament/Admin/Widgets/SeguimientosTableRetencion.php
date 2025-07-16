@@ -60,7 +60,6 @@ class SeguimientosTableRetencion extends BaseWidget
                     Tables\Columns\TextColumn::make('user.name')
                         ->label('Cliente')
                         ->searchable()
-                        ->sortable()
                         ->limit(15)
                         ->extraAttributes(['class' => 'cursor-default'])
                         ->tooltip(function ($record): ?string {
@@ -73,7 +72,6 @@ class SeguimientosTableRetencion extends BaseWidget
                     Tables\Columns\TextColumn::make('descripcion')
                         ->label('Descripción')
                         ->searchable()
-                        ->sortable()
                         ->html()
                         ->limit(300)
                         ->wrap(),
@@ -125,9 +123,8 @@ class SeguimientosTableRetencion extends BaseWidget
                             ->toArray();
                         })
                     ->searchable()
-                    ->preload()
-                    ->multiple(),
-            ])
+                    ->preload(),
+            ])->deferFilters()
             ->headerActions([
                 Helpers::renderReloadTableAction(),
             ])
