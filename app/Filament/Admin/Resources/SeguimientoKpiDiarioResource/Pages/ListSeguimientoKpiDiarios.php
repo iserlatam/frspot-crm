@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\SeguimientoKpiDiarioResource\Pages;
 
 use App\Filament\Admin\Resources\SeguimientoKpiDiarioResource;
+use App\Filament\Admin\Resources\SeguimientoKpiDiarioResource\Widgets\ResumenKpiMensual;
 use App\Filament\Admin\Resources\SeguimientoKpiDiarioResource\Widgets\WeeklyKpiAsesorsChart;
 use App\Filament\Admin\Resources\SeguimientoKpiDiarioResource\Widgets\WeeklyKpiAsesorsRetencionChart;
 use Filament\Actions;
@@ -12,18 +13,25 @@ class ListSeguimientoKpiDiarios extends ListRecords
 {
     protected static string $resource = SeguimientoKpiDiarioResource::class;
 
-    protected function getHeaderActions(): array
+    // protected function getHeaderActions(): array
+    // {
+    //     return [
+    //         // Actions\CreateAction::make(),
+    //     ];
+    // }
+
+    protected function getHeaderWidgets(): array
     {
         return [
-            // Actions\CreateAction::make(),
+            WeeklyKpiAsesorsChart::class,
+            WeeklyKpiAsesorsRetencionChart::class,
         ];
     }
 
     protected function getFooterWidgets(): array
     {
-        return [
-            WeeklyKpiAsesorsChart::class,
-            WeeklyKpiAsesorsRetencionChart::class,
+        return[
+            ResumenKpiMensual::class,
         ];
     }
 }
