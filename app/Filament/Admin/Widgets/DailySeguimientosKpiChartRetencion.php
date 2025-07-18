@@ -28,7 +28,8 @@ class DailySeguimientosKpiChartRetencion extends ChartWidget
     {
         $start = now()->startOfDay();
         $end = now()->endOfDay();
-        $metaDiaria = 30;  // meta diaria de clientes distintos contactados para Retencion
+        $metaAsesor = 30;  // meta diaria de clientes distintos contactados para Retencion
+        $metaTeam = 10; // meta diaria de clientes distintos contactados para Retencion Team
         
         // llamar asesores tipo asesor Retencion
         $asesores = Asesor::query()
@@ -43,6 +44,10 @@ class DailySeguimientosKpiChartRetencion extends ChartWidget
         $colors =[];    
 
         foreach($asesores as $asesor){
+
+            $rol = $asesor->user->roles->pluck('name')->first();
+
+            $metaObjetivo = $rol === 'team retencion' ? $metaTeam : $metaAsesor;
 
             // obtener el tipo asesor
             $tipo_asesor = $asesor->tipo_asesor;
@@ -61,9 +66,9 @@ class DailySeguimientosKpiChartRetencion extends ChartWidget
                 ->distinct('user_id')
                 ->count('user_id');
 
-            $cumplioMeta = $totalClientes >= $metaDiaria ? true : false;
+            $cumplioMeta = $totalClientes >= $metaObjetivo ? true : false;
 
-            $faltantes = max(0, $metaDiaria - $totalClientes);
+            $faltantes = max(0, $metaObjetivo - $totalClientes);
 
             SeguimientoKpiDiario::updateOrCreate(
                 [

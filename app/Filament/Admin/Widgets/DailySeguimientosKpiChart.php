@@ -39,7 +39,8 @@ class DailySeguimientosKpiChart extends ChartWidget
         /* 2-a) Rango de hoy según la TZ de la app */
         $start = now()->startOfDay();   // 00:00
         $end   = now()->endOfDay();     // 23:59:59
-        $metaDiaria = 130;
+        $metaAsesor = 130;
+        $metaTeam   = 10;
 
         /* 2-b) Traemos TODOS los asesores FTD, Retención, Recovery
                 (aunque no tengan actividad, saldrán con valor 0) */
@@ -55,6 +56,10 @@ class DailySeguimientosKpiChart extends ChartWidget
         $colors = [];   // verde o rojo según KPI
 
         foreach ($asesores as $asesor) {
+
+            $rol = $asesor->user->roles->pluck('name')->first();
+
+            $metaObjetivo = $rol === 'team ftd' ? $metaTeam : $metaAsesor;
 
             //obtener el tipo asesor 
             $tipo_asesor = $asesor->tipo_asesor;
@@ -74,10 +79,10 @@ class DailySeguimientosKpiChart extends ChartWidget
                 ->count('user_id');
             
             //inicializamos variable y validamos que el total de clientes contactados sea mayor o igual a la meta diaria para FTD
-            $cumplio_meta = $totalClientes >= $metaDiaria ? true : false ;
+            $cumplio_meta = $totalClientes >= $metaObjetivo ? true : false ;
 
             //inicializamos una variable para contar cuantos clientes faltaron para cumplir la meta diaria del asesor ftd
-            $faltantes = max(0,$metaDiaria - $totalClientes);
+            $faltantes = max(0,$metaObjetivo - $totalClientes);
 
             // aqui iniciamos logica para cargar la informacion de lso kpi diarios al nuevo modelo de SeguimientoKpiDiario para mantener un historial de las metricas por asesor
             SeguimientoKpiDiario::updateOrCreate(
