@@ -104,7 +104,7 @@ class DailySeguimientosKpiChart extends ChartWidget
             /* Rellenamos los arrays */
             $labels[] = $asesor->user->name ?? "Asesor {$asesor->id}";
             $data[]   = $totalClientes;
-            $colors[] = $totalClientes >= $metaDiaria
+            $colors[] = $totalClientes >= $metaObjetivo
                 ? 'rgba(16,185,129,0.8)'   // verde Tailwind emerald-500
                 : 'rgba(239,68,68,0.8)';   // rojo Tailwind red-500
         }
