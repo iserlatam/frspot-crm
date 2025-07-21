@@ -11,6 +11,8 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -186,9 +188,21 @@ class SeguimientoKpiDiarioResource extends Resource
             //     Tables\Actions\EditAction::make(),
             // ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make('bulkDelete')      
+                        ->label('Eliminar seleccionados')    
+                        ->icon('heroicon-o-trash')            
+                        ->color('danger')                    
+                        ->requiresConfirmation()              
+                        ->modalHeading('¿Eliminar métricas diarias?')
+                        ->modalDescription(
+                            'Esta acción eliminará permanentemente los registros seleccionados y '
+                            . 'no se puede deshacer.'
+                        )
+                        ->modalSubmitActionLabel('Sí, eliminar')
+                        ->modalCloseButton()
+                        ->deselectRecordsAfterCompletion(),   // limpia la selección al terminar
+                ])
             ]);
     }
 
