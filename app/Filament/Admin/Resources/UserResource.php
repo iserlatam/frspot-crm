@@ -440,13 +440,6 @@ class UserResource extends Resource
                             return true;
                         }
                     }),
-                /**
-                 *  ACCIONES DE ELIMINACION DE USUARIOS
-                 */
-                Tables\Actions\DeleteBulkAction::make('delete')->visible(fn() => Helpers::isSuperAdmin()),
-                /**
-                 *  ENVIAR EMAIL DE BIENVENIDAD
-                 */
                 BulkAction::make('Enviar mensaje de bienvenida')
                     ->color('primary')
                     ->icon('heroicon-o-envelope')
@@ -473,6 +466,13 @@ class UserResource extends Resource
                             return true;
                         }
                     }),
+                /**
+                 *  ACCIONES DE ELIMINACION DE USUARIOS
+                 */
+                Tables\Actions\DeleteBulkAction::make('delete')->visible(fn() => Helpers::isSuperAdmin()),
+                /**
+                 *  ENVIAR EMAIL DE BIENVENIDAD
+                 */
             ]);
     }
 
